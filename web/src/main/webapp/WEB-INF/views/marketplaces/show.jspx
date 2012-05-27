@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_libereco_core_domain_Marketplace" object="${marketplace}" path="/marketplaces" z="m8g1ZDJO9UP8LWpwiscuq9NBwfg=">
+        <field:display field="marketplaceName" id="s_com_libereco_core_domain_Marketplace_marketplaceName" object="${marketplace}" z="TKCL+h4EyNcC4EH2VqufBuoqpoc="/>
+        <field:display field="marketplaceShortName" id="s_com_libereco_core_domain_Marketplace_marketplaceShortName" object="${marketplace}" z="cLafJwFhbpBqXTVvDqxpzL53o+w="/>
+    </page:show>
+</div>

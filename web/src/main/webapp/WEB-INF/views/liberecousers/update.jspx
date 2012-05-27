@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_libereco_core_domain_LiberecoUser" modelAttribute="liberecoUser" path="/liberecousers" versionField="Version" z="y7L74i8zXSrpiH2N0M45d8vNvb0=">
+        <field:input field="username" id="c_com_libereco_core_domain_LiberecoUser_username" required="true" z="givYNzzZPd0DPKyJwXLcjArIWiI="/>
+        <field:textarea field="password" id="c_com_libereco_core_domain_LiberecoUser_password" required="true" z="aXZRClDxM73iu8Vrhd0xsfZH+LA="/>
+        <field:datetime dateTimePattern="${liberecoUser_lastupdated_date_format}" field="lastUpdated" id="c_com_libereco_core_domain_LiberecoUser_lastUpdated" z="xfzzSbIKc/vpaOoUYiLtwaQJDrI="/>
+        <field:select field="status" id="c_com_libereco_core_domain_LiberecoUser_status" items="${userstatuses}" path="userstatuses" required="true" z="6FlkcGLPHUIn+LXQqjtsaN+CBNE="/>
+        <field:simple field="marketplaceAuthorizations" id="c_com_libereco_core_domain_LiberecoUser_marketplaceAuthorizations" messageCode="entity_reference_not_managed" messageCodeAttribute="Marketplace Authorizations" z="6PgA7CgoA8Hapb7JZqcXzk37pZI="/>
+    </form:update>
+</div>

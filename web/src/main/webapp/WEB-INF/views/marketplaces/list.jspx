@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_libereco_core_domain_Marketplace" items="${marketplaces}" z="SB3s1uSeFjhcOVITbOL7NpLolk0=">
+        <table:table data="${marketplaces}" id="l_com_libereco_core_domain_Marketplace" path="/marketplaces" z="/gac2wVa2QuSL0zqXe5vuZjPfXM=">
+            <table:column id="c_com_libereco_core_domain_Marketplace_marketplaceName" property="marketplaceName" z="YEqXKxYOeAd07+A45yp20xH4tGE="/>
+            <table:column id="c_com_libereco_core_domain_Marketplace_marketplaceShortName" property="marketplaceShortName" z="in+F+DnFd5neh3HFPTWRzKiip7U="/>
+        </table:table>
+    </page:list>
+</div>

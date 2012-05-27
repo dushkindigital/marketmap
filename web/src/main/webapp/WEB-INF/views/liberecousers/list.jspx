@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_libereco_core_domain_LiberecoUser" items="${liberecousers}" z="o/L/wsjqe+bwhpLBMwrZngLctzw=">
+        <table:table data="${liberecousers}" id="l_com_libereco_core_domain_LiberecoUser" path="/liberecousers" z="1UIY7IWXSQQdOFeaUr+TuQKq/RM=">
+            <table:column id="c_com_libereco_core_domain_LiberecoUser_username" property="username" z="PxnKcQ9WAquBinImAnm5c3V5Ckk="/>
+            <table:column id="c_com_libereco_core_domain_LiberecoUser_password" property="password" z="wVWHrKsKPfJL81fT76AvwOxeWbc="/>
+            <table:column date="true" dateTimePattern="${liberecoUser_created_date_format}" id="c_com_libereco_core_domain_LiberecoUser_created" property="created" z="vppN2rAX9RHQ/gCD2kWtNbjXRdE="/>
+            <table:column date="true" dateTimePattern="${liberecoUser_lastupdated_date_format}" id="c_com_libereco_core_domain_LiberecoUser_lastUpdated" property="lastUpdated" z="86abp9NMJHy+DPeYFNFUnQ18GnM="/>
+            <table:column id="c_com_libereco_core_domain_LiberecoUser_status" property="status" z="z2JUcD+K+PVoNddstZY+R+zEFJc="/>
+        </table:table>
+    </page:list>
+</div>
