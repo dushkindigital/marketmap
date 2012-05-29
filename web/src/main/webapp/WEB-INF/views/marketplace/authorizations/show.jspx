@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_libereco_core_domain_MarketplaceAuthorizations" object="${marketplaceauthorizations}" path="/marketplaceauthorizationses" z="user-managed">
+        <field:display field="token" id="s_com_libereco_core_domain_MarketplaceAuthorizations_token" object="${marketplaceauthorizations}" z="user-managed"/>
+        <field:display field="tokenSecret" id="s_com_libereco_core_domain_MarketplaceAuthorizations_tokenSecret" object="${marketplaceauthorizations}" z="user-managed"/>
+        <field:display date="true" dateTimePattern="${marketplaceAuthorizations_expirationtime_date_format}" field="expirationTime" id="s_com_libereco_core_domain_MarketplaceAuthorizations_expirationTime" object="${marketplaceauthorizations}" z="user-managed"/>
+    </page:show>
+</div>

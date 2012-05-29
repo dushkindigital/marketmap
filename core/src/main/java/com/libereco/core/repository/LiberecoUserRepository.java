@@ -8,6 +8,8 @@ import com.libereco.core.domain.LiberecoUser;
 
 @Repository
 public interface LiberecoUserRepository extends JpaRepository<LiberecoUser, Long>, JpaSpecificationExecutor<LiberecoUser> {
-    
+
     public LiberecoUser findByUsername(String username);
+
+    public LiberecoUser findByUsernameAndPassword(String username, String password);
 }

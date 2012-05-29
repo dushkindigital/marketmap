@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" id="menu" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <menu:menu id="_menu" z="user-managed">
-        <menu:category id="c_liberecouser" z="user-managed">
-            <menu:item id="i_liberecouser_new" messageCode="global_menu_new" url="/liberecousers?form" z="user-managed"/>
-            <menu:item id="i_liberecouser_list" messageCode="global_menu_list" url="/liberecousers?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
-        </menu:category>
-        <menu:category id="c_marketplace" z="user-managed">
-            <menu:item id="i_marketplace_new" messageCode="global_menu_new" url="/marketplaces?form" z="user-managed"/>
-            <menu:item id="i_marketplace_list" messageCode="global_menu_list" url="/marketplaces?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
-        </menu:category>
-    </menu:menu>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" id="menu"
+	xmlns:sec="http://www.springframework.org/security/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<menu:menu id="_menu" z="user-managed">
+
+		<menu:category id="c_liberecouser" z="user-managed">
+			<menu:item id="i_liberecouser_new" messageCode="global_menu_new"
+				url="/liberecousers?form" z="user-managed" />
+			<menu:item id="i_liberecouser_list" messageCode="global_menu_list"
+				url="/liberecousers?page=1&amp;size=${empty param.size ? 10 : param.size}"
+				z="user-managed" />
+		</menu:category>
+
+		<menu:category id="c_marketplace" z="user-managed">
+			<menu:item id="i_marketplace_new" messageCode="global_menu_new"
+				url="/marketplaces?form" z="user-managed" />
+			<menu:item id="i_marketplace_list" messageCode="global_menu_list"
+				url="/marketplaces?page=1&amp;size=${empty param.size ? 10 : param.size}"
+				z="user-managed" />
+		</menu:category>
+
+		<menu:category id="c_authorization" label="Authorizations"
+			z="user-managed">
+			<menu:item url="/marketplaces/ebay/authorize"
+				id="i_authorization_ebay" label="EBAY"></menu:item>
+			<menu:item url="/marketplaces/etsy/authorize"
+				id="i_authorization_etsy" label="ETSY"></menu:item>
+			<menu:item url="/marketplaces/amazon/authorize"
+				id="i_authorization_etsy" label="AMAZON"></menu:item>
+		</menu:category>
+
+		<sec:authorize access="isAuthenticated()">
+			<menu:category id="c_fetchToken" label="FetchToken" z="user-managed">
+				<menu:item url="/marketplaces/ebay/fetchToken"
+					id="i_fetchToken_ebay" label="EBAY"></menu:item>
+				<menu:item url="/marketplaces/etsy/fetchToken"
+					id="i_fetchToken_etsy" label="ETSY"></menu:item>
+				<menu:item url="/marketplaces/amazon/fetchToken"
+					id="i_fetchToken_etsy" label="AMAZON"></menu:item>
+			</menu:category>
+		</sec:authorize>
+	</menu:menu>
 </div>

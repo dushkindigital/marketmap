@@ -11,16 +11,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.libereco.web.auth.MarketplaceAuthorizationException;
 import com.libereco.web.auth.SignInDetails;
 
-@ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext.xml" })
+@ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext-web.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles(profiles = "local")
 public class EbayAuthorizerTest {
 
     @Autowired

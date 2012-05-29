@@ -1,10 +1,19 @@
 package com.libereco.web.controller;
 
+import java.io.UnsupportedEncodingException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.Marketplace;
@@ -20,6 +29,7 @@ import com.libereco.web.auth.SignInDetails;
 import com.libereco.web.auth.ebay.EbayAuthorizer;
 import com.libereco.web.auth.ebay.EbayToken;
 import com.libereco.web.common.MarketplaceName;
+import com.libereco.web.security.SecurityUtils;
 
 @Controller
 public class MarketPlaceAuthorizationController {
@@ -35,7 +45,7 @@ public class MarketPlaceAuthorizationController {
 
     @Autowired
     PendingMarketplaceAuthorizationsRepository pendingMarketplaceAuthorizationsRepository;
-    
+
     @Autowired
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
 
@@ -54,8 +64,10 @@ public class MarketPlaceAuthorizationController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/{username}/authorize/{marketplace}", method = RequestMethod.GET)
-    public String authorize(@PathVariable("username") String username, @PathVariable("marketplace") String name) {
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET)
+    public String authorize(@PathVariable("marketplace") String name) {
+        String username = SecurityUtils.getUsername();
+
         LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
         if (liberecoUser == null) {
             throw new RuntimeException("User does not exist for given username : " + username);
@@ -64,7 +76,7 @@ public class MarketPlaceAuthorizationController {
         if (marketplace == null) {
             throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
         }
-        MarketplaceName marketplaceName = MarketplaceName.valueOf(name);
+        MarketplaceName marketplaceName = MarketplaceName.fromString(name);
         String response = null;
         switch (marketplaceName) {
         case EBAY:
@@ -73,14 +85,13 @@ public class MarketPlaceAuthorizationController {
             pendingMarketplaceAuthorizationsRepository.save(new PendingMarketplaceAuthorizations(liberecoUser, marketplace, signInDetails.getToken(),
                     signInDetails.getSecretToken()));
             break;
-        default:
-            throw new IllegalArgumentException("Illegal Marktplace : " + marketplaceName);
         }
         return "redirect:" + response;
     }
 
-    @RequestMapping(value = "/{username}/fetchToken/{marketplace}", method = RequestMethod.GET)
-    public String fetchToken(@PathVariable("username") String username, @PathVariable("marketplace") String name) {
+    @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET)
+    public String fetchToken(@PathVariable("marketplace") String name, HttpServletRequest httpServletRequest) {
+        String username = SecurityUtils.getUsername();
         System.out.println("In fetch request.....");
         LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
         if (liberecoUser == null) {
@@ -90,8 +101,7 @@ public class MarketPlaceAuthorizationController {
         if (marketplace == null) {
             throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
         }
-        MarketplaceName marketplaceName = MarketplaceName.valueOf(name);
-        String response = null;
+        MarketplaceName marketplaceName = MarketplaceName.fromString(name);
         switch (marketplaceName) {
         case EBAY:
             EbayToken ebayToken = null;
@@ -110,7 +120,26 @@ public class MarketPlaceAuthorizationController {
         default:
             throw new IllegalArgumentException("Illegal Marktplace : " + marketplaceName);
         }
-        return "index";
+        return "redirect:/" + username + "/marketplace/" + name + "/authorizations";
+    }
+
+    @RequestMapping(value = "/{username}/marketplace/{name}/authorizations", produces = "text/html")
+    public String showMarketplaceAuthorizationToken(@PathVariable("username") String username, @PathVariable("name") String name, Model uiModel) {
+        LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
+        if (liberecoUser == null) {
+            throw new RuntimeException("User does not exist for given username : " + username);
+        }
+        Marketplace marketplace = marketplaceService.findMarketplaceByName(name);
+        if (marketplace == null) {
+            throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
+        }
+
+        addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("marketplaceauthorizations", marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId())));
+        // uiModel.addAttribute("itemId", conversionService.convert(key,
+        // String.class));
+        return "marketplace/authorizations/show";
     }
 
     private MarketplaceAuthorizations createNewMarketplaceAuthorization(LiberecoUser liberecoUser, Marketplace marketplace, EbayToken ebayToken) {
@@ -121,5 +150,22 @@ public class MarketPlaceAuthorizationController {
         marketplaceAuthorization.setTokenSecret(null);
         marketplaceAuthorization.setKey(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId()));
         return marketplaceAuthorization;
+    }
+
+    void addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute("marketplaceAuthorizations_expirationtime_date_format",
+                DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
+    }
+
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
+        }
+        return pathSegment;
     }
 }

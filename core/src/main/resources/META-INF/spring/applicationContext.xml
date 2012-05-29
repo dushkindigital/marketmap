@@ -44,7 +44,7 @@
 	</bean>
 
 
-	<beans profile="openshift">
+<!-- 	<beans profile="openshift">
 		<bean class="org.apache.commons.dbcp.BasicDataSource"
 			destroy-method="close" id="dataSource">
 			<property name="driverClassName" value="${database.driverClassName}" />
@@ -61,5 +61,5 @@
 			<property name="validationQuery" value="SELECT version();" />
 		</bean>
 	</beans>
-
+ -->
 </beans>

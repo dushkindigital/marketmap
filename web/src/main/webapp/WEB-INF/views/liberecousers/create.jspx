@@ -2,12 +2,10 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <form:create id="fc_com_libereco_core_domain_LiberecoUser" modelAttribute="liberecoUser" path="/liberecousers" render="${empty dependencies}" z="xpSNttmzIcsUvEZpqdRGlwqGLUI=">
-        <field:input field="username" id="c_com_libereco_core_domain_LiberecoUser_userName" required="true" z="givYNzzZPd0DPKyJwXLcjArIWiI="/>
-        <field:textarea field="password" id="c_com_libereco_core_domain_LiberecoUser_password" required="true" z="aXZRClDxM73iu8Vrhd0xsfZH+LA="/>
-        <field:datetime dateTimePattern="${liberecoUser_lastupdated_date_format}" field="lastUpdated" id="c_com_libereco_core_domain_LiberecoUser_lastUpdated" z="xfzzSbIKc/vpaOoUYiLtwaQJDrI="/>
-        <field:select field="status" id="c_com_libereco_core_domain_LiberecoUser_status" items="${userstatuses}" path="userstatuses" required="true" z="6FlkcGLPHUIn+LXQqjtsaN+CBNE="/>
-        <field:simple field="marketplaceAuthorizations" id="c_com_libereco_core_domain_LiberecoUser_marketplaceAuthorizations" messageCode="entity_reference_not_managed" messageCodeAttribute="Marketplace Authorizations" z="6PgA7CgoA8Hapb7JZqcXzk37pZI="/>
+    <form:create id="fc_com_libereco_core_domain_LiberecoUser" modelAttribute="liberecoUser" path="/liberecousers" render="${empty dependencies}" z="user-managed">
+        <field:input field="username" id="c_com_libereco_core_domain_LiberecoUser_userName" required="true" z="user-managed"/>
+        <field:input field="password" id="c_com_libereco_core_domain_LiberecoUser_password" required="true" z="user-managed"/>
+        <field:datetime dateTimePattern="${liberecoUser_lastupdated_date_format}" field="lastUpdated" id="c_com_libereco_core_domain_LiberecoUser_lastUpdated" z="user-managed"/>
+        <field:select field="status" id="c_com_libereco_core_domain_LiberecoUser_status" items="${userstatuses}" path="userstatuses" required="true" z="user-managed"/>
     </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_com_libereco_core_domain_LiberecoUser" render="${not empty dependencies}" z="nz9gJs4SsuXvaT5DhzK7YMW5ak4="/>
 </div>
