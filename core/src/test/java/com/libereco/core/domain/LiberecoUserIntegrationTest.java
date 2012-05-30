@@ -1,25 +1,25 @@
 package com.libereco.core.domain;
 
-import com.libereco.core.repository.LiberecoUserRepository;
-import com.libereco.core.service.LiberecoUserService;
 import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.roo.addon.test.RooIntegrationTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.libereco.core.repository.LiberecoUserRepository;
+import com.libereco.core.service.LiberecoUserService;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @Transactional
 @Configurable
-@RooIntegrationTest(entity = LiberecoUser.class)
-@ActiveProfiles(profiles="local")
+@ActiveProfiles(profiles="test")
 public class LiberecoUserIntegrationTest {
 
     @Test

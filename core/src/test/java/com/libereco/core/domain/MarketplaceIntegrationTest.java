@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @Transactional
 @RooIntegrationTest(entity = Marketplace.class)
-@ActiveProfiles(profiles="local")
+@ActiveProfiles(profiles="test")
 public class MarketplaceIntegrationTest {
 
     @Test

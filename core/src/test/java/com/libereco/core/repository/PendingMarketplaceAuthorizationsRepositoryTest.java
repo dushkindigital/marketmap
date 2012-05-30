@@ -17,7 +17,7 @@ import com.libereco.core.domain.PendingMarketplaceAuthorizations;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @Transactional
-@ActiveProfiles(profiles="local")
+@ActiveProfiles(profiles="test")
 public class PendingMarketplaceAuthorizationsRepositoryTest {
 
     @Autowired

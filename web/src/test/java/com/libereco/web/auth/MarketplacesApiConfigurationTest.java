@@ -16,7 +16,7 @@ import com.ebay.sdk.ApiLogging;
 
 @ContextConfiguration(classes = MarketplacesApiConfiguration.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles(profiles="local")
+@ActiveProfiles(profiles="test")
 public class MarketplacesApiConfigurationTest {
 
     @Autowired

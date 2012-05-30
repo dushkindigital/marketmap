@@ -11,4 +11,9 @@ How to run the application?
 
 4) Go inside web project and run mvn jetty:run to run the web application
 
+Running on Cloud Foundry
+
+You have to increase perm gen space using following command
+vmc env-add libereco JAVA_OPTS=-XX:MaxPermSize=512m
+
 

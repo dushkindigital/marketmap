@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import com.libereco.core.service.LiberecoUserService;
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext.xml",
         "classpath:/META-INF/spring/applicationContext-security.xml", "classpath:/META-INF/spring/applicationContext-jpa.xml" })
 @Transactional
+@ActiveProfiles("test")
 public class LiberecoAuthenticationProviderTest {
 
     @Autowired

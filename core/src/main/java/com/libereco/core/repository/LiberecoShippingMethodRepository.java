@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import com.libereco.core.domain.LiberecoShippingMethod;
 
 @Repository
-public interface LiberecoShippingMethorRepository extends JpaRepository<LiberecoShippingMethod, Long>, JpaSpecificationExecutor<LiberecoShippingMethod> {
+public interface LiberecoShippingMethodRepository extends JpaRepository<LiberecoShippingMethod, Long>, JpaSpecificationExecutor<LiberecoShippingMethod> {
 }

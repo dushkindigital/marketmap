@@ -1,7 +1,7 @@
 package com.libereco.core.service;
 
 import com.libereco.core.domain.LiberecoShippingMethod;
-import com.libereco.core.repository.LiberecoShippingMethorRepository;
+import com.libereco.core.repository.LiberecoShippingMethodRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LiberecoShippingMethodServiceImpl implements LiberecoShippingMethodService {
 
 	@Autowired
-    LiberecoShippingMethorRepository liberecoShippingMethorRepository;
+    LiberecoShippingMethodRepository liberecoShippingMethorRepository;
 
 	public long countAllLiberecoShippingMethods() {
         return liberecoShippingMethorRepository.count();
