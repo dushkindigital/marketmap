@@ -92,7 +92,6 @@ public class MarketPlaceAuthorizationController {
     @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET)
     public String fetchToken(@PathVariable("marketplace") String name, HttpServletRequest httpServletRequest) {
         String username = SecurityUtils.getUsername();
-        System.out.println("In fetch request.....");
         LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
         if (liberecoUser == null) {
             throw new RuntimeException("User does not exist for given username : " + username);
@@ -112,6 +111,7 @@ public class MarketPlaceAuthorizationController {
                 ebayToken = ebayAuthorizer.fetchToken(sessionId);
                 MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorization(liberecoUser, marketplace, ebayToken);
                 marketplaceAuthorizationsService.saveMarketplaceAuthorizations(marketplaceAuthorization);
+                pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorization);
             } catch (Exception e) {
                 throw new RuntimeException("Not able to fetch token", e);
             }
@@ -137,8 +137,6 @@ public class MarketPlaceAuthorizationController {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("marketplaceauthorizations", marketplaceAuthorizationsService
                 .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId())));
-        // uiModel.addAttribute("itemId", conversionService.convert(key,
-        // String.class));
         return "marketplace/authorizations/show";
     }
 

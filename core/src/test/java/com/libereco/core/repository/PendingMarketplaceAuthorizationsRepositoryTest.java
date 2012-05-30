@@ -31,6 +31,20 @@ public class PendingMarketplaceAuthorizationsRepositoryTest {
 
     @Test
     public void shouldSavePendingMarketPlaceAuthorization() {
+        createNewPendingMarketplaceAuthorization();
+        long count = pendingMarketplaceAuthorizationsRepository.countPendingMarketplaceAuthorizations();
+        assertEquals(1, count);
+    }
+    
+    @Test
+    public void shouldDeletePendingMarketplaceAuthorizations() throws Exception{
+        PendingMarketplaceAuthorizations pendingMarketplaceAuthorizations = createNewPendingMarketplaceAuthorization();
+        pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorizations);
+        long count = pendingMarketplaceAuthorizationsRepository.countPendingMarketplaceAuthorizations();
+        assertEquals(0, count);
+    }
+
+    public PendingMarketplaceAuthorizations createNewPendingMarketplaceAuthorization() {
         LiberecoUser user = new LiberecoUser("test_user", "password");
         liberecoUserRepository.save(user);
         Marketplace marketplace = new Marketplace("ebay", "ebay");
@@ -41,9 +55,7 @@ public class PendingMarketplaceAuthorizationsRepositoryTest {
         marketplace = marketplaceRepository.findByMarketplaceName("ebay");
         PendingMarketplaceAuthorizations entity = new PendingMarketplaceAuthorizations(user, marketplace, "test_token",
                 "test_secret_token");
-        pendingMarketplaceAuthorizationsRepository.save(entity);
-        long count = pendingMarketplaceAuthorizationsRepository.countPendingMarketplaceAuthorizations();
-        assertEquals(1, count);
+        PendingMarketplaceAuthorizations pendingMarketplaceAuthorizations = pendingMarketplaceAuthorizationsRepository.save(entity);
+        return pendingMarketplaceAuthorizations;
     }
-
 }
