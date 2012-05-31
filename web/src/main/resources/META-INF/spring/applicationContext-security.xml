@@ -16,6 +16,10 @@
 			access="isAuthenticated()" />
 		<intercept-url pattern="/marketplaces/*/fetchToken"
 			access="isAuthenticated()" />
+		<intercept-url pattern="/*/marketplaceauthorizations/*"
+			access="isAuthenticated()" />
+			<intercept-url pattern="/*/marketplaceauthorizations"
+			access="isAuthenticated()" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
 		<intercept-url pattern="/**" access="permitAll" />
 	</http>

@@ -47,7 +47,7 @@ public class MarketplaceAuthorizationsIntegrationTest {
 
     @Test
     public void shouldSaveAndFlush() {
-        MarketplaceAuthorizations newMarketplace = createNewMarketPlace(Long
+        MarketplaceAuthorizations newMarketplace = createNewMarketPlaceAuthorization(Long
                 .valueOf(1), Long.valueOf(2));
         MarketplaceAuthorizations marketplaceAuthorizations = marketplaceAuthorizationsRepository
                 .saveAndFlush(newMarketplace);
@@ -72,7 +72,7 @@ public class MarketplaceAuthorizationsIntegrationTest {
     public void shouldDeleteAllMarketplaceAuthorizations() {
         List<MarketplaceAuthorizations> authorizations = new ArrayList<MarketplaceAuthorizations>();
         for (int i = 0; i < 10; i++) {
-            authorizations.add(createNewMarketPlace(i, i + 1));
+            authorizations.add(createNewMarketPlaceAuthorization(i, i + 1));
         }
 
         marketplaceAuthorizationsRepository.save(authorizations);
@@ -87,13 +87,13 @@ public class MarketplaceAuthorizationsIntegrationTest {
     }
 
     private void saveMarketPlaceAuthorization() {
-        MarketplaceAuthorizations marketplaceAuthorizations = createNewMarketPlace(
+        MarketplaceAuthorizations marketplaceAuthorizations = createNewMarketPlaceAuthorization(
                 Long.valueOf(1), Long.valueOf(2));
 
         marketplaceAuthorizationsRepository.save(marketplaceAuthorizations);
     }
 
-    private MarketplaceAuthorizations createNewMarketPlace(long userId,
+    private MarketplaceAuthorizations createNewMarketPlaceAuthorization(long userId,
             long marketplaceId) {
         MarketplaceAuthorizations marketplaceAuthorizations = new MarketplaceAuthorizations();
         marketplaceAuthorizations.setExpirationTime(new Date());

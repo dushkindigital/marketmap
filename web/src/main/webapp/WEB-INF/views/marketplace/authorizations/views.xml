@@ -7,4 +7,9 @@
 		<put-attribute name="body"
 			value="/WEB-INF/views/marketplace/authorizations/show.jspx" />
 	</definition>
+	
+	<definition extends="default" name="marketplace/authorizations/list">
+		<put-attribute name="body"
+			value="/WEB-INF/views/marketplace/authorizations/list.jspx" />
+	</definition>
 </tiles-definitions>

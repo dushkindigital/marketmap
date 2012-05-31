@@ -68,14 +68,8 @@ public class MarketPlaceAuthorizationController {
     public String authorize(@PathVariable("marketplace") String name) {
         String username = SecurityUtils.getUsername();
 
-        LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
-        if (liberecoUser == null) {
-            throw new RuntimeException("User does not exist for given username : " + username);
-        }
-        Marketplace marketplace = marketplaceService.findMarketplaceByName(name);
-        if (marketplace == null) {
-            throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
-        }
+        LiberecoUser liberecoUser = fetchUser(username);
+        Marketplace marketplace = fetchMarketplace(name);
         MarketplaceName marketplaceName = MarketplaceName.fromString(name);
         String response = null;
         switch (marketplaceName) {
@@ -92,14 +86,8 @@ public class MarketPlaceAuthorizationController {
     @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET)
     public String fetchToken(@PathVariable("marketplace") String name, HttpServletRequest httpServletRequest) {
         String username = SecurityUtils.getUsername();
-        LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
-        if (liberecoUser == null) {
-            throw new RuntimeException("User does not exist for given username : " + username);
-        }
-        Marketplace marketplace = marketplaceService.findMarketplaceByName(name);
-        if (marketplace == null) {
-            throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
-        }
+        LiberecoUser liberecoUser = fetchUser(username);
+        Marketplace marketplace = fetchMarketplace(name);
         MarketplaceName marketplaceName = MarketplaceName.fromString(name);
         switch (marketplaceName) {
         case EBAY:
@@ -120,24 +108,42 @@ public class MarketPlaceAuthorizationController {
         default:
             throw new IllegalArgumentException("Illegal Marktplace : " + marketplaceName);
         }
-        return "redirect:/" + username + "/marketplace/" + name + "/authorizations";
+        return "redirect:/" + username + "/marketplaceauthorizations/" + name;
     }
 
-    @RequestMapping(value = "/{username}/marketplace/{name}/authorizations", produces = "text/html")
-    public String showMarketplaceAuthorizationToken(@PathVariable("username") String username, @PathVariable("name") String name, Model uiModel) {
-        LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
-        if (liberecoUser == null) {
-            throw new RuntimeException("User does not exist for given username : " + username);
-        }
+    @RequestMapping(value = "/{username}/marketplaceauthorizations/{name}", produces = "text/html")
+    public String showMarketplaceAuthorizations(@PathVariable("username") String username, @PathVariable("name") String name, Model uiModel) {
+        LiberecoUser liberecoUser = fetchUser(username);
+        Marketplace marketplace = fetchMarketplace(name);
+        addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("marketplaceauthorizations", marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId())));
+        uiModel.addAttribute("username",username);
+        return "marketplace/authorizations/show";
+    }
+
+    @RequestMapping(value = "/{username}/marketplaceauthorizations", produces = "text/html")
+    public String listMarketplaceAuthorizations(@PathVariable("username") String username, Model uiModel) {
+        LiberecoUser liberecoUser = fetchUser(username);
+        addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("allMarketplaceauthorizations", marketplaceAuthorizationsService.findAllMarketplaceAuthorizationsForUser(liberecoUser.getId()));
+        return "marketplace/authorizations/list";
+    }
+
+    private Marketplace fetchMarketplace(String name) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(name);
         if (marketplace == null) {
             throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
         }
+        return marketplace;
+    }
 
-        addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("marketplaceauthorizations", marketplaceAuthorizationsService
-                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId())));
-        return "marketplace/authorizations/show";
+    private LiberecoUser fetchUser(String username) {
+        LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
+        if (liberecoUser == null) {
+            throw new RuntimeException("User does not exist for given username : " + username);
+        }
+        return liberecoUser;
     }
 
     private MarketplaceAuthorizations createNewMarketplaceAuthorization(LiberecoUser liberecoUser, Marketplace marketplace, EbayToken ebayToken) {
@@ -146,13 +152,14 @@ public class MarketPlaceAuthorizationController {
         marketplaceAuthorization.setLiberecoUser(liberecoUser);
         marketplaceAuthorization.setToken(ebayToken.getToken());
         marketplaceAuthorization.setTokenSecret(null);
+        marketplaceAuthorization.setLiberecoUser(liberecoUser);
         marketplaceAuthorization.setKey(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId()));
         return marketplaceAuthorization;
     }
 
     void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("marketplaceAuthorizations_expirationtime_date_format",
-                DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
+                DateTimeFormat.patternForStyle("LL", LocaleContextHolder.getLocale()));
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

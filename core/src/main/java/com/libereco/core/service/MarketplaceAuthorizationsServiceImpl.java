@@ -8,39 +8,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @Transactional
 public class MarketplaceAuthorizationsServiceImpl implements MarketplaceAuthorizationsService {
 
-	@Autowired
+    @Autowired
     MarketplaceAuthorizationsRepository marketplaceAuthorizationsRepository;
 
-	public long countAllMarketplaceAuthorizationses() {
+    public long countAllMarketplaceAuthorizationses() {
         return marketplaceAuthorizationsRepository.count();
     }
 
-	public void deleteMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations) {
+    public void deleteMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations) {
         marketplaceAuthorizationsRepository.delete(marketplaceAuthorizations);
     }
 
-	public MarketplaceAuthorizations findMarketplaceAuthorizations(MarketplaceAuthorizationsCompositeKey id) {
+    public MarketplaceAuthorizations findMarketplaceAuthorizations(MarketplaceAuthorizationsCompositeKey id) {
         return marketplaceAuthorizationsRepository.findOne(id);
     }
 
-	public List<MarketplaceAuthorizations> findAllMarketplaceAuthorizationses() {
+    public List<MarketplaceAuthorizations> findAllMarketplaceAuthorizationses() {
         return marketplaceAuthorizationsRepository.findAll();
     }
 
-	public List<MarketplaceAuthorizations> findMarketplaceAuthorizationsEntries(int firstResult, int maxResults) {
-        return marketplaceAuthorizationsRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
+    public List<MarketplaceAuthorizations> findMarketplaceAuthorizationsEntries(int firstResult, int maxResults) {
+        return marketplaceAuthorizationsRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults))
+                .getContent();
     }
 
-	public void saveMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations) {
+    public void saveMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations) {
         marketplaceAuthorizationsRepository.save(marketplaceAuthorizations);
     }
 
-	public MarketplaceAuthorizations updateMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations) {
+    public MarketplaceAuthorizations updateMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations) {
         return marketplaceAuthorizationsRepository.save(marketplaceAuthorizations);
+    }
+
+    @Override
+    public List<MarketplaceAuthorizations> findAllMarketplaceAuthorizationsForUser(Long id) {
+        return marketplaceAuthorizationsRepository.findAllMarketplaceAuthorizationsBykeyUserId(id);
     }
 }

@@ -24,23 +24,6 @@ public final class MarketplaceAuthorizationsCompositeKey implements Serializable
 
     private Long marketplaceId;
 
-    public String toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
-    }
-
-    public static MarketplaceAuthorizationsCompositeKey fromJsonToMarketplaceAuthorizationsCompositeKey(String json) {
-        return new JSONDeserializer<MarketplaceAuthorizationsCompositeKey>().use(null, MarketplaceAuthorizationsCompositeKey.class).deserialize(json);
-    }
-
-    public static String toJsonArray(Collection<MarketplaceAuthorizationsCompositeKey> collection) {
-        return new JSONSerializer().exclude("*.class").serialize(collection);
-    }
-
-    public static Collection<MarketplaceAuthorizationsCompositeKey> fromJsonArrayToMarketplaceAuthorizationsCompositeKeys(String json) {
-        return new JSONDeserializer<List<MarketplaceAuthorizationsCompositeKey>>().use(null, ArrayList.class)
-                .use("values", MarketplaceAuthorizationsCompositeKey.class).deserialize(json);
-    }
-
     private static final long serialVersionUID = 1L;
 
     public MarketplaceAuthorizationsCompositeKey(Long userId, Long marketplaceId) {
@@ -78,5 +61,22 @@ public final class MarketplaceAuthorizationsCompositeKey implements Serializable
 
     public int hashCode() {
         return new HashCodeBuilder().append(marketplaceId).append(userId).toHashCode();
+    }
+
+    public String toJson() {
+        return new JSONSerializer().exclude("*.class").serialize(this);
+    }
+
+    public static MarketplaceAuthorizationsCompositeKey fromJsonToMarketplaceAuthorizationsCompositeKey(String json) {
+        return new JSONDeserializer<MarketplaceAuthorizationsCompositeKey>().use(null, MarketplaceAuthorizationsCompositeKey.class).deserialize(json);
+    }
+
+    public static String toJsonArray(Collection<MarketplaceAuthorizationsCompositeKey> collection) {
+        return new JSONSerializer().exclude("*.class").serialize(collection);
+    }
+
+    public static Collection<MarketplaceAuthorizationsCompositeKey> fromJsonArrayToMarketplaceAuthorizationsCompositeKeys(String json) {
+        return new JSONDeserializer<List<MarketplaceAuthorizationsCompositeKey>>().use(null, ArrayList.class)
+                .use("values", MarketplaceAuthorizationsCompositeKey.class).deserialize(json);
     }
 }
