@@ -15,7 +15,7 @@
 
 	<context-param>
 		<param-name>spring.profiles.active</param-name>
-		<param-value>cloud</param-value>
+		<param-value>local</param-value>
 	</context-param>
 
 	<context-param>

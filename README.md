@@ -1,13 +1,13 @@
 marketmap
 =========
 
-How to run the application?
+How to build the application?
 
-1) Checkout the project
+1) Checkout the project using git clone git@github.com:dushkindigital/marketmap.git
 
-2) Change the database.properties to match your mysql credentials.
+2) Run the mvn clean install on the root project. This will run test cases on hsqldb so no configuration is required.
 
-3) Do mvn clean install on the root project.
+3) While building the application you might get errors if you don't have ebay jars. There are four ebay jars that you need to manually install in your local repository.
 
 4) Go inside web project and run mvn jetty:run to run the web application
 

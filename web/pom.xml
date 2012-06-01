@@ -36,6 +36,11 @@
 			<name>Spring Roo Repository</name>
 			<url>http://spring-roo-repository.springsource.org/release</url>
 		</repository>
+		<repository>
+			<id>mynexus</id>
+			<name>mynexus</name>
+			<url>http://mynexus.cloudfoundry.com/content/groups/public/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
