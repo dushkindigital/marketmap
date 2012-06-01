@@ -295,6 +295,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<artifactId>marketmap</artifactId>
-	<name>marketmap</name>
+	<artifactId>libereco</artifactId>
+	<name>libereco</name>
 </project>
