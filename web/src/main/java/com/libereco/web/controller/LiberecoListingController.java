@@ -27,9 +27,12 @@ import org.springframework.web.util.WebUtils;
 
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
+import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.service.LiberecoListingService;
+import com.libereco.core.service.LiberecoUserService;
+import com.libereco.web.security.SecurityUtils;
 
 @RequestMapping("/liberecolistings")
 @Controller
@@ -37,6 +40,9 @@ public class LiberecoListingController {
 
     @Autowired
     LiberecoListingService liberecoListingService;
+    @Autowired
+    LiberecoUserService liberecoUserService;
+    
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -45,6 +51,9 @@ public class LiberecoListingController {
             return "liberecolistings/create";
         }
         uiModel.asMap().clear();
+        String username = SecurityUtils.getUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
+        liberecoListing.setUserId(user.getId());
         liberecoListingService.saveLiberecoListing(liberecoListing);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }

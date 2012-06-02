@@ -23,4 +23,7 @@ public enum MarketplaceName {
         throw new IllegalArgumentException("Invalid name " + name);
     }
 
+    public String getName() {
+        return name;
+    }
 }

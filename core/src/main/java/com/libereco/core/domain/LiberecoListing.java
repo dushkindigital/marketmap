@@ -36,7 +36,6 @@ public class LiberecoListing implements Serializable{
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Marketplace> marketplaces = new HashSet<Marketplace>();
 
-    @NotNull
     private Long userId;
 
     @NotNull

@@ -37,29 +37,25 @@ public class EbayAddListingClient {
 
     private ApiContext apiContext;
     private Environment environment;
-    private AddItemCall addItemCall;
 
     @Autowired
     public EbayAddListingClient(ApiContext apiContext, Environment environment) {
         this.apiContext = apiContext;
-        this.apiContext.getApiCredential().seteBayToken("AgAAAA**AQAAAA**aAAAAA**u5LJTw**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhCJiKpQ6dj6x9nY+seQ**5dEBAA**AAMAAA**K3YLHsnW2N67j6uI2leG4Ear6Z67/0ktEDFc439VTfKE/nB8uzBEBD9H7pwexITBtFgSp5InGJyYnCIx1S+KblwvVD+qrvU5pEFviGlKhf1EwaGy3ha2X1GB+bmBELGbN9h3PdeS5JRZqVgAsRM8KM4mjTy0ojYJ6F0uSz7v8lPAmo5PXkKB72PNWBqPJDNfklf8zc3isSsOFvqYDlFY7iZ36W01wR2AVf0AXmWyM3aphtAVfMSGHzXayPqw3djEq96upt8P6mRrcu8Gj1JKTyHwg1gT6wJs6X/Hu4R4506wvlDZ1ijB0Hi7NxBDh4VdmhRDe6G2GFJjkisHcwkbpKR0dFhZxTOwL3JtG+CQ5IB/tc8g0Ns37FAYj1K5Zjtlwya9wVYhiTPJTa9LmzhsSO0zvwr6zpVm/H5ULGSdVbxx0R2bNV2nGj2zOxIMotvwcwvXyXMfXxG1ouIIXnSIMHIFopE8GXsghj12njvg+evLXXYCB95GlMQHBxsjDkJsHljixaZZbQPDSKt77NxonpUACTNZN/CqDDzF1Dig+Iy61r3SD+3p//wXCF8u2yXMZ64XIYhMsxL2EHUyPmfJh/dvwxOZOSaIg3srm4SewhhQmK6wMSYhZX3g12xQf1JajBJot3eTKbbnPTwO67LlcaLzwl6mhLyIPpE7d2hiKOjixJKX2U2Y5HWyEfG9UU0i+ABiwQAFyqbqQI9PHHofkDBUyE/bvBH0CBOixeyqFmyflKEgANPLFLCOFt6f+PnT");
         this.environment = environment;
-        this.addItemCall = new AddItemCall(apiContext);
-        initAddItemCall();
     }
 
-    private void initAddItemCall() {
-        // Let the call object to automatically generate UUID for my item.
-        addItemCall.setAutoSetItemUUID(false);
-        addItemCall.setSite(SiteCodeType.US);
-
-        // Set detail level to retrieve item description.
-        addItemCall.addDetailLevel(DetailLevelCodeType.ITEM_RETURN_DESCRIPTION);
-    }
-
-    public void addListing(EbayListing ebayListing) {
+    public void addListing(EbayListing ebayListing, String token) {
 
         try {
+            this.apiContext
+                    .getApiCredential()
+                    .seteBayToken(token);
+            AddItemCall addItemCall = new AddItemCall(apiContext);
+            addItemCall.setAutoSetItemUUID(false);
+            addItemCall.setSite(SiteCodeType.US);
+            // Set detail level to retrieve item description.
+            addItemCall.addDetailLevel(DetailLevelCodeType.ITEM_RETURN_DESCRIPTION);
+
             ItemType item = toItemType(ebayListing);
             addItemCall.setItem(item);
             /**
@@ -104,7 +100,7 @@ public class EbayAddListingClient {
 
         AmountType startPrice = toAmountType(ebayListing.getStartPrice());
         item.setStartPrice(startPrice);
-//        item.setReservePrice(toAmountType(ebayListing.getReservePrice()));
+        // item.setReservePrice(toAmountType(ebayListing.getReservePrice()));
         item.setBuyItNowPrice(toAmountType(ebayListing.getBuyItNowPrice()));
         BuyerPaymentMethodCodeType[] arrPaymentMethods = { BuyerPaymentMethodCodeType.AM_EX };
         item.setPaymentMethods(arrPaymentMethods);
@@ -149,7 +145,7 @@ public class EbayAddListingClient {
         item.setPrimaryCategory(cat);
         item.setDispatchTimeMax(ebayListing.getDispatchTimeMax());
         item.setReturnPolicy(toReturnPolicy(ebayListing.getReturnPolicy()));
-        
+
         item.setCurrency(CurrencyCodeType.USD);
 
         // TODO: Test

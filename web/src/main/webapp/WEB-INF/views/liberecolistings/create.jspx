@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_libereco_core_domain_LiberecoListing" modelAttribute="liberecoListing" path="/liberecolistings" render="${empty dependencies}" z="20IPFMV5Lg1FS6gRw9M7smIGrCs=">
-        <field:input field="userId" id="c_com_libereco_core_domain_LiberecoListing_userId" required="true" validationMessageCode="field_invalid_integer" z="kzzq2qq5ox5huPHRMPgsnFCa52M="/>
+        <field:input field="userId" id="c_com_libereco_core_domain_LiberecoListing_userId" render="false" validationMessageCode="field_invalid_integer" z="user-managed"/>
         <field:input field="name" id="c_com_libereco_core_domain_LiberecoListing_name" required="true" z="ZKHk4CNcR+cVaTU0uBZKSKwrP6s="/>
         <field:input field="price" id="c_com_libereco_core_domain_LiberecoListing_price" required="true" validationMessageCode="field_invalid_number" z="mpPqfeCvNXGZdaDqC+GtzWeA2/A="/>
         <field:input field="quantity" id="c_com_libereco_core_domain_LiberecoListing_quantity" required="true" z="n2h4f9da+nvT7ZNvVMt3TiS0lcI="/>
