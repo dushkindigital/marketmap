@@ -1,8 +1,11 @@
 package com.libereco.core.repository;
 
-import com.libereco.core.domain.LiberecoListing;
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
-@RooJpaRepository(domainType = LiberecoListing.class)
-public interface LiberecoListingRepository {
+import com.libereco.core.domain.LiberecoListing;
+
+@Repository
+public interface LiberecoListingRepository extends JpaSpecificationExecutor<LiberecoListing>, JpaRepository<LiberecoListing, Long> {
 }

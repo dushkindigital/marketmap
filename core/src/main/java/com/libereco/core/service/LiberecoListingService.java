@@ -1,7 +1,23 @@
 package com.libereco.core.service;
 
-import org.springframework.roo.addon.layers.service.RooService;
+import java.util.List;
 
-@RooService(domainTypes = { com.libereco.core.domain.LiberecoListing.class })
+import com.libereco.core.domain.LiberecoListing;
+
 public interface LiberecoListingService {
+
+    public abstract long countAllLiberecoListings();
+
+    public abstract void deleteLiberecoListing(LiberecoListing liberecoListing);
+
+    public abstract LiberecoListing findLiberecoListing(Long id);
+
+    public abstract List<LiberecoListing> findAllLiberecoListings();
+
+    public abstract List<LiberecoListing> findLiberecoListingEntries(int firstResult, int maxResults);
+
+    public abstract void saveLiberecoListing(LiberecoListing liberecoListing);
+
+    public abstract LiberecoListing updateLiberecoListing(LiberecoListing liberecoListing);
+
 }
