@@ -17,6 +17,7 @@
         <field:display field="lotSize" id="s_com_libereco_core_domain_EbayListing_lotSize" object="${ebaylisting}" z="IkhzDk9jaL0F6DaG426CvuGEozE="/>
         <field:display field="bestOfferEnabled" id="s_com_libereco_core_domain_EbayListing_bestOfferEnabled" object="${ebaylisting}" z="mAu86UbCszJDAcX+d4Jf6GwIFs0="/>
         <field:display field="liberecoListing" id="s_com_libereco_core_domain_EbayListing_liberecoListing" object="${ebaylisting}" z="Q2qbmWtqvSqByTY6Arw8c9hNLAk="/>
-       <field:display field="ebayItemUrl" id="s_com_libereco_core_domain_EbayListing_ebayItemUrl" label="EbayItem Url" object="${ebaylisting}" z="user-managed"/>
+        <label>Ebay Item Url</label>
+        <a href="${ebaylisting.ebayItemUrl}" target="_blank">${ebaylisting.ebayItemUrl}</a>
     </page:show>
 </div>

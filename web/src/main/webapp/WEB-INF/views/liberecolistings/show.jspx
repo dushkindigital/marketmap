@@ -11,7 +11,6 @@
         <field:display field="category" id="s_com_libereco_core_domain_LiberecoListing_category" object="${liberecolisting}" z="EN2z+TAar7ER3hhXy5lfzbffpUA="/>
         <field:display field="listingCondition" id="s_com_libereco_core_domain_LiberecoListing_listingCondition" object="${liberecolisting}" z="lsQK7ZcBGP9DdKAg6Zzcfaod1Ng="/>
         <field:display field="listingState" id="s_com_libereco_core_domain_LiberecoListing_listingState" object="${liberecolisting}" z="JSU/rJO7hjgIwZp4Jz3/YY9ae/U="/>
-        <field:display date="true" dateTimePattern="${liberecoListing_listingduration_date_format}" field="listingDuration" id="s_com_libereco_core_domain_LiberecoListing_listingDuration" object="${liberecolisting}" z="WzAIYFe9X+H3L9TE8/X/8aHh9LY="/>
         <field:display field="picture" id="s_com_libereco_core_domain_LiberecoListing_picture" object="${liberecolisting}" z="9VcuqNzPQ5nlQNU0H03LQC6co9o="/>
     </page:show>
 </div>

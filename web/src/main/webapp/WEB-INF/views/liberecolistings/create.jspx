@@ -11,7 +11,6 @@
         <field:select field="category" id="c_com_libereco_core_domain_LiberecoListing_category" items="${liberecocategorys}" path="liberecocategorys" required="true" z="BihZMoQzQ6U7YhAZwq3hNTKuzRo="/>
         <field:select field="listingCondition" id="c_com_libereco_core_domain_LiberecoListing_listingCondition" items="${listingconditions}" path="listingconditions" required="true" z="OvcDMsZJEeCKCsbwUH/NRQklzKo="/>
         <field:select field="listingState" id="c_com_libereco_core_domain_LiberecoListing_listingState" items="${listingstates}" path="listingstates" z="SvkJerkLy6OAD1vasbOak9lA5Ck="/>
-        <field:datetime dateTimePattern="${liberecoListing_listingduration_date_format}" field="listingDuration" id="c_com_libereco_core_domain_LiberecoListing_listingDuration" z="BB6DpcaYIJlow9UDSR7EmpVPHl4="/>
         <field:input field="picture" id="c_com_libereco_core_domain_LiberecoListing_picture" z="jK6mgO0pkEuo60Pq0/tPBNCI2E4="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_libereco_core_domain_LiberecoListing" render="${not empty dependencies}" z="IZenk/poGlBTnflKDRSRBBWTofE="/>
