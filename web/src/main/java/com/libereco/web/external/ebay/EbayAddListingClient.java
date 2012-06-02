@@ -84,8 +84,6 @@ public class EbayAddListingClient {
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         item.setTitle(liberecoListing.getName());
         item.setDescription(liberecoListing.getDescription());
-        // TODO : A listing's duration is the time (expressed in days) that the
-        // listing will be active on the eBay site.
         item.setListingDuration(ebayListing.getListingDuration().getName());
 
         // TODO : Domain Model does not have region,location, currency

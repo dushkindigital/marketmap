@@ -31,27 +31,29 @@ public class EbayListing implements Serializable {
 
     private Integer dispatchTimeMax;
 
+    @NotNull
     private Double startPrice;
 
-    private Double reservePrice;
+    private Double reservePrice = 0.0d;
 
-    private Double buyItNowPrice;
+    private Double buyItNowPrice = 0.0d;
 
-    private Float vatPercent;
+    private Float vatPercent = 0.0f;
 
     private String paypalEmail;
 
-    private Boolean borderChecked;
+    private Boolean borderChecked = false;
 
-    private Boolean boldTitleChecked;
+    private Boolean boldTitleChecked = false;
 
-    private Boolean autoPay;
+    private Boolean autoPay = false;
 
-    private Integer lotSize;
+    private Integer lotSize = 0;
 
-    private Boolean bestOfferEnabled;
+    private Boolean bestOfferEnabled = false;
 
     @Enumerated
+    @NotNull
     private ListingDuration listingDuration;
     
     

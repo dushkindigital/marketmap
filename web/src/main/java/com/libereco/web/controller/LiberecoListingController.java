@@ -13,6 +13,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,9 +43,9 @@ public class LiberecoListingController {
     LiberecoListingService liberecoListingService;
     @Autowired
     LiberecoUserService liberecoUserService;
-    
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @Secured(value = { "ROLE_USER" })
     public String create(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, liberecoListing);

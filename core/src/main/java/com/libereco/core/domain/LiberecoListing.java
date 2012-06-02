@@ -42,7 +42,7 @@ public class LiberecoListing implements Serializable {
 
     @NotNull
     @Value("1")
-    private int quantity;
+    private int quantity = 1;
 
     private String description;
 
