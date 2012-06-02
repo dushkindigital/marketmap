@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_libereco_core_domain_EbayListing" items="${ebaylistings}" z="e5U98oGrReHq8Y3uakEPzW8Hq/E=">
+        <table:table data="${ebaylistings}" id="l_com_libereco_core_domain_EbayListing" path="/ebaylistings" z="QNDiz3RLF7lLXm/yi8Sr4Ijn97Y=">
+            <table:column id="c_com_libereco_core_domain_EbayListing_returnPolicy" property="returnPolicy" z="3NPam8vXsqoAR4LDyhvwviYfpKo="/>
+            <table:column id="c_com_libereco_core_domain_EbayListing_dispatchTimeMax" property="dispatchTimeMax" z="59w+BNx0ovDsU/biFcPOdNXVRCs="/>
+            <table:column id="c_com_libereco_core_domain_EbayListing_startPrice" property="startPrice" z="Kq+QvIod7FM46DGub4HkqO7ymZA="/>
+            <table:column id="c_com_libereco_core_domain_EbayListing_reservePrice" property="reservePrice" z="6mpn9kXy+NUeJwRPjoVi6OslEA4="/>
+            <table:column id="c_com_libereco_core_domain_EbayListing_buyItNowPrice" property="buyItNowPrice" z="a0kR6ojC0MOuDuDjmnqUbrCuixU="/>
+            <table:column id="c_com_libereco_core_domain_EbayListing_vatPercent" property="vatPercent" z="FRZo6BxFqh4PlCEetfMywWyrfXc="/>
+        </table:table>
+    </page:list>
+</div>

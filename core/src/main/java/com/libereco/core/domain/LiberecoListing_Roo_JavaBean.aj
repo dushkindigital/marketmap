@@ -93,4 +93,12 @@ privileged aspect LiberecoListing_Roo_JavaBean {
         this.listingDuration = listingDuration;
     }
     
+    public byte[] LiberecoListing.getPicture() {
+        return this.picture;
+    }
+    
+    public void LiberecoListing.setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+    
 }

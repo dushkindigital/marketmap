@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_libereco_core_domain_EbayListing" object="${ebaylisting}" path="/ebaylistings" z="PsBAGbfAAMw/NKPoz3YPGeOOD5k=">
+        <field:display field="returnPolicy" id="s_com_libereco_core_domain_EbayListing_returnPolicy" object="${ebaylisting}" z="v6evjbVYpaKGnEkMYRU1B2FqzA8="/>
+        <field:display field="dispatchTimeMax" id="s_com_libereco_core_domain_EbayListing_dispatchTimeMax" object="${ebaylisting}" z="FDM74pMC0pRht1GC7Kr5KuSGgBY="/>
+        <field:display field="startPrice" id="s_com_libereco_core_domain_EbayListing_startPrice" object="${ebaylisting}" z="Wr87cAIaj84kMzZyp+yWuVT9/Cg="/>
+        <field:display field="reservePrice" id="s_com_libereco_core_domain_EbayListing_reservePrice" object="${ebaylisting}" z="UDlncPkNXmGzzKuOBYkmkPZQiXQ="/>
+        <field:display field="buyItNowPrice" id="s_com_libereco_core_domain_EbayListing_buyItNowPrice" object="${ebaylisting}" z="JkT0EHKLU/xMP8Z48cIjVFGYQOQ="/>
+        <field:display field="vatPercent" id="s_com_libereco_core_domain_EbayListing_vatPercent" object="${ebaylisting}" z="ddgX6o4nlz5EYEM8nd+pHIQnkaI="/>
+        <field:display field="paypalEmail" id="s_com_libereco_core_domain_EbayListing_paypalEmail" object="${ebaylisting}" z="MyYXoBS1xwTxK79nvIedg7a1Jy0="/>
+        <field:display field="borderChecked" id="s_com_libereco_core_domain_EbayListing_borderChecked" object="${ebaylisting}" z="P1I0SBqbJjUZxL0S2yJSo7J+w7s="/>
+        <field:display field="boldTitleChecked" id="s_com_libereco_core_domain_EbayListing_boldTitleChecked" object="${ebaylisting}" z="7zHBqNda4D4E1zUoaf0yTFBRYCw="/>
+        <field:display field="autoPay" id="s_com_libereco_core_domain_EbayListing_autoPay" object="${ebaylisting}" z="5s5sXxsWM3kujyye3Nt5fWeNH0Y="/>
+        <field:display field="lotSize" id="s_com_libereco_core_domain_EbayListing_lotSize" object="${ebaylisting}" z="IkhzDk9jaL0F6DaG426CvuGEozE="/>
+        <field:display field="bestOfferEnabled" id="s_com_libereco_core_domain_EbayListing_bestOfferEnabled" object="${ebaylisting}" z="mAu86UbCszJDAcX+d4Jf6GwIFs0="/>
+        <field:display field="liberecoListing" id="s_com_libereco_core_domain_EbayListing_liberecoListing" object="${ebaylisting}" z="Q2qbmWtqvSqByTY6Arw8c9hNLAk="/>
+    </page:show>
+</div>

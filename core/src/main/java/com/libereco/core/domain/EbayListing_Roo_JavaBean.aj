@@ -81,12 +81,12 @@ privileged aspect EbayListing_Roo_JavaBean {
         this.boldTitleChecked = boldTitleChecked;
     }
     
-    public Boolean EbayListing.getSetAutoPay() {
-        return this.setAutoPay;
+    public Boolean EbayListing.getAutoPay() {
+        return this.autoPay;
     }
     
-    public void EbayListing.setSetAutoPay(Boolean setAutoPay) {
-        this.setAutoPay = setAutoPay;
+    public void EbayListing.setAutoPay(Boolean autoPay) {
+        this.autoPay = autoPay;
     }
     
     public Integer EbayListing.getLotSize() {

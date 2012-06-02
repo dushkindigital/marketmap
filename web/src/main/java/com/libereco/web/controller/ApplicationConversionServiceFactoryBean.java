@@ -7,10 +7,12 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 
+import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
+import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceAuthorizationsService;
 import com.libereco.core.service.MarketplaceService;
@@ -43,6 +45,22 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
                 return new StringBuilder().append(marketPlace.getMarketplaceName()).toString();
             }
         });
+        
+        registry.addConverter(new Converter<LiberecoListing, String>() {
+
+            @Override
+            public String convert(LiberecoListing source) {
+                return new StringBuilder(source.getName()).append(" ").append(source.getCategory()).toString();
+            }
+        });
+        
+        registry.addConverter(new Converter<String, LiberecoListing>() {
+
+            @Override
+            public LiberecoListing convert(String id) {
+                return liberecoListingService.findLiberecoListing(Long.valueOf(id));
+            }
+        });
     }
 
     @Autowired
@@ -50,6 +68,9 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     @Autowired
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
+    
+    @Autowired
+    LiberecoListingService liberecoListingService;
 
     public Converter<LiberecoUser, String> getLiberecoUserToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.libereco.core.domain.LiberecoUser, java.lang.String>() {
@@ -75,7 +96,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
             }
         };
     }
-
+    
     public Converter<MarketplaceAuthorizations, String> getMarketplaceAuthorizationsToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.libereco.core.domain.MarketplaceAuthorizations, java.lang.String>() {
             public String convert(MarketplaceAuthorizations marketplaceAuthorizations) {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_libereco_core_domain_LiberecoListing" modelAttribute="liberecoListing" path="/liberecolistings" versionField="Version" z="h8f2/g865VtSfPrIksVYGX2P2aU=">
+        <field:input field="userId" id="c_com_libereco_core_domain_LiberecoListing_userId" required="true" validationMessageCode="field_invalid_integer" z="kzzq2qq5ox5huPHRMPgsnFCa52M="/>
+        <field:input field="name" id="c_com_libereco_core_domain_LiberecoListing_name" required="true" z="ZKHk4CNcR+cVaTU0uBZKSKwrP6s="/>
+        <field:input field="price" id="c_com_libereco_core_domain_LiberecoListing_price" required="true" validationMessageCode="field_invalid_number" z="mpPqfeCvNXGZdaDqC+GtzWeA2/A="/>
+        <field:input field="quantity" id="c_com_libereco_core_domain_LiberecoListing_quantity" required="true" z="n2h4f9da+nvT7ZNvVMt3TiS0lcI="/>
+        <field:input field="description" id="c_com_libereco_core_domain_LiberecoListing_description" z="jK99zbRxGg/2vJYuX1tT0XO61Wc="/>
+        <field:select field="category" id="c_com_libereco_core_domain_LiberecoListing_category" items="${liberecocategorys}" path="liberecocategorys" required="true" z="BihZMoQzQ6U7YhAZwq3hNTKuzRo="/>
+        <field:select field="listingCondition" id="c_com_libereco_core_domain_LiberecoListing_listingCondition" items="${listingconditions}" path="listingconditions" required="true" z="OvcDMsZJEeCKCsbwUH/NRQklzKo="/>
+        <field:select field="listingState" id="c_com_libereco_core_domain_LiberecoListing_listingState" items="${listingstates}" path="listingstates" z="SvkJerkLy6OAD1vasbOak9lA5Ck="/>
+        <field:datetime dateTimePattern="${liberecoListing_listingduration_date_format}" field="listingDuration" id="c_com_libereco_core_domain_LiberecoListing_listingDuration" z="BB6DpcaYIJlow9UDSR7EmpVPHl4="/>
+        <field:input field="picture" id="c_com_libereco_core_domain_LiberecoListing_picture" z="jK6mgO0pkEuo60Pq0/tPBNCI2E4="/>
+    </form:update>
+</div>

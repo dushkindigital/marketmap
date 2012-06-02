@@ -43,7 +43,7 @@ public class EbayListingRepositoryTest {
         ebayListing.setPaypalEmail("test@gmail.com");
         ebayListing.setReservePrice(Double.valueOf(90.0d));
         ebayListing.setReturnPolicy(ReturnPolicy.SIXTY_DAY_RETURN);
-        ebayListing.setSetAutoPay(true);
+        ebayListing.setAutoPay(true);
         ebayListing.setStartPrice(Double.valueOf(60.0d));
         ebayListing.setVatPercent(Float.valueOf(10.0f));
         
