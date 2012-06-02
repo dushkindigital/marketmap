@@ -28,12 +28,13 @@ public class EbayAuthorizerTest {
 
     @Ignore
     @Test
-    public void shouldFetchTokenWithValidSession() throws Exception{
+    public void shouldFetchTokenWithValidSession() throws Exception {
         String sessionId = "5dEBAA**8e62d07a1370a471d212d532fffffd84";
         EbayToken ebayToken = ebayAuthorizer.fetchToken(sessionId);
         System.out.println(ebayToken);
         assertNotNull(ebayToken);
     }
+
     @Test
     public void shouldValidateThatEbayAuthorizerObjectIsCorrectlyInstantiated() throws Exception {
         assertNotNull(ebayAuthorizer);
@@ -57,6 +58,7 @@ public class EbayAuthorizerTest {
         assertNotNull(signInDetails.getToken());
     }
 
+    @Test
     @Ignore
     public void testFetchToken() throws Exception {
         SignInDetails signInDetails = ebayAuthorizer.getSignInDetails();
