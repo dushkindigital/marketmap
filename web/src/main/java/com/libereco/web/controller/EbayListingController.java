@@ -25,6 +25,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
@@ -139,6 +140,7 @@ public class EbayListingController {
         uiModel.addAttribute("ebayListing", ebayListing);
         uiModel.addAttribute("liberecolistings", liberecoListingService.findAllLiberecoListings());
         uiModel.addAttribute("returnpolicys", Arrays.asList(ReturnPolicy.values()));
+        uiModel.addAttribute("listingDurations",Arrays.asList(ListingDuration.values()));
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

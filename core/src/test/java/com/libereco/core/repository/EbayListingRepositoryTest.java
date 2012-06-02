@@ -16,6 +16,7 @@ import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
+import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.ReturnPolicy;
 
@@ -46,12 +47,12 @@ public class EbayListingRepositoryTest {
         ebayListing.setAutoPay(true);
         ebayListing.setStartPrice(Double.valueOf(60.0d));
         ebayListing.setVatPercent(Float.valueOf(10.0f));
-        
+        ebayListing.setListingDuration(ListingDuration.DAYS_1);
+
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
         liberecoListing.setDescription("Test Item");
         liberecoListing.setListingCondition(ListingCondition.FAIR);
-        liberecoListing.setListingDuration(new Date());
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListing.setName("test_item");
         liberecoListing.setPrice(Double.valueOf(100.0d));

@@ -4,6 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_com_libereco_core_domain_EbayListing" object="${ebaylisting}" path="/ebaylistings" z="PsBAGbfAAMw/NKPoz3YPGeOOD5k=">
         <field:display field="returnPolicy" id="s_com_libereco_core_domain_EbayListing_returnPolicy" object="${ebaylisting}" z="v6evjbVYpaKGnEkMYRU1B2FqzA8="/>
+        <field:display field="listingDuration" id="s_com_libereco_core_domain_EbayListing_listingDuration" label="Listing Duration" object="${ebaylisting}" z="user-managed"/>
         <field:display field="dispatchTimeMax" id="s_com_libereco_core_domain_EbayListing_dispatchTimeMax" object="${ebaylisting}" z="FDM74pMC0pRht1GC7Kr5KuSGgBY="/>
         <field:display field="startPrice" id="s_com_libereco_core_domain_EbayListing_startPrice" object="${ebaylisting}" z="Wr87cAIaj84kMzZyp+yWuVT9/Cg="/>
         <field:display field="reservePrice" id="s_com_libereco_core_domain_EbayListing_reservePrice" object="${ebaylisting}" z="UDlncPkNXmGzzKuOBYkmkPZQiXQ="/>
@@ -16,5 +17,6 @@
         <field:display field="lotSize" id="s_com_libereco_core_domain_EbayListing_lotSize" object="${ebaylisting}" z="IkhzDk9jaL0F6DaG426CvuGEozE="/>
         <field:display field="bestOfferEnabled" id="s_com_libereco_core_domain_EbayListing_bestOfferEnabled" object="${ebaylisting}" z="mAu86UbCszJDAcX+d4Jf6GwIFs0="/>
         <field:display field="liberecoListing" id="s_com_libereco_core_domain_EbayListing_liberecoListing" object="${ebaylisting}" z="Q2qbmWtqvSqByTY6Arw8c9hNLAk="/>
+       <field:display field="ebayItemUrl" id="s_com_libereco_core_domain_EbayListing_ebayItemUrl" label="EbayItem Url" object="${ebaylisting}" z="user-managed"/>
     </page:show>
 </div>

@@ -1,6 +1,5 @@
 package com.libereco.web.external.ebay;
 
-import java.util.Date;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -14,6 +13,7 @@ import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
+import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.ReturnPolicy;
 
@@ -47,12 +47,12 @@ public class EbayAddListingClientTest {
         ebayListing.setAutoPay(false);
         ebayListing.setStartPrice(1.00);
         ebayListing.setVatPercent(Float.valueOf(10.0f));
+        ebayListing.setListingDuration(ListingDuration.DAYS_7);
 
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
         liberecoListing.setDescription("Description");
         liberecoListing.setListingCondition(ListingCondition.FAIR);
-        liberecoListing.setListingDuration(new Date());
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListing.setName("RR11 Test Mobile" + UUID.randomUUID().toString());
         liberecoListing.setPrice(1.00);

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.AddItemCall;
-import com.ebay.sdk.util.eBayUtil;
 import com.ebay.soap.eBLBaseComponents.AmountType;
 import com.ebay.soap.eBLBaseComponents.BestOfferDetailsType;
 import com.ebay.soap.eBLBaseComponents.BuyerPaymentMethodCodeType;
@@ -17,7 +16,6 @@ import com.ebay.soap.eBLBaseComponents.CategoryType;
 import com.ebay.soap.eBLBaseComponents.CountryCodeType;
 import com.ebay.soap.eBLBaseComponents.CurrencyCodeType;
 import com.ebay.soap.eBLBaseComponents.DetailLevelCodeType;
-import com.ebay.soap.eBLBaseComponents.FeeType;
 import com.ebay.soap.eBLBaseComponents.FeesType;
 import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.ebay.soap.eBLBaseComponents.ListingEnhancementsCodeType;
@@ -44,7 +42,7 @@ public class EbayAddListingClient {
         this.environment = environment;
     }
 
-    public void addListing(EbayListing ebayListing, String token) {
+    public EbayListing addListing(EbayListing ebayListing, String token) {
 
         try {
             this.apiContext
@@ -66,11 +64,12 @@ public class EbayAddListingClient {
              * sold).
              */
             FeesType fees = addItemCall.addItem();
-
             String itemId = item.getItemID();
             System.out.println("Item: " + itemId);
-            FeeType ft = eBayUtil.findFeeByName(fees.getFee(), "ListingFee");
-            System.out.println("Listing fee: " + ft.getFee().getValue());
+            String ebayItemUrl = environment.getProperty("libereco.ebay.item.url");
+            ebayItemUrl += itemId;
+            ebayListing.setEbayItemUrl(ebayItemUrl);
+            return ebayListing;
         } catch (Exception e) {
             throw new RuntimeException("Not able to addListing ", e);
         }
@@ -87,7 +86,7 @@ public class EbayAddListingClient {
         item.setDescription(liberecoListing.getDescription());
         // TODO : A listing's duration is the time (expressed in days) that the
         // listing will be active on the eBay site.
-        item.setListingDuration("Days_7");
+        item.setListingDuration(ebayListing.getListingDuration().getName());
 
         // TODO : Domain Model does not have region,location, currency
         // information
@@ -140,6 +139,9 @@ public class EbayAddListingClient {
             bo.setBestOfferEnabled(ebayListing.getBestOfferEnabled());
             item.setBestOfferDetails(bo);
         }
+
+        // TODO : How to get category information
+
         CategoryType cat = new CategoryType();
         cat.setCategoryID("139971");
         item.setPrimaryCategory(cat);
@@ -147,9 +149,6 @@ public class EbayAddListingClient {
         item.setReturnPolicy(toReturnPolicy(ebayListing.getReturnPolicy()));
 
         item.setCurrency(CurrencyCodeType.USD);
-
-        // TODO: Test
-        // api.setPictureFiles(this.getPicturePathList());
 
         item.setListingType(ListingTypeCodeType.FIXED_PRICE_ITEM);
 
