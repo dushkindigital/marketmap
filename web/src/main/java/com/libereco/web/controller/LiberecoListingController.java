@@ -4,9 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,12 +21,16 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -44,9 +52,17 @@ public class LiberecoListingController {
     @Autowired
     LiberecoUserService liberecoUserService;
 
+    private Logger logger = Logger.getLogger(LiberecoListingController.class);
+
+    @InitBinder
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) {
+        binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
+    }
+
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     @Secured(value = { "ROLE_USER" })
-    public String create(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest,
+            @RequestParam MultipartFile picture) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, liberecoListing);
             return "liberecolistings/create";
@@ -55,8 +71,37 @@ public class LiberecoListingController {
         String username = SecurityUtils.getUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         liberecoListing.setUserId(user.getId());
+        try {
+            logger.info("Image updloaded name : " + picture.getOriginalFilename() + " , and its size " + picture.getSize());
+            liberecoListing.setPicture(picture.getBytes());
+            liberecoListing.setPictureName(picture.getOriginalFilename());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         liberecoListingService.saveLiberecoListing(liberecoListing);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(value = "/{id}/image/{pictureName}", method = RequestMethod.GET, produces = "text/html")
+    public void getImage(@PathVariable("id") Long id, @PathVariable("pictureName") String pictureName, HttpServletRequest req,
+            HttpServletResponse res) {
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
+        if (liberecoListing == null) {
+            throw new RuntimeException("No libereco listing found for id " + id);
+        }
+
+        res.setHeader("Cache-Control", "no-store");
+        res.setHeader("Pragma", "no-cache");
+        res.setDateHeader("Expires", 0);
+        res.setContentType("image/jpg");
+        try {
+            ServletOutputStream ostream = res.getOutputStream();
+            IOUtils.write(liberecoListing.getPicture(), ostream);
+            ostream.flush();
+            ostream.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Not able to write image ", e);
+        }
     }
 
     @RequestMapping(params = "form", produces = "text/html")

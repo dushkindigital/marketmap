@@ -61,6 +61,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
                 return liberecoListingService.findLiberecoListing(Long.valueOf(id));
             }
         });
+        
     }
 
     @Autowired

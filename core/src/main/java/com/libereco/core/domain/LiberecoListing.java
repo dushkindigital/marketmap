@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -57,8 +58,19 @@ public class LiberecoListing implements Serializable {
     @Enumerated
     private ListingState listingState;
 
+    @Lob
     private byte[] picture;
+    
+    private String pictureName;
 
+    public void setPictureName(String pictureName) {
+        this.pictureName = pictureName;
+    }
+    
+    public String getPictureName() {
+        return pictureName;
+    }
+    
     public Set<Marketplace> getMarketplaces() {
         return this.marketplaces;
     }

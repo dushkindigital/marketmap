@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_libereco_core_domain_LiberecoUser" modelAttribute="liberecoUser" path="/liberecousers" render="${empty dependencies}" z="user-managed">
         <field:input field="username" id="c_com_libereco_core_domain_LiberecoUser_userName" required="true" z="user-managed"/>
-        <field:input field="password" id="c_com_libereco_core_domain_LiberecoUser_password" required="true" z="user-managed"/>
+        <field:input field="password" id="c_com_libereco_core_domain_LiberecoUser_password" required="true" z="user-managed" type="password"/>
         <field:datetime dateTimePattern="${liberecoUser_lastupdated_date_format}" field="lastUpdated" id="c_com_libereco_core_domain_LiberecoUser_lastUpdated" z="user-managed"/>
         <field:select field="status" id="c_com_libereco_core_domain_LiberecoUser_status" items="${userstatuses}" path="userstatuses" required="true" z="user-managed"/>
     </form:create>
