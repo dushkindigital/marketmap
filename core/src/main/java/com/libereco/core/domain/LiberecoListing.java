@@ -60,7 +60,17 @@ public class LiberecoListing implements Serializable {
 
     @Lob
     private byte[] picture;
+    
+    private String pictureName;
 
+    public void setPictureName(String pictureName) {
+        this.pictureName = pictureName;
+    }
+    
+    public String getPictureName() {
+        return pictureName;
+    }
+    
     public Set<Marketplace> getMarketplaces() {
         return this.marketplaces;
     }

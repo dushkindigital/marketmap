@@ -16,11 +16,13 @@
 			access="isAuthenticated()" />
 		<intercept-url pattern="/marketplaces/*/fetchToken"
 			access="isAuthenticated()" />
-		<intercept-url pattern="/liberecolistings/*"
+		<intercept-url pattern="/liberecolistings/*/image/*"
+			access="permitAll" />
+		<intercept-url pattern="/liberecolistings/**"
 			access="isAuthenticated()" />
-		<intercept-url pattern="/ebaylistings/*"
+		<intercept-url pattern="/ebaylistings/**"
 			access="isAuthenticated()" />
-		<intercept-url pattern="/*/marketplaceauthorizations/*"
+		<intercept-url pattern="/*/marketplaceauthorizations/**"
 			access="isAuthenticated()" />
 		<intercept-url pattern="/*/marketplaceauthorizations"
 			access="isAuthenticated()" />

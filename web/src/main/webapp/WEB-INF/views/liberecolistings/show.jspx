@@ -11,6 +11,6 @@
         <field:display field="category" id="s_com_libereco_core_domain_LiberecoListing_category" object="${liberecolisting}" z="EN2z+TAar7ER3hhXy5lfzbffpUA="/>
         <field:display field="listingCondition" id="s_com_libereco_core_domain_LiberecoListing_listingCondition" object="${liberecolisting}" z="lsQK7ZcBGP9DdKAg6Zzcfaod1Ng="/>
         <field:display field="listingState" id="s_com_libereco_core_domain_LiberecoListing_listingState" object="${liberecolisting}" z="JSU/rJO7hjgIwZp4Jz3/YY9ae/U="/>
-        <field:display field="picture" id="s_com_libereco_core_domain_LiberecoListing_picture" object="${liberecolisting}" z="9VcuqNzPQ5nlQNU0H03LQC6co9o="/>
+        <IMG alt="${liberecolisting.pictureName}" src="/libereco/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
     </page:show>
 </div>
