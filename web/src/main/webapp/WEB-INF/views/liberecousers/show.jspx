@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_com_libereco_core_domain_LiberecoUser" object="${liberecouser}" path="/liberecousers" z="XbfZHW7quCIyr+4qP0xEq2L5dJ8=">
         <field:display field="username" id="s_com_libereco_core_domain_LiberecoUser_username" object="${liberecouser}" z="UQrR47nkGtJZN78m4iLHjDyizVc="/>
-        <field:display field="password" id="s_com_libereco_core_domain_LiberecoUser_password" object="${liberecouser}" z="0rxPB+JvoFerKx2ZduslCtUe5p4="/>
+        <field:display field="password" id="s_com_libereco_core_domain_LiberecoUser_password" object="${liberecouser}" z="user-managed" render="false"/>
         <field:display date="true" dateTimePattern="${liberecoUser_lastupdated_date_format}" field="lastUpdated" id="s_com_libereco_core_domain_LiberecoUser_lastUpdated" object="${liberecouser}" z="0jnQYio6rWC03zJ8XhbAp+5M6kY="/>
         <field:display field="status" id="s_com_libereco_core_domain_LiberecoUser_status" object="${liberecouser}" z="Qnwfr893WjCI7EoNOfZTsGesLWA="/>
     </page:show>
