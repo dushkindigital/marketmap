@@ -17,9 +17,11 @@ import com.ebay.soap.eBLBaseComponents.CountryCodeType;
 import com.ebay.soap.eBLBaseComponents.CurrencyCodeType;
 import com.ebay.soap.eBLBaseComponents.DetailLevelCodeType;
 import com.ebay.soap.eBLBaseComponents.FeesType;
+import com.ebay.soap.eBLBaseComponents.GalleryTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.ebay.soap.eBLBaseComponents.ListingEnhancementsCodeType;
 import com.ebay.soap.eBLBaseComponents.ListingTypeCodeType;
+import com.ebay.soap.eBLBaseComponents.PictureDetailsType;
 import com.ebay.soap.eBLBaseComponents.ReturnPolicyType;
 import com.ebay.soap.eBLBaseComponents.ShippingDetailsType;
 import com.ebay.soap.eBLBaseComponents.ShippingServiceOptionsType;
@@ -54,7 +56,17 @@ public class EbayAddListingClient {
             // Set detail level to retrieve item description.
             addItemCall.addDetailLevel(DetailLevelCodeType.ITEM_RETURN_DESCRIPTION);
 
+
             ItemType item = toItemType(ebayListing);
+            
+            if (ebayListing.getLiberecoListing().getPictureUrl() != null) {
+                String [] pictureURLs = {ebayListing.getLiberecoListing().getPictureUrl()};            
+                PictureDetailsType pictureDetailsObj = new PictureDetailsType(); 
+                pictureDetailsObj.setPictureURL(pictureURLs); 
+                //To specify a Gallery Image 
+                pictureDetailsObj.setGalleryType(GalleryTypeCodeType.GALLERY); 
+                item.setPictureDetails(pictureDetailsObj); 
+            }
             addItemCall.setItem(item);
             /**
              * Defines a single new item and lists it on a specified eBay site.

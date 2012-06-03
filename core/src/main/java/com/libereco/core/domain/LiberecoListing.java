@@ -30,6 +30,11 @@ import flexjson.JSONSerializer;
 @Entity
 public class LiberecoListing implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Marketplace> marketplaces = new HashSet<Marketplace>();
 
@@ -60,17 +65,23 @@ public class LiberecoListing implements Serializable {
 
     @Lob
     private byte[] picture;
-    
+
     private String pictureName;
+
+    @Version
+    @Column(name = "version")
+    private Integer version;
+
+    private String pictureUrl;
 
     public void setPictureName(String pictureName) {
         this.pictureName = pictureName;
     }
-    
+
     public String getPictureName() {
         return pictureName;
     }
-    
+
     public Set<Marketplace> getMarketplaces() {
         return this.marketplaces;
     }
@@ -157,15 +168,6 @@ public class LiberecoListing implements Serializable {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-    @Version
-    @Column(name = "version")
-    private Integer version;
-
     public Long getId() {
         return this.id;
     }
@@ -196,5 +198,13 @@ public class LiberecoListing implements Serializable {
 
     public static Collection<LiberecoListing> fromJsonArrayToLiberecoListings(String json) {
         return new JSONDeserializer<List<LiberecoListing>>().use(null, ArrayList.class).use("values", LiberecoListing.class).deserialize(json);
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 }

@@ -1,5 +1,7 @@
 package com.libereco.web.external.ebay;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.UUID;
 
 import org.junit.Test;
@@ -30,7 +32,17 @@ public class EbayAddListingClientTest {
     @Test
     public void shouldAddEbayListing() {
         EbayListing ebayListing = newEbayListing();
-        ebayAddListingClient.addListing(ebayListing, TOKEN);
+        ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
+        assertNotNull(ebayListing.getEbayItemUrl());
+    }
+
+    @Test
+    public void shouldAddEbayListingWithImage() {
+        EbayListing ebayListing = newEbayListing();
+        ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
+        ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
+        assertNotNull(ebayListing.getEbayItemUrl());
+        System.out.println(ebayListing.getEbayItemUrl());
     }
 
     private EbayListing newEbayListing() {

@@ -75,10 +75,14 @@ public class LiberecoListingController {
             logger.info("Image updloaded name : " + picture.getOriginalFilename() + " , and its size " + picture.getSize());
             liberecoListing.setPicture(picture.getBytes());
             liberecoListing.setPictureName(picture.getOriginalFilename());
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         liberecoListingService.saveLiberecoListing(liberecoListing);
+        liberecoListing.setPictureUrl(httpServletRequest.getRequestURL().toString() + "/" + liberecoListing.getId() + "/image/"
+                + picture.getOriginalFilename());
+        liberecoListingService.updateLiberecoListing(liberecoListing);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
 
