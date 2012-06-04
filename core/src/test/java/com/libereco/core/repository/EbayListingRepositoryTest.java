@@ -2,8 +2,6 @@ package com.libereco.core.repository;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Date;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +33,11 @@ public class EbayListingRepositoryTest {
     @Test
     public void testSaveEbayListing() {
         EbayListing ebayListing = new EbayListing();
-        ebayListing.setBestOfferEnabled(true);
-        ebayListing.setBoldTitleChecked(true);
-        ebayListing.setBorderChecked(true);
-        ebayListing.setBuyItNowPrice(Double.valueOf(100.0d));
         ebayListing.setDispatchTimeMax(Integer.valueOf(3));
         ebayListing.setLotSize(Integer.valueOf(1));
         ebayListing.setPaypalEmail("test@gmail.com");
-        ebayListing.setReservePrice(Double.valueOf(90.0d));
         ebayListing.setReturnPolicy(ReturnPolicy.SIXTY_DAY_RETURN);
-        ebayListing.setAutoPay(true);
         ebayListing.setStartPrice(Double.valueOf(60.0d));
-        ebayListing.setVatPercent(Float.valueOf(10.0f));
         ebayListing.setListingDuration(ListingDuration.DAYS_1);
 
         LiberecoListing liberecoListing = new LiberecoListing();

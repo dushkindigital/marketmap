@@ -67,15 +67,6 @@ public class EbayAddListingClientTest {
         System.out.println(ebayListing.getEbayItemUrl());
     }
 
-    @Test
-    public void shouldAddEbayBuyItNowListingWithImage() {
-        EbayListing ebayListing = newEbayBuyItNowListing();
-        ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
-        ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
-        assertNotNull(ebayListing.getEbayItemUrl());
-        System.out.println(ebayListing.getEbayItemUrl());
-    }
-    
     @Ignore
     @Test
     public void testAddFixedPriceItemListing() throws Exception{
@@ -138,50 +129,16 @@ public class EbayAddListingClientTest {
     }
 
 
-    private EbayListing newEbayBuyItNowListing() {
-        EbayListing ebayListing = new EbayListing();
-        ebayListing.setBestOfferEnabled(false);
-        ebayListing.setBoldTitleChecked(false);
-        ebayListing.setBorderChecked(false);
-        ebayListing.setBuyItNowPrice(Double.valueOf(10.0d));
-        ebayListing.setDispatchTimeMax(1);
-        ebayListing.setLotSize(Integer.valueOf(1));
-        ebayListing.setPaypalEmail("test@gmail.com");
-        // ebayListing.setReservePrice(Double.valueOf(90.0d));
-        ebayListing.setReturnPolicy(ReturnPolicy.SIXTY_DAY_RETURN);
-        ebayListing.setAutoPay(false);
-//        ebayListing.setStartPrice(0.00);
-        ebayListing.setVatPercent(Float.valueOf(10.0f));
-        ebayListing.setListingDuration(ListingDuration.DAYS_7);
-
-        LiberecoListing liberecoListing = new LiberecoListing();
-        liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
-        liberecoListing.setDescription("Description");
-        liberecoListing.setListingCondition(ListingCondition.FAIR);
-        liberecoListing.setListingState(ListingState.NEW);
-        liberecoListing.setName("RR11 Test Mobile" + UUID.randomUUID().toString());
-        liberecoListing.setPrice(100.00);
-        liberecoListing.setQuantity(1);
-        liberecoListing.setUserId(Long.valueOf(1));
-
-        ebayListing.setLiberecoListing(liberecoListing);
-        return ebayListing;
-    }
     
     private EbayListing newEbayListing() {
         EbayListing ebayListing = new EbayListing();
-        ebayListing.setBestOfferEnabled(false);
-        ebayListing.setBoldTitleChecked(false);
-        ebayListing.setBorderChecked(false);
-        ebayListing.setBuyItNowPrice(Double.valueOf(0.0d));
         ebayListing.setDispatchTimeMax(1);
         ebayListing.setLotSize(Integer.valueOf(1));
         ebayListing.setPaypalEmail("test@gmail.com");
         // ebayListing.setReservePrice(Double.valueOf(90.0d));
         ebayListing.setReturnPolicy(ReturnPolicy.SIXTY_DAY_RETURN);
-        ebayListing.setAutoPay(false);
+        
         ebayListing.setStartPrice(1.00);
-        ebayListing.setVatPercent(Float.valueOf(10.0f));
         ebayListing.setListingDuration(ListingDuration.DAYS_7);
 
         LiberecoListing liberecoListing = new LiberecoListing();

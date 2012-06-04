@@ -7,15 +7,8 @@
         <field:select field="listingDuration" id="c_com_libereco_core_domain_EbayListing_listingDuration" label="Listing Duration" items="${listingDurations}" path="listingDurations" z="user-managed"/>
         <field:input field="dispatchTimeMax" id="c_com_libereco_core_domain_EbayListing_dispatchTimeMax" validationMessageCode="field_invalid_integer" z="idbOJ1sqj07bh77GAVH7jb4fNds="/>
         <field:input field="startPrice" id="c_com_libereco_core_domain_EbayListing_startPrice" validationMessageCode="field_invalid_number" z="Pg5eczSYqLzdQGJ+3YcZA69X5bQ="/>
-        <field:input field="reservePrice" id="c_com_libereco_core_domain_EbayListing_reservePrice" validationMessageCode="field_invalid_number" z="qPTza2yVdaRbxJFvJn5pOgZRjdM="/>
-        <field:input field="buyItNowPrice" id="c_com_libereco_core_domain_EbayListing_buyItNowPrice" validationMessageCode="field_invalid_number" z="MP+lctbbOLu00uP8E7XY9HjM1ak="/>
-        <field:input field="vatPercent" id="c_com_libereco_core_domain_EbayListing_vatPercent" validationMessageCode="field_invalid_number" z="PQw13rXChGkt8njQ7XumPP2gKpI="/>
         <field:input field="paypalEmail" id="c_com_libereco_core_domain_EbayListing_paypalEmail" z="8TAKqHUrD8/4ElgmHU0WqNpUiqo="/>
-        <field:checkbox field="borderChecked" id="c_com_libereco_core_domain_EbayListing_borderChecked" z="N91G7oexkfATPPqu+qWnwIQ5Z4Q="/>
-        <field:checkbox field="boldTitleChecked" id="c_com_libereco_core_domain_EbayListing_boldTitleChecked" z="c26Ya2jyQ2BaW6ATTLjP3pw6B7I="/>
-        <field:checkbox field="autoPay" id="c_com_libereco_core_domain_EbayListing_autoPay" z="XU/j0ZLskk7Z/YvPd6kTSdUAgEA="/>
         <field:input field="lotSize" id="c_com_libereco_core_domain_EbayListing_lotSize" validationMessageCode="field_invalid_integer" z="coZOiH3uCtil/4np5xirK9NJuS4="/>
-        <field:checkbox field="bestOfferEnabled" id="c_com_libereco_core_domain_EbayListing_bestOfferEnabled" z="+2jtVAEmdVwmlb3i3rYNUFoevCU="/>
         <field:select field="liberecoListing" id="c_com_libereco_core_domain_EbayListing_liberecoListing" itemValue="id" items="${liberecolistings}" path="/liberecolistings" required="true" z="8nYB3fzuCSGl/xvu4YpvOpJwauE="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_libereco_core_domain_EbayListing" render="${not empty dependencies}" z="RiJJTxGf2WB4bdxJ5oew7BsHK1E="/>

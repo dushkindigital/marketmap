@@ -29,33 +29,19 @@ public class EbayListing implements Serializable {
     @Enumerated
     private ReturnPolicy returnPolicy;
 
+    @NotNull
     private Integer dispatchTimeMax;
 
     @NotNull
     private Double startPrice;
 
-    private Double reservePrice = 0.0d;
-
-    private Double buyItNowPrice = 0.0d;
-
-    private Float vatPercent = 0.0f;
-
     private String paypalEmail;
 
-    private Boolean borderChecked = false;
-
-    private Boolean boldTitleChecked = false;
-
-    private Boolean autoPay = false;
-
     private Integer lotSize = 0;
-
-    private Boolean bestOfferEnabled = false;
 
     @Enumerated
     @NotNull
     private ListingDuration listingDuration;
-    
     
     private String ebayItemUrl;
 
@@ -96,29 +82,7 @@ public class EbayListing implements Serializable {
         this.startPrice = startPrice;
     }
 
-    public Double getReservePrice() {
-        return this.reservePrice;
-    }
-
-    public void setReservePrice(Double reservePrice) {
-        this.reservePrice = reservePrice;
-    }
-
-    public Double getBuyItNowPrice() {
-        return this.buyItNowPrice;
-    }
-
-    public void setBuyItNowPrice(Double buyItNowPrice) {
-        this.buyItNowPrice = buyItNowPrice;
-    }
-
-    public Float getVatPercent() {
-        return this.vatPercent;
-    }
-
-    public void setVatPercent(Float vatPercent) {
-        this.vatPercent = vatPercent;
-    }
+    
 
     public String getPaypalEmail() {
         return this.paypalEmail;
@@ -128,29 +92,7 @@ public class EbayListing implements Serializable {
         this.paypalEmail = paypalEmail;
     }
 
-    public Boolean getBorderChecked() {
-        return this.borderChecked;
-    }
-
-    public void setBorderChecked(Boolean borderChecked) {
-        this.borderChecked = borderChecked;
-    }
-
-    public Boolean getBoldTitleChecked() {
-        return this.boldTitleChecked;
-    }
-
-    public void setBoldTitleChecked(Boolean boldTitleChecked) {
-        this.boldTitleChecked = boldTitleChecked;
-    }
-
-    public Boolean getAutoPay() {
-        return this.autoPay;
-    }
-
-    public void setAutoPay(Boolean autoPay) {
-        this.autoPay = autoPay;
-    }
+    
 
     public Integer getLotSize() {
         return this.lotSize;
@@ -158,14 +100,6 @@ public class EbayListing implements Serializable {
 
     public void setLotSize(Integer lotSize) {
         this.lotSize = lotSize;
-    }
-
-    public Boolean getBestOfferEnabled() {
-        return this.bestOfferEnabled;
-    }
-
-    public void setBestOfferEnabled(Boolean bestOfferEnabled) {
-        this.bestOfferEnabled = bestOfferEnabled;
     }
 
     public LiberecoListing getLiberecoListing() {
