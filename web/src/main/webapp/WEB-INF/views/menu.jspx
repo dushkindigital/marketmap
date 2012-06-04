@@ -20,6 +20,11 @@
 				url="/marketplaces?page=1&amp;size=${empty param.size ? 10 : param.size}"
 				z="user-managed" />
 		</menu:category>
+		<sec:authorize access="!isAuthenticated()">
+			<menu:category id="c_login" label="LOGIN">
+				<menu:item url="/login" id="login" label="SignIn" render="true"></menu:item>
+			</menu:category>
+		</sec:authorize>
 		<sec:authorize access="isAuthenticated()">
 			<menu:category id="c_authorization" label="Authorizations"
 				z="user-managed">
