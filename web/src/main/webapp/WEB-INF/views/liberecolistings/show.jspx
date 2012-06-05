@@ -3,37 +3,41 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+	
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 	<page:show id="ps_com_libereco_core_domain_LiberecoListing"
 		object="${liberecolisting}" path="/liberecolistings"
-		z="kEj2JRETVTNkhTtZNUT+eBGKJYA=">
+		z="user-managed">
 		<field:display field="userId"
 			id="s_com_libereco_core_domain_LiberecoListing_userId"
-			object="${liberecolisting}" z="sayJjaXdFw+/WO++atHnQqFLrS0=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="name"
 			id="s_com_libereco_core_domain_LiberecoListing_name"
-			object="${liberecolisting}" z="iUGp9PaOOUhUQjsXbocAm4LmcVc=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="price"
 			id="s_com_libereco_core_domain_LiberecoListing_price"
-			object="${liberecolisting}" z="E7hxXXKoIizIaB+gfEsxCXEVxng=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="quantity"
 			id="s_com_libereco_core_domain_LiberecoListing_quantity"
-			object="${liberecolisting}" z="uI9rIKhY9ni5EDwWlj/deiCho7Y=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="description"
 			id="s_com_libereco_core_domain_LiberecoListing_description"
-			object="${liberecolisting}" z="jGeG6WcsSRKWvDgVZXk6+4NFamg=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="category"
 			id="s_com_libereco_core_domain_LiberecoListing_category"
-			object="${liberecolisting}" z="EN2z+TAar7ER3hhXy5lfzbffpUA=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="listingCondition"
 			id="s_com_libereco_core_domain_LiberecoListing_listingCondition"
-			object="${liberecolisting}" z="lsQK7ZcBGP9DdKAg6Zzcfaod1Ng=" />
+			object="${liberecolisting}" z="user-managed" />
 		<field:display field="listingState"
 			id="s_com_libereco_core_domain_LiberecoListing_listingState"
-			object="${liberecolisting}" z="JSU/rJO7hjgIwZp4Jz3/YY9ae/U=" />
-			
-		<c:if test="${liberecolisting.pictureName}">
+			object="${liberecolisting}" z="user-managed" />
+
+		<label>Marketplaces : </label>
+		<c:out value="${marketplaces}"></c:out>
+					
+		<c:if test="${not empty liberecolisting.pictureName}">
 			<IMG alt="${liberecolisting.pictureName}"
 				src="/libereco/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
 		</c:if>

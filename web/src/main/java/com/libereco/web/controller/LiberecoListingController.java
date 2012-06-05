@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -39,6 +41,7 @@ import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
+import com.libereco.core.domain.Marketplace;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.web.security.SecurityUtils;
@@ -80,9 +83,11 @@ public class LiberecoListingController {
             throw new RuntimeException(e);
         }
         liberecoListingService.saveLiberecoListing(liberecoListing);
-        liberecoListing.setPictureUrl(httpServletRequest.getRequestURL().toString() + "/" + liberecoListing.getId() + "/image/"
-                + picture.getOriginalFilename());
-        liberecoListingService.updateLiberecoListing(liberecoListing);
+        if (liberecoListing.getPicture() != null) {
+            liberecoListing.setPictureUrl(httpServletRequest.getRequestURL().toString() + "/" + liberecoListing.getId() + "/image/"
+                    + picture.getOriginalFilename());
+            liberecoListingService.updateLiberecoListing(liberecoListing);
+        }
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
 
@@ -117,8 +122,17 @@ public class LiberecoListingController {
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("liberecolisting", liberecoListingService.findLiberecoListing(id));
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
+        uiModel.addAttribute("liberecolisting", liberecoListing);
         uiModel.addAttribute("itemId", id);
+        if (!CollectionUtils.isEmpty(liberecoListing.getMarketplaces())) {
+            StringBuilder sb = new StringBuilder();
+            for (Marketplace marketplace : liberecoListing.getMarketplaces()) {
+                sb.append(marketplace.getMarketplaceName()).append(" , ");
+            }
+            String marketplaces = StringUtils.removeEnd(sb.toString(), " , ");
+            uiModel.addAttribute("marketplaces", marketplaces);
+        }
         return "liberecolistings/show";
     }
 

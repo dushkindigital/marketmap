@@ -3,7 +3,9 @@ package com.libereco.web.controller;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,6 +27,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
@@ -52,7 +55,7 @@ public class EbayListingController {
 
     @Autowired
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
-    
+
     @Autowired
     MarketplaceService marketplaceService;
 
@@ -67,11 +70,17 @@ public class EbayListingController {
         if(marketplace == null){
             throw new RuntimeException("No marketplace found for marketplace ebay");
         }
+        LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
-                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(ebayListing.getLiberecoListing().getUserId(), marketplace.getId()));
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
         
         ebayAddListingClient.addListing(ebayListing, ebayAuthorization.getToken());
         ebayListingService.saveEbayListing(ebayListing);
+        Set<Marketplace> marketplaces = liberecoListing.getMarketplaces();
+        marketplaces = marketplaces == null ? new HashSet<Marketplace>() : marketplaces;
+        marketplaces.add(marketplace);
+        liberecoListing.setMarketplaces(marketplaces);
+        liberecoListingService.updateLiberecoListing(liberecoListing);
         return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
 
@@ -140,7 +149,7 @@ public class EbayListingController {
         uiModel.addAttribute("ebayListing", ebayListing);
         uiModel.addAttribute("liberecolistings", liberecoListingService.findAllLiberecoListings());
         uiModel.addAttribute("returnpolicys", Arrays.asList(ReturnPolicy.values()));
-        uiModel.addAttribute("listingDurations",Arrays.asList(ListingDuration.values()));
+        uiModel.addAttribute("listingDurations", Arrays.asList(ListingDuration.values()));
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
