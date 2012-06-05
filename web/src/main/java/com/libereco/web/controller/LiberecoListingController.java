@@ -68,7 +68,7 @@ public class LiberecoListingController {
             return "liberecolistings/create";
         }
         uiModel.asMap().clear();
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         liberecoListing.setUserId(user.getId());
         try {
@@ -125,14 +125,16 @@ public class LiberecoListingController {
     @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
             Model uiModel) {
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("liberecolistings", liberecoListingService.findLiberecoListingEntries(firstResult, sizeNo));
+            uiModel.addAttribute("liberecolistings", liberecoListingService.findLiberecoListingEntries(user.getId(), firstResult, sizeNo));
             float nrOfPages = (float) liberecoListingService.countAllLiberecoListings() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("liberecolistings", liberecoListingService.findAllLiberecoListings());
+            uiModel.addAttribute("liberecolistings", liberecoListingService.findAllLiberecoListings(user.getId()));
         }
         addDateTimeFormatPatterns(uiModel);
         return "liberecolistings/list";

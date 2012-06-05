@@ -22,17 +22,17 @@ import org.springframework.stereotype.Component;
 @RooDataOnDemand(entity = LiberecoUser.class)
 public class LiberecoUserDataOnDemand {
 
-	private Random rnd = new SecureRandom();
+    private Random rnd = new SecureRandom();
 
-	private List<LiberecoUser> data;
+    private List<LiberecoUser> data;
 
-	@Autowired
+    @Autowired
     LiberecoUserService liberecoUserService;
 
-	@Autowired
+    @Autowired
     LiberecoUserRepository liberecoUserRepository;
 
-	public LiberecoUser getNewTransientLiberecoUser(int index) {
+    public LiberecoUser getNewTransientLiberecoUser(int index) {
         LiberecoUser obj = new LiberecoUser();
         setCreated(obj, index);
         setLastUpdated(obj, index);
@@ -42,17 +42,21 @@ public class LiberecoUserDataOnDemand {
         return obj;
     }
 
-	public void setCreated(LiberecoUser obj, int index) {
-        Date created = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
+    public void setCreated(LiberecoUser obj, int index) {
+        Date created = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar
+                .getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(
+                Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCreated(created);
     }
 
-	public void setLastUpdated(LiberecoUser obj, int index) {
-        Date lastUpdated = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
+    public void setLastUpdated(LiberecoUser obj, int index) {
+        Date lastUpdated = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar
+                .getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(
+                Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setLastUpdated(lastUpdated);
     }
 
-	public void setPassword(LiberecoUser obj, int index) {
+    public void setPassword(LiberecoUser obj, int index) {
         String password = "password_" + index;
         if (password.length() > 64) {
             password = password.substring(0, 64);
@@ -60,17 +64,17 @@ public class LiberecoUserDataOnDemand {
         obj.setPassword(password);
     }
 
-	public void setStatus(LiberecoUser obj, int index) {
+    public void setStatus(LiberecoUser obj, int index) {
         UserStatus status = UserStatus.class.getEnumConstants()[0];
         obj.setStatus(status);
     }
 
-	public void setUserName(LiberecoUser obj, int index) {
+    public void setUserName(LiberecoUser obj, int index) {
         String userName = "userName_" + index;
         obj.setUsername(userName);
     }
 
-	public LiberecoUser getSpecificLiberecoUser(int index) {
+    public LiberecoUser getSpecificLiberecoUser(int index) {
         init();
         if (index < 0) {
             index = 0;
@@ -83,18 +87,18 @@ public class LiberecoUserDataOnDemand {
         return liberecoUserService.findLiberecoUser(id);
     }
 
-	public LiberecoUser getRandomLiberecoUser() {
+    public LiberecoUser getRandomLiberecoUser() {
         init();
         LiberecoUser obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
         return liberecoUserService.findLiberecoUser(id);
     }
 
-	public boolean modifyLiberecoUser(LiberecoUser obj) {
+    public boolean modifyLiberecoUser(LiberecoUser obj) {
         return false;
     }
 
-	public void init() {
+    public void init() {
         int from = 0;
         int to = 10;
         data = liberecoUserService.findLiberecoUserEntries(from, to);
@@ -104,7 +108,7 @@ public class LiberecoUserDataOnDemand {
         if (!data.isEmpty()) {
             return;
         }
-        
+
         data = new ArrayList<LiberecoUser>();
         for (int i = 0; i < 10; i++) {
             LiberecoUser obj = getNewTransientLiberecoUser(i);
@@ -114,7 +118,8 @@ public class LiberecoUserDataOnDemand {
                 StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
                     ConstraintViolation<?> cv = iter.next();
-                    msg.append("[").append(cv.getConstraintDescriptor()).append(":").append(cv.getMessage()).append("=").append(cv.getInvalidValue()).append("]");
+                    msg.append("[").append(cv.getConstraintDescriptor()).append(":").append(cv.getMessage()).append("=").append(cv.getInvalidValue())
+                            .append("]");
                 }
                 throw new RuntimeException(msg.toString(), e);
             }

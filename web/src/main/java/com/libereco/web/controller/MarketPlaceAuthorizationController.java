@@ -66,7 +66,7 @@ public class MarketPlaceAuthorizationController {
      */
     @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET)
     public String authorize(@PathVariable("marketplace") String name) {
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getCurrentLoggedInUsername();
 
         LiberecoUser liberecoUser = fetchUser(username);
         Marketplace marketplace = fetchMarketplace(name);
@@ -85,7 +85,7 @@ public class MarketPlaceAuthorizationController {
 
     @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET)
     public String fetchToken(@PathVariable("marketplace") String name, HttpServletRequest httpServletRequest) {
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser liberecoUser = fetchUser(username);
         Marketplace marketplace = fetchMarketplace(name);
         MarketplaceName marketplaceName = MarketplaceName.fromString(name);

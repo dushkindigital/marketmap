@@ -15,6 +15,9 @@ public class LiberecoListingServiceImpl implements LiberecoListingService {
 
     @Autowired
     LiberecoListingRepository liberecoListingRepository;
+    
+    @Autowired
+    LiberecoUserService liberecoUserService;
 
     public long countAllLiberecoListings() {
         return liberecoListingRepository.count();
@@ -42,5 +45,16 @@ public class LiberecoListingServiceImpl implements LiberecoListingService {
 
     public LiberecoListing updateLiberecoListing(LiberecoListing liberecoListing) {
         return liberecoListingRepository.save(liberecoListing);
+    }
+
+    @Override
+    public List<LiberecoListing> findAllLiberecoListings(Long userId) {
+        return liberecoListingRepository.findAllListingByUserId(userId);
+    }
+
+    @Override
+    public List<LiberecoListing> findLiberecoListingEntries(Long userId, int firstResult, int maxResults) {
+        return liberecoListingRepository.findListingsByUserId(userId,
+                new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
     }
 }
