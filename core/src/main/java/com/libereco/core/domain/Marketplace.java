@@ -47,7 +47,6 @@ public class Marketplace implements Serializable {
     private Integer version;
 
     public Marketplace() {
-        // TODO Auto-generated constructor stub
     }
 
     public Marketplace(String marketplaceName, String marketplaceShortName) {

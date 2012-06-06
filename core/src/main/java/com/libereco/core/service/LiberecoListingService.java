@@ -19,11 +19,11 @@ public interface LiberecoListingService {
     public abstract void saveLiberecoListing(LiberecoListing liberecoListing);
 
     public abstract LiberecoListing updateLiberecoListing(LiberecoListing liberecoListing);
-    
+
     public abstract List<LiberecoListing> findAllLiberecoListings(Long userId);
 
     public abstract List<LiberecoListing> findLiberecoListingEntries(Long userId, int firstResult, int maxResults);
 
-    
+    public abstract List<LiberecoListing> findAllNotListedListingsForUser(Long id, String marketplaceName);
 
 }

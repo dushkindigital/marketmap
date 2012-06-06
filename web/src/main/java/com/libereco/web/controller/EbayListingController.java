@@ -154,8 +154,11 @@ public class EbayListingController {
     }
 
     void populateEditForm(Model uiModel, EbayListing ebayListing) {
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
+
         uiModel.addAttribute("ebayListing", ebayListing);
-        uiModel.addAttribute("liberecolistings", liberecoListingService.findAllLiberecoListings());
+        uiModel.addAttribute("liberecolistings", liberecoListingService.findAllNotListedListingsForUser(user.getId(), "ebay"));
         uiModel.addAttribute("returnpolicys", Arrays.asList(ReturnPolicy.values()));
         uiModel.addAttribute("listingDurations", Arrays.asList(ListingDuration.values()));
     }

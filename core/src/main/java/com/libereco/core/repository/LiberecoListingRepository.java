@@ -16,4 +16,6 @@ public interface LiberecoListingRepository extends JpaSpecificationExecutor<Libe
     List<LiberecoListing> findAllListingByUserId(Long userId);
     
     Page<LiberecoListing> findListingsByUserId(Long userId, Pageable pageable);
+
+    List<LiberecoListing> findAllListingsByUserIdAndMarketplaces_MarketplaceNameNot(Long userId, String marketplace);
 }

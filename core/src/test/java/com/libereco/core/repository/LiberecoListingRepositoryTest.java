@@ -2,7 +2,9 @@ package com.libereco.core.repository;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -18,6 +20,7 @@ import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
+import com.libereco.core.domain.Marketplace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
@@ -27,7 +30,10 @@ public class LiberecoListingRepositoryTest {
 
     @Autowired
     LiberecoListingRepository liberecoListingRepository;
-    
+
+    @Autowired
+    MarketplaceRepository marketplaceRepository;
+
     @Test
     public void shouldFindAllListingByUserId() throws Exception {
         Long userId = 1L;
@@ -40,11 +46,11 @@ public class LiberecoListingRepositoryTest {
         listingByUserId = liberecoListingRepository.findAllListingByUserId(2L);
         assertEquals(1, listingByUserId.size());
     }
-    
+
     @Test
     public void shouldFindAllListingByUserIdWithPageRequest() throws Exception {
         Long userId = 1L;
-        for(int i = 0;i < 20;i++){
+        for (int i = 0; i < 20; i++) {
             LiberecoListing liberecoListing = newLiberecoListing(userId);
             liberecoListingRepository.save(liberecoListing);
         }
@@ -52,6 +58,22 @@ public class LiberecoListingRepositoryTest {
         assertEquals(20, listingByUserId.size());
         listingByUserId = liberecoListingRepository.findListingsByUserId(userId, new PageRequest(0, 10)).getContent();
         assertEquals(10, listingByUserId.size());
+    }
+
+    @Test
+    public void shouldFindAllListingsByUserIdAndMarketplaces_MarketplaceNameNot() {
+        LiberecoListing liberecoListing = newLiberecoListing(1L);
+        Set<Marketplace> marketplaces = new HashSet<Marketplace>();
+        Marketplace marketplace = new Marketplace("ebay", "ebay");
+        marketplaceRepository.save(marketplace);
+        marketplaces.add(marketplace);
+        liberecoListing.setMarketplaces(marketplaces);
+
+        liberecoListingRepository.save(liberecoListing);
+
+        List<LiberecoListing> listings = liberecoListingRepository.findAllListingsByUserIdAndMarketplaces_MarketplaceNameNot(1L, "ebay");
+
+        assertEquals(0, listings.size());
     }
 
     private LiberecoListing newLiberecoListing(Long userId) {
