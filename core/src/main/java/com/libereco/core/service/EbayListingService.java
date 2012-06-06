@@ -20,4 +20,8 @@ public interface EbayListingService {
 
     public abstract EbayListing updateEbayListing(EbayListing ebayListing);
 
+    public abstract List<EbayListing> findAllEbayListings(Long userId);
+
+    public abstract List<EbayListing> findEbayListingEntries(Long userId, int firstResult, int maxResults);
+
 }

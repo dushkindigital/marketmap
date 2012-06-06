@@ -41,4 +41,15 @@ public class EbayListingServiceImpl implements EbayListingService {
     public EbayListing updateEbayListing(EbayListing ebayListing) {
         return ebayListingRepository.save(ebayListing);
     }
+
+    @Override
+    public List<EbayListing> findAllEbayListings(Long userId) {
+        return ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(userId);
+    }
+
+    @Override
+    public List<EbayListing> findEbayListingEntries(Long userId, int firstResult, int maxResults) {
+        return ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(userId,
+                new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
+    }
 }

@@ -221,9 +221,11 @@ public class LiberecoListingController {
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        List<LiberecoListing> result = liberecoListingService.findAllLiberecoListings();
+        List<LiberecoListing> result = liberecoListingService.findAllLiberecoListings(user.getId());
         return new ResponseEntity<String>(LiberecoListing.toJsonArray(result), headers, HttpStatus.OK);
     }
 

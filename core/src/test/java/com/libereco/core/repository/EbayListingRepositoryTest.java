@@ -1,10 +1,15 @@
 package com.libereco.core.repository;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,12 +31,45 @@ public class EbayListingRepositoryTest {
 
     @Autowired
     EbayListingRepository ebayListingRepository;
-    
+
     @Autowired
     LiberecoListingRepository liberecoListingRepository;
-    
+
     @Test
     public void testSaveEbayListing() {
+        EbayListing ebayListing = newEbayListing(1L);
+        EbayListing persistedEbayListing = ebayListingRepository.save(ebayListing);
+        assertNotNull(persistedEbayListing.getId());
+    }
+
+    @Test
+    public void shouldFindAllEbayListingByLiberecoListing_UserId() throws Exception {
+        EbayListing ebayListing1 = newEbayListing(1L);
+        EbayListing ebayListing2 = newEbayListing(1L);
+        EbayListing ebayListing3 = newEbayListing(2L);
+        ebayListingRepository.save(ebayListing1);
+        ebayListingRepository.save(ebayListing2);
+        ebayListingRepository.save(ebayListing3);
+
+        List<EbayListing> user1Listings = ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(1L);
+        assertEquals(2, user1Listings.size());
+
+        List<EbayListing> user2Listings = ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(2L);
+        assertEquals(1, user2Listings.size());
+    }
+
+    @Test
+    public void shouldFindAllEbayListingByLiberecoListing_UserIdWithPaging() throws Exception {
+        for (int i = 0; i < 20; i++) {
+            EbayListing ebayListing1 = newEbayListing(1L);
+            ebayListingRepository.save(ebayListing1);
+        }
+        
+        Page<EbayListing> listings = ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(1L, new PageRequest(0, 10));
+        assertEquals(10, listings.getContent().size());
+    }
+
+    private EbayListing newEbayListing(Long userId) {
         EbayListing ebayListing = new EbayListing();
         ebayListing.setDispatchTimeMax(Integer.valueOf(3));
         ebayListing.setLotSize(Integer.valueOf(1));
@@ -48,13 +86,11 @@ public class EbayListingRepositoryTest {
         liberecoListing.setName("test_item");
         liberecoListing.setPrice(Double.valueOf(100.0d));
         liberecoListing.setQuantity(1);
-        liberecoListing.setUserId(Long.valueOf(1));
-        
+        liberecoListing.setUserId(userId);
+
         liberecoListing = liberecoListingRepository.save(liberecoListing);
         ebayListing.setLiberecoListing(liberecoListing);
-        
-        EbayListing persistedEbayListing = ebayListingRepository.save(ebayListing);
-        assertNotNull(persistedEbayListing.getId());
+        return ebayListing;
     }
-    
+
 }
