@@ -9,6 +9,7 @@ import org.springframework.format.support.FormattingConversionServiceFactoryBean
 
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
+import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
@@ -60,6 +61,15 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
             public LiberecoListing convert(String id) {
                 return liberecoListingService.findLiberecoListing(Long.valueOf(id));
             }
+        });
+        
+        registry.addConverter(new Converter<String, ListingCondition>() {
+
+            @Override
+            public ListingCondition convert(String source) {
+                return ListingCondition.fromMessage(source);
+            }
+            
         });
         
     }

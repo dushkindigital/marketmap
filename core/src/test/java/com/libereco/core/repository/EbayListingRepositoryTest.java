@@ -76,12 +76,12 @@ public class EbayListingRepositoryTest {
         ebayListing.setPaypalEmail("test@gmail.com");
         ebayListing.setReturnPolicy(ReturnPolicy.SIXTY_DAY_RETURN);
         ebayListing.setStartPrice(Double.valueOf(60.0d));
-        ebayListing.setListingDuration(ListingDuration.DAYS_1);
+        ebayListing.setListingDuration(ListingDuration.DAYS_3);
 
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
         liberecoListing.setDescription("Test Item");
-        liberecoListing.setListingCondition(ListingCondition.FAIR);
+        liberecoListing.setListingCondition(ListingCondition.ACCEPTABLE);
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListing.setName("test_item");
         liberecoListing.setPrice(Double.valueOf(100.0d));

@@ -2,6 +2,8 @@ package com.libereco.web.external.ebay;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Ignore;
@@ -46,35 +48,62 @@ public class EbayAddListingClientTest {
 
     @Autowired
     private EbayAddListingClient ebayAddListingClient;
-    
+
     @Autowired
     private ApiContext apiContext;
 
     @Test
     public void shouldAddEbayListing() {
-        EbayListing ebayListing = newEbayListing();
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
         ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
         assertNotNull(ebayListing.getEbayItemUrl());
     }
 
-    
     @Test
     public void shouldAddEbayListingWithImage() {
-        EbayListing ebayListing = newEbayListing();
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
         ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
         ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
         assertNotNull(ebayListing.getEbayItemUrl());
         System.out.println(ebayListing.getEbayItemUrl());
     }
 
+    @Test
+    public void shouldCreateEbayListingsWithAllListingConditions() {
+        List<String> notCreated = new ArrayList<String>();
+        List<String> created = new ArrayList<String>();
+        ListingCondition[] listingConditions = ListingCondition.values();
+        for (ListingCondition listingCondition : listingConditions) {
+            try {
+                EbayListing ebayListing = newEbayListing(listingCondition);
+                ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
+                assertNotNull(ebayListing.getEbayItemUrl());
+                created.add("Created listing for " + listingCondition);
+            } catch (Exception e) {
+                notCreated.add("Not Able to create listing for " + listingCondition);
+                notCreated.add(e.getCause().getMessage());
+            }
+        }
+
+        System.out.println("**********************************************Created ***************************************************");
+        for (String message : created) {
+            System.out.println(message);
+        }
+
+        System.out.println("**********************************************Not Created ***************************************************");
+        for (String message : notCreated) {
+            System.out.println(message);
+        }
+    }
+
     @Ignore
     @Test
-    public void testAddFixedPriceItemListing() throws Exception{
+    public void testAddFixedPriceItemListing() throws Exception {
         apiContext.getApiCredential().seteBayToken(TOKEN);
         AddFixedPriceItemCall call = new AddFixedPriceItemCall(apiContext);
         call.setErrorHandling(ErrorHandlingCodeType.BEST_EFFORT);
         call.setWarningLevel(WarningLevelCodeType.HIGH);
-        ItemType item =new ItemType();
+        ItemType item = new ItemType();
         item.setTitle("Apple MacBook Pro MB990LL/A 13.3 in. Notebook");
         item.setDescription("Brand New Apple MacBook Pro MB990LL/A 13.3 in. Notebook!");
         CategoryType primaryCategory = new CategoryType();
@@ -88,7 +117,7 @@ public class EbayAddListingClientTest {
         item.setDispatchTimeMax(3);
         item.setListingDuration("Days_7");
         item.setListingType(ListingTypeCodeType.FIXED_PRICE_ITEM);
-        BuyerPaymentMethodCodeType[] methodTypes = {BuyerPaymentMethodCodeType.PAY_PAL};
+        BuyerPaymentMethodCodeType[] methodTypes = { BuyerPaymentMethodCodeType.PAY_PAL };
         item.setPaymentMethods(methodTypes);
         item.setPayPalEmailAddress("test@gmail.com");
         item.setPostalCode("95125");
@@ -102,7 +131,7 @@ public class EbayAddListingClientTest {
         returnPolicyType.setDescription("If you are not satisfied, return the item for refund.");
         returnPolicyType.setShippingCostPaidByOption("Buyer");
         item.setReturnPolicy(returnPolicyType);
-        
+
         ShippingDetailsType shippingDetails = new ShippingDetailsType();
         shippingDetails.setShippingType(ShippingTypeCodeType.FLAT);
 
@@ -111,13 +140,13 @@ public class EbayAddListingClientTest {
         AmountType at = new AmountType();
         at.setValue(2.50);
         shippingServiceOption.setShippingServiceCost(at);
-        
+
         ShippingServiceOptionsType[] shippingServiceOptions = { shippingServiceOption };
         shippingDetails.setShippingServiceOptions(shippingServiceOptions);
         item.setShippingDetails(shippingDetails);
-        
+
         call.setItem(item);
-        
+
         FeesType feesType = call.addFixedPriceItem();
     }
 
@@ -128,23 +157,21 @@ public class EbayAddListingClientTest {
         return amountType;
     }
 
-
-    
-    private EbayListing newEbayListing() {
+    private EbayListing newEbayListing(ListingCondition listingCondition) {
         EbayListing ebayListing = new EbayListing();
         ebayListing.setDispatchTimeMax(1);
         ebayListing.setLotSize(Integer.valueOf(1));
         ebayListing.setPaypalEmail("test@gmail.com");
         // ebayListing.setReservePrice(Double.valueOf(90.0d));
         ebayListing.setReturnPolicy(ReturnPolicy.SIXTY_DAY_RETURN);
-        
+
         ebayListing.setStartPrice(1.00);
         ebayListing.setListingDuration(ListingDuration.DAYS_7);
 
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
         liberecoListing.setDescription("Description");
-        liberecoListing.setListingCondition(ListingCondition.FAIR);
+        liberecoListing.setListingCondition(listingCondition);
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListing.setName("RR11 Test Mobile" + UUID.randomUUID().toString());
         liberecoListing.setPrice(1.00);

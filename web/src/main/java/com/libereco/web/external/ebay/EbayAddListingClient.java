@@ -24,6 +24,7 @@ import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
 import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoListing;
+import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ReturnPolicy;
 
 @Component
@@ -96,22 +97,22 @@ public class EbayAddListingClient {
 
         AmountType startPrice = toAmountType(ebayListing.getStartPrice());
         item.setStartPrice(startPrice);
-        
+
         item.setCategoryMappingAllowed(true);
 
         // 1000 - New
-        item.setConditionID(1000);
+        item.setConditionID(toConditionId(ebayListing.getLiberecoListing().getListingCondition()));
         item.setCountry(CountryCodeType.US);
         item.setCurrency(CurrencyCodeType.USD);
         item.setDispatchTimeMax(ebayListing.getDispatchTimeMax());
         item.setListingDuration(ebayListing.getListingDuration().getName());
         item.setListingType(ListingTypeCodeType.FIXED_PRICE_ITEM);
-        
+
         item.setRegionID("0");
         item.setLocation("San Jose, CA");
         item.setPostalCode("95125");
         item.setQuantity(liberecoListing.getQuantity());
-        
+
         BuyerPaymentMethodCodeType[] arrPaymentMethods = { BuyerPaymentMethodCodeType.AM_EX };
         item.setPaymentMethods(arrPaymentMethods);
 
@@ -133,6 +134,35 @@ public class EbayAddListingClient {
         item.setReturnPolicy(toReturnPolicy(ebayListing.getReturnPolicy()));
 
         return item;
+    }
+
+    private Integer toConditionId(ListingCondition listingCondition) {
+        switch (listingCondition) {
+        case ACCEPTABLE:
+            return 6000;
+        case GOOD:
+            return 5000;
+        case LIKE_NEW:
+            return 2750;
+        case MANUFACTURER_REFURBISHED:
+            return 2000;
+        case NEW:
+            return 1000;
+        case NEW_OTHER:
+            return 1500;
+        case NEW_WITH_DEFECTS:
+            return 1750;
+        case PARTS_NOT_WORKING:
+            return 7000;
+        case SELLER_REFURBISHED:
+            return 2500;
+        case USED:
+            return 3000;
+        case VERY_GOOD:
+            return 4000;
+        default:
+            throw new IllegalArgumentException("No valid value found for EBay Listing : " + listingCondition);
+        }
     }
 
     private ReturnPolicyType toReturnPolicy(ReturnPolicy returnPolicy) {

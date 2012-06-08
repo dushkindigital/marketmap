@@ -190,7 +190,7 @@ public class LiberecoListingController {
         uiModel.addAttribute("liberecoListing", liberecoListing);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("liberecocategorys", Arrays.asList(LiberecoCategory.values()));
-        uiModel.addAttribute("listingconditions", Arrays.asList(ListingCondition.values()));
+        uiModel.addAttribute("listingconditions", ListingCondition.messages());
         uiModel.addAttribute("listingstates", Arrays.asList(ListingState.values()));
     }
 
