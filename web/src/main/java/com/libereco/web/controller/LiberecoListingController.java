@@ -74,6 +74,24 @@ public class LiberecoListingController {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         liberecoListing.setUserId(user.getId());
+        setPicture(liberecoListing, picture);
+        liberecoListing.setListingState(ListingState.NEW);
+        liberecoListingService.saveLiberecoListing(liberecoListing);
+        updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
+        liberecoListingService.updateLiberecoListing(liberecoListing);
+        return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
+    }
+
+    private void updateLiberecoListingWithPicture(LiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
+        if (liberecoListing.getPicture() != null) {
+            String requestUrl = httpServletRequest.getRequestURL().toString();
+            requestUrl = StringUtils.remove(requestUrl, "/update");
+            liberecoListing.setPictureUrl(requestUrl + "/" + liberecoListing.getId() + "/image/"
+                    + picture.getOriginalFilename());
+        }
+    }
+
+    private void setPicture(LiberecoListing liberecoListing, MultipartFile picture) {
         try {
             logger.info("Image updloaded name : " + picture.getOriginalFilename() + " , and its size " + picture.getSize());
             liberecoListing.setPicture(picture.getBytes());
@@ -82,14 +100,6 @@ public class LiberecoListingController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        liberecoListing.setListingState(ListingState.NEW);
-        liberecoListingService.saveLiberecoListing(liberecoListing);
-        if (liberecoListing.getPicture() != null) {
-            liberecoListing.setPictureUrl(httpServletRequest.getRequestURL().toString() + "/" + liberecoListing.getId() + "/image/"
-                    + picture.getOriginalFilename());
-            liberecoListingService.updateLiberecoListing(liberecoListing);
-        }
-        return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}/image/{pictureName}", method = RequestMethod.GET, produces = "text/html")
@@ -155,16 +165,20 @@ public class LiberecoListingController {
         return "liberecolistings/list";
     }
 
-    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-    public String update(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = "text/html")
+    public String update(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest,
+            @RequestParam MultipartFile picture) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, liberecoListing);
             return "liberecolistings/update";
         }
         uiModel.asMap().clear();
-        LiberecoListing oldLiberecoListing = liberecoListingService.findLiberecoListing(liberecoListing.getId());
+        LiberecoListing oldLiberecoListing =
+                liberecoListingService.findLiberecoListing(liberecoListing.getId());
         liberecoListing.setListingState(oldLiberecoListing.getListingState());
         liberecoListing.setMarketplaces(oldLiberecoListing.getMarketplaces());
+        setPicture(liberecoListing, picture);
+        updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
         liberecoListingService.updateLiberecoListing(liberecoListing);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
