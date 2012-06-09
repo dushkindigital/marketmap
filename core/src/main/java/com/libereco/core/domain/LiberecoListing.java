@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -29,6 +30,8 @@ import flexjson.JSONSerializer;
 
 @Entity
 public class LiberecoListing implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,6 +76,26 @@ public class LiberecoListing implements Serializable {
     private Integer version;
 
     private String pictureUrl;
+
+    @Embedded
+    @NotNull
+    private ItemLocation itemLocation;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
     public void setPictureName(String pictureName) {
         this.pictureName = pictureName;
@@ -162,26 +185,20 @@ public class LiberecoListing implements Serializable {
         this.picture = picture;
     }
 
-    private static final long serialVersionUID = 1L;
-
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
-    public Long getId() {
-        return this.id;
+    public String getPictureUrl() {
+        return pictureUrl;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    
+    public void setItemLocation(ItemLocation itemLocation) {
+        this.itemLocation = itemLocation;
     }
-
-    public Integer getVersion() {
-        return this.version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
+    
+    public ItemLocation getItemLocation() {
+        return itemLocation;
     }
 
     public String toJson() {
@@ -200,11 +217,7 @@ public class LiberecoListing implements Serializable {
         return new JSONDeserializer<List<LiberecoListing>>().use(null, ArrayList.class).use("values", LiberecoListing.class).deserialize(json);
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
-
-    public String getPictureUrl() {
-        return pictureUrl;
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

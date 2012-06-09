@@ -100,7 +100,6 @@ public class EbayAddListingClient {
 
         item.setCategoryMappingAllowed(true);
 
-        // 1000 - New
         item.setConditionID(toConditionId(ebayListing.getLiberecoListing().getListingCondition()));
         item.setCountry(CountryCodeType.US);
         item.setCurrency(CurrencyCodeType.USD);
@@ -108,10 +107,14 @@ public class EbayAddListingClient {
         item.setListingDuration(ebayListing.getListingDuration().getName());
         item.setListingType(ListingTypeCodeType.FIXED_PRICE_ITEM);
 
-        item.setRegionID("0");
-        item.setLocation("San Jose, CA");
-        item.setPostalCode("95125");
+//        item.setRegionID("0");
+//        item.setLocation("San Jose, CA");
+//        item.setPostalCode("95125");
+        item.setLocation(liberecoListing.getItemLocation().getItemLocation());
+        item.setPostalCode(liberecoListing.getItemLocation().getPostalCode());
+
         item.setQuantity(liberecoListing.getQuantity());
+        
 
         BuyerPaymentMethodCodeType[] arrPaymentMethods = { BuyerPaymentMethodCodeType.AM_EX };
         item.setPaymentMethods(arrPaymentMethods);

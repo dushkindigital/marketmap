@@ -32,6 +32,7 @@ import com.ebay.soap.eBLBaseComponents.ShippingServiceOptionsType;
 import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.WarningLevelCodeType;
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
@@ -56,7 +57,9 @@ public class EbayAddListingClientTest {
     public void shouldAddEbayListing() {
         EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
         ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
-        assertNotNull(ebayListing.getEbayItemUrl());
+        String ebayItemUrl = ebayListing.getEbayItemUrl();
+        System.out.println(ebayItemUrl);
+        assertNotNull(ebayItemUrl);
     }
 
     @Test
@@ -177,7 +180,9 @@ public class EbayAddListingClientTest {
         liberecoListing.setPrice(1.00);
         liberecoListing.setQuantity(1);
         liberecoListing.setUserId(Long.valueOf(1));
-
+        ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
+        liberecoListing.setItemLocation(itemLocation);
+            
         ebayListing.setLiberecoListing(liberecoListing);
         return ebayListing;
     }

@@ -10,6 +10,8 @@
         <field:input field="description" id="c_com_libereco_core_domain_LiberecoListing_description" z="jK99zbRxGg/2vJYuX1tT0XO61Wc="/>
         <field:select field="category" id="c_com_libereco_core_domain_LiberecoListing_category" items="${liberecocategorys}" path="liberecocategorys" required="true" z="BihZMoQzQ6U7YhAZwq3hNTKuzRo="/>
         <field:select field="listingCondition" id="c_com_libereco_core_domain_LiberecoListing_listingCondition" items="${listingconditions}" path="listingconditions" required="true" z="OvcDMsZJEeCKCsbwUH/NRQklzKo="/>
+        <field:input field="itemLocation.itemLocation" id="c_itemlocation_itemLocation"  label="Item Location" required="true" z="user-managed"/>
+        <field:input field="itemLocation.postalCode" id="c_itemlocation_postalCode"  label="Item PostalCode" required="true" z="user-managed"/>
         <field:input field="picture" id="c_com_libereco_core_domain_LiberecoListing_picture" z="user-managed" type="file"/>
     </form:update>
 </div>

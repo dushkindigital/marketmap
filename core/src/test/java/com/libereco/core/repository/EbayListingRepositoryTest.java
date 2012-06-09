@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
@@ -64,7 +65,7 @@ public class EbayListingRepositoryTest {
             EbayListing ebayListing1 = newEbayListing(1L);
             ebayListingRepository.save(ebayListing1);
         }
-        
+
         Page<EbayListing> listings = ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(1L, new PageRequest(0, 10));
         assertEquals(10, listings.getContent().size());
     }
@@ -87,7 +88,8 @@ public class EbayListingRepositoryTest {
         liberecoListing.setPrice(Double.valueOf(100.0d));
         liberecoListing.setQuantity(1);
         liberecoListing.setUserId(userId);
-
+        ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
+        liberecoListing.setItemLocation(itemLocation);
         liberecoListing = liberecoListingRepository.save(liberecoListing);
         ebayListing.setLiberecoListing(liberecoListing);
         return ebayListing;

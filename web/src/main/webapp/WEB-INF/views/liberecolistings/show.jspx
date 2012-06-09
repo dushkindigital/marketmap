@@ -2,13 +2,14 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
-	
+	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+	xmlns:spring="http://www.springframework.org/tags"
+	version="2.0">
+
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 	<page:show id="ps_com_libereco_core_domain_LiberecoListing"
-		object="${liberecolisting}" path="/liberecolistings"
-		z="user-managed">
+		object="${liberecolisting}" path="/liberecolistings" z="user-managed">
 		<field:display field="userId"
 			id="s_com_libereco_core_domain_LiberecoListing_userId"
 			object="${liberecolisting}" z="user-managed" />
@@ -33,13 +34,17 @@
 		<field:display field="listingState"
 			id="s_com_libereco_core_domain_LiberecoListing_listingState"
 			object="${liberecolisting}" z="user-managed" />
+		<label>Item Location : </label>
+		<c:out value="${liberecolisting.itemLocation.itemLocation}"></c:out><br></br><br></br>
+		<label>Item PostalCode : </label>
+		<c:out value="${liberecolisting.itemLocation.postalCode}"></c:out><br></br><br></br>
 
 		<label>Marketplaces : </label>
 		<c:out value="${marketplaces}"></c:out>
-					
+
 		<c:if test="${not empty liberecolisting.pictureName}">
 			<IMG alt="${liberecolisting.pictureName}"
-				src="/libereco/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
+				src="/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
 		</c:if>
 	</page:show>
 </div>

@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
@@ -72,6 +73,8 @@ public class LiberecoListingServiceImplTest {
         liberecoListing.setPrice(1.00);
         liberecoListing.setQuantity(1);
         liberecoListing.setUserId(userId);
+        ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
+        liberecoListing.setItemLocation(itemLocation);
         return liberecoListing;
     }
 
