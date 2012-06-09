@@ -8,15 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 public enum ListingCondition {
 
     NEW("New"),
-    NEW_OTHER("New Other"),
-    NEW_WITH_DEFECTS("New with Defects"),
     MANUFACTURER_REFURBISHED("Manufacturer Refurbished"),
     SELLER_REFURBISHED("Seller refurbished"),
-    LIKE_NEW("Like New"),
     USED("Used"),
-    VERY_GOOD("Very Good"),
-    GOOD("Good"),
-    ACCEPTABLE("Acceptable"),
     PARTS_NOT_WORKING("Parts not working");
 
     private String message;

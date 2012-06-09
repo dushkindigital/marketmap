@@ -80,7 +80,7 @@ public class LiberecoListingRepositoryTest {
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
         liberecoListing.setDescription("Description");
-        liberecoListing.setListingCondition(ListingCondition.ACCEPTABLE);
+        liberecoListing.setListingCondition(ListingCondition.NEW);
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListing.setName("RR11 Test Mobile" + UUID.randomUUID().toString());
         liberecoListing.setPrice(1.00);

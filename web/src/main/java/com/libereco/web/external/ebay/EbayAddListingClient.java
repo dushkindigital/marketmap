@@ -138,28 +138,16 @@ public class EbayAddListingClient {
 
     private Integer toConditionId(ListingCondition listingCondition) {
         switch (listingCondition) {
-        case ACCEPTABLE:
-            return 6000;
-        case GOOD:
-            return 5000;
-        case LIKE_NEW:
-            return 2750;
         case MANUFACTURER_REFURBISHED:
             return 2000;
         case NEW:
             return 1000;
-        case NEW_OTHER:
-            return 1500;
-        case NEW_WITH_DEFECTS:
-            return 1750;
         case PARTS_NOT_WORKING:
             return 7000;
         case SELLER_REFURBISHED:
             return 2500;
         case USED:
             return 3000;
-        case VERY_GOOD:
-            return 4000;
         default:
             throw new IllegalArgumentException("No valid value found for EBay Listing : " + listingCondition);
         }

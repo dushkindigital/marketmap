@@ -81,7 +81,7 @@ public class EbayListingRepositoryTest {
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
         liberecoListing.setDescription("Test Item");
-        liberecoListing.setListingCondition(ListingCondition.ACCEPTABLE);
+        liberecoListing.setListingCondition(ListingCondition.NEW);
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListing.setName("test_item");
         liberecoListing.setPrice(Double.valueOf(100.0d));
