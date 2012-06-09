@@ -82,6 +82,7 @@ public class LiberecoListingController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        liberecoListing.setListingState(ListingState.NEW);
         liberecoListingService.saveLiberecoListing(liberecoListing);
         if (liberecoListing.getPicture() != null) {
             liberecoListing.setPictureUrl(httpServletRequest.getRequestURL().toString() + "/" + liberecoListing.getId() + "/image/"
@@ -161,6 +162,9 @@ public class LiberecoListingController {
             return "liberecolistings/update";
         }
         uiModel.asMap().clear();
+        LiberecoListing oldLiberecoListing = liberecoListingService.findLiberecoListing(liberecoListing.getId());
+        liberecoListing.setListingState(oldLiberecoListing.getListingState());
+        liberecoListing.setMarketplaces(oldLiberecoListing.getMarketplaces());
         liberecoListingService.updateLiberecoListing(liberecoListing);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }

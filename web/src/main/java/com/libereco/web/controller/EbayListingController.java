@@ -30,6 +30,7 @@ import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingDuration;
+import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
@@ -86,6 +87,7 @@ public class EbayListingController {
         marketplaces = marketplaces == null ? new HashSet<Marketplace>() : marketplaces;
         marketplaces.add(marketplace);
         liberecoListing.setMarketplaces(marketplaces);
+        liberecoListing.setListingState(ListingState.LISTED);
         liberecoListingService.updateLiberecoListing(liberecoListing);
         return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
