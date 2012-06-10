@@ -3,6 +3,7 @@ package com.libereco.core.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -23,6 +24,8 @@ import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.ReturnPolicy;
+import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.ShippingType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
@@ -90,6 +93,11 @@ public class EbayListingRepositoryTest {
         liberecoListing.setUserId(userId);
         ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
         liberecoListing.setItemLocation(itemLocation);
+        ShippingInformation shippingInformation = new ShippingInformation();
+        shippingInformation.setShippingType(ShippingType.FLAT);
+        shippingInformation.setShippingService("USPSMedia");
+        shippingInformation.setShippingCost(2.50);
+        liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
         liberecoListing = liberecoListingRepository.save(liberecoListing);
         ebayListing.setLiberecoListing(liberecoListing);
         return ebayListing;

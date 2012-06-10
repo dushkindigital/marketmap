@@ -2,6 +2,7 @@ package com.libereco.core.repository;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,8 @@ import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
+import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.ShippingType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
@@ -89,6 +92,11 @@ public class LiberecoListingRepositoryTest {
         liberecoListing.setUserId(userId);
         ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
         liberecoListing.setItemLocation(itemLocation);
+        ShippingInformation shippingInformation = new ShippingInformation();
+        shippingInformation.setShippingType(ShippingType.FLAT);
+        shippingInformation.setShippingService("USPSMedia");
+        shippingInformation.setShippingCost(2.50);
+        liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
         return liberecoListing;
     }
 

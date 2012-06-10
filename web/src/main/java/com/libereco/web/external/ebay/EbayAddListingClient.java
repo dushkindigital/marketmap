@@ -1,8 +1,11 @@
 package com.libereco.web.external.ebay;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.AddFixedPriceItemCall;
@@ -26,6 +29,8 @@ import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ReturnPolicy;
+import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.ShippingType;
 
 @Component
 public class EbayAddListingClient {
@@ -101,42 +106,56 @@ public class EbayAddListingClient {
         item.setCategoryMappingAllowed(true);
 
         item.setConditionID(toConditionId(ebayListing.getLiberecoListing().getListingCondition()));
-        item.setCountry(CountryCodeType.US);
-        item.setCurrency(CurrencyCodeType.USD);
         item.setDispatchTimeMax(ebayListing.getDispatchTimeMax());
         item.setListingDuration(ebayListing.getListingDuration().getName());
         item.setListingType(ListingTypeCodeType.FIXED_PRICE_ITEM);
 
-//        item.setRegionID("0");
-//        item.setLocation("San Jose, CA");
-//        item.setPostalCode("95125");
+        // item.setRegionID("0");
+        // item.setLocation("San Jose, CA");
+        // item.setPostalCode("95125");
+        item.setCurrency(CurrencyCodeType.USD);
+        item.setCountry(CountryCodeType.US);
         item.setLocation(liberecoListing.getItemLocation().getItemLocation());
         item.setPostalCode(liberecoListing.getItemLocation().getPostalCode());
 
         item.setQuantity(liberecoListing.getQuantity());
-        
 
         BuyerPaymentMethodCodeType[] arrPaymentMethods = { BuyerPaymentMethodCodeType.AM_EX };
         item.setPaymentMethods(arrPaymentMethods);
 
+        if (!CollectionUtils.isEmpty(liberecoListing.getShippingInformations()) && (liberecoListing.getShippingInformations().size() == 1)) {
+            List<ShippingInformation> shippingInformations = liberecoListing.getShippingInformations();
+            ShippingInformation shippingInformation = shippingInformations.get(0);
+            ShippingDetailsType shippingDetails = toEbayShippingDetails(shippingInformation);
+            item.setShippingDetails(shippingDetails);
+        }
+        item.setPayPalEmailAddress(ebayListing.getPaypalEmail());
+        item.setReturnPolicy(toReturnPolicy(ebayListing.getReturnPolicy()));
+        return item;
+    }
+
+    public ShippingDetailsType toEbayShippingDetails(ShippingInformation shippingInformation) {
         ShippingDetailsType shippingDetails = new ShippingDetailsType();
-        shippingDetails.setShippingType(ShippingTypeCodeType.FLAT);
+        shippingDetails.setShippingType(toEbayShippingType(shippingInformation.getShippingType()));
 
         ShippingServiceOptionsType shippingServiceOption = new ShippingServiceOptionsType();
-        shippingServiceOption.setShippingService("USPSMedia");
+        shippingServiceOption.setShippingService(shippingInformation.getShippingService());
         AmountType at = new AmountType();
-        at.setValue(2.50);
+        at.setValue(shippingInformation.getShippingCost());
         shippingServiceOption.setShippingServiceCost(at);
 
         ShippingServiceOptionsType[] shippingServiceOptions = { shippingServiceOption };
         shippingDetails.setShippingServiceOptions(shippingServiceOptions);
-        item.setShippingDetails(shippingDetails);
+        return shippingDetails;
+    }
 
-        item.setPayPalEmailAddress(ebayListing.getPaypalEmail());
+    private ShippingTypeCodeType toEbayShippingType(ShippingType shippingType) {
+        switch (shippingType) {
+        case FLAT:
+            return ShippingTypeCodeType.FLAT;
+        }
+        throw new IllegalArgumentException("No Ebay ShippingTypeCodeType found for shippingType : " + shippingType);
 
-        item.setReturnPolicy(toReturnPolicy(ebayListing.getReturnPolicy()));
-
-        return item;
     }
 
     private Integer toConditionId(ListingCondition listingCondition) {

@@ -44,6 +44,17 @@
 				<menu:item id="i_fetchToken_etsy" label="AMAZON"
 					url="/marketplaces/amazon/fetchToken" />
 			</menu:category>
+			
+			<menu:category id="c_shippinginformation"
+				z="user-managed" label="Shipping Information">
+				
+				<menu:item id="new_shipping_information" url="/liberecolisting/shippinginformations?form" z="user-managed" label="Create new ShippingInformation"/>
+				
+				<menu:item id="shipping_information_list"
+					url="/liberecolisting/shippinginformations?page=1&amp;size=${empty param.size ? 10 : param.size}"
+					z="user-managed" label="List All ShippingInformation"/>
+			</menu:category>
+			
 			<menu:category id="c_liberecolisting"
 				z="6yc5T73vQiysXcFGXfoTIEcnfIg=">
 				<menu:item id="i_liberecolisting_new" messageCode="global_menu_new"

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition extends="default"
+		name="liberecolisting/shippinginformations/list">
+		<put-attribute name="body"
+			value="/WEB-INF/views/liberecolisting/shippinginformations/list.jspx" />
+	</definition>
+	<definition extends="default"
+		name="liberecolisting/shippinginformations/show">
+		<put-attribute name="body"
+			value="/WEB-INF/views/liberecolisting/shippinginformations/show.jspx" />
+	</definition>
+	<definition extends="default"
+		name="liberecolisting/shippinginformations/create">
+		<put-attribute name="body"
+			value="/WEB-INF/views/liberecolisting/shippinginformations/create.jspx" />
+	</definition>
+	<definition extends="default"
+		name="liberecolisting/shippinginformations/update">
+		<put-attribute name="body"
+			value="/WEB-INF/views/liberecolisting/shippinginformations/update.jspx" />
+	</definition>
+</tiles-definitions>

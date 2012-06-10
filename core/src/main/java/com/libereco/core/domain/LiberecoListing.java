@@ -18,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -80,6 +81,14 @@ public class LiberecoListing implements Serializable {
     @Embedded
     @NotNull
     private ItemLocation itemLocation;
+
+    @NotNull
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<ShippingInformation> shippingInformations;
+    
+    public LiberecoListing() {
+        this.shippingInformations = new ArrayList<ShippingInformation>();
+    }
 
     public Long getId() {
         return this.id;
@@ -192,15 +201,23 @@ public class LiberecoListing implements Serializable {
     public String getPictureUrl() {
         return pictureUrl;
     }
-    
+
     public void setItemLocation(ItemLocation itemLocation) {
         this.itemLocation = itemLocation;
     }
-    
+
     public ItemLocation getItemLocation() {
         return itemLocation;
     }
 
+    public void setShippingInformations(List<ShippingInformation> shippingInformations) {
+        this.shippingInformations = shippingInformations;
+    }
+
+    public List<ShippingInformation> getShippingInformations() {
+        return shippingInformations;
+    }
+    
     public String toJson() {
         return new JSONSerializer().exclude("*.class").serialize(this);
     }

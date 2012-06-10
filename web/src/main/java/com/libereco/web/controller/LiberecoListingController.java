@@ -42,6 +42,8 @@ import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
+import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.ShippingType;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.web.security.SecurityUtils;
@@ -126,7 +128,9 @@ public class LiberecoListingController {
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new LiberecoListing());
+        LiberecoListing liberecoListing = new LiberecoListing();
+        liberecoListing.getShippingInformations().add(new ShippingInformation());
+        populateEditForm(uiModel, liberecoListing);
         return "liberecolistings/create";
     }
 

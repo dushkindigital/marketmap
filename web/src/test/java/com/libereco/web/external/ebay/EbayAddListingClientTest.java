@@ -3,6 +3,7 @@ package com.libereco.web.external.ebay;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.ReturnPolicy;
+import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.ShippingType;
 
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext-web.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -182,7 +185,11 @@ public class EbayAddListingClientTest {
         liberecoListing.setUserId(Long.valueOf(1));
         ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
         liberecoListing.setItemLocation(itemLocation);
-            
+        ShippingInformation shippingInformation = new ShippingInformation();
+        shippingInformation.setShippingType(ShippingType.FLAT);
+        shippingInformation.setShippingService("USPSMedia");
+        shippingInformation.setShippingCost(2.50);
+        liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
         ebayListing.setLiberecoListing(liberecoListing);
         return ebayListing;
     }
