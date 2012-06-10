@@ -43,7 +43,12 @@
 		<field:input field="picture"
 			id="c_com_libereco_core_domain_LiberecoListing_picture"
 			z="jK6mgO0pkEuo60Pq0/tPBNCI2E4=" type="file" />
-		
+
+		<field:select field="shippingInformations"
+			id="c_com_libereco_core_domain_EbayListing_shippingInformation"
+			itemValue="id" items="${shippinginformations}" path="/liberecolisting/shippinginformations"
+			required="true" z="user-managed" label="Shipping Informations"/>
+
 	</form:create>
 	<form:dependency dependencies="${dependencies}"
 		id="d_com_libereco_core_domain_LiberecoListing"

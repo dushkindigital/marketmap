@@ -38,13 +38,20 @@
 		<c:out value="${liberecolisting.itemLocation.itemLocation}"></c:out><br></br><br></br>
 		<label>Item PostalCode : </label>
 		<c:out value="${liberecolisting.itemLocation.postalCode}"></c:out><br></br><br></br>
-
+		<c:forEach items="${liberecolisting.shippingInformations}" var="shippingInformation">
+			<label>Shipping Service : </label>
+			<c:out value="${shippingInformation.shippingService}"></c:out><br></br><br></br>
+			<label>Shipping Cost : </label>
+			<c:out value="${shippingInformation.shippingCost}"></c:out><br></br><br></br>
+			<label>Shipping Type : </label>
+			<c:out value="${shippingInformation.shippingType}"></c:out><br></br><br></br>
+		</c:forEach>
 		<label>Marketplaces : </label>
 		<c:out value="${marketplaces}"></c:out>
 
 		<c:if test="${not empty liberecolisting.pictureName}">
 			<IMG alt="${liberecolisting.pictureName}"
-				src="/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
+				src="/libereco/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
 		</c:if>
 	</page:show>
 </div>

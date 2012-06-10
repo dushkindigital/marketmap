@@ -13,10 +13,12 @@ import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
+import com.libereco.core.domain.ShippingInformation;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceAuthorizationsService;
 import com.libereco.core.service.MarketplaceService;
+import com.libereco.core.service.ShippingInformationService;
 
 @Configurable
 /**
@@ -26,6 +28,9 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     @Autowired
     MarketplaceService marketplaceService;
+    
+    @Autowired
+    ShippingInformationService shippingInformationService;
 
     @Override
     protected void installFormatters(FormatterRegistry registry) {
@@ -46,7 +51,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
                 return new StringBuilder().append(marketPlace.getMarketplaceName()).toString();
             }
         });
-        
+
         registry.addConverter(new Converter<LiberecoListing, String>() {
 
             @Override
@@ -54,7 +59,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
                 return new StringBuilder(source.getName()).append(" ").append(source.getCategory()).toString();
             }
         });
-        
+
         registry.addConverter(new Converter<String, LiberecoListing>() {
 
             @Override
@@ -62,16 +67,31 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
                 return liberecoListingService.findLiberecoListing(Long.valueOf(id));
             }
         });
-        
+
         registry.addConverter(new Converter<String, ListingCondition>() {
 
             @Override
             public ListingCondition convert(String source) {
                 return ListingCondition.fromMessage(source);
             }
-            
+
+        });
+
+        registry.addConverter(new Converter<ShippingInformation, String>() {
+
+            @Override
+            public String convert(ShippingInformation source) {
+                return new StringBuilder().append(source.getShippingService()).append(" ").append(source.getShippingCost()).toString();
+            }
         });
         
+        registry.addConverter(new Converter<String, ShippingInformation>() {
+
+            @Override
+            public ShippingInformation convert(String id) {
+                return shippingInformationService.findShippingInformation(Long.valueOf(id));
+            }
+        });
     }
 
     @Autowired
@@ -79,7 +99,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     @Autowired
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
-    
+
     @Autowired
     LiberecoListingService liberecoListingService;
 
@@ -107,7 +127,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
             }
         };
     }
-    
+
     public Converter<MarketplaceAuthorizations, String> getMarketplaceAuthorizationsToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.libereco.core.domain.MarketplaceAuthorizations, java.lang.String>() {
             public String convert(MarketplaceAuthorizations marketplaceAuthorizations) {

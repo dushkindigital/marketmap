@@ -1,6 +1,7 @@
 package com.libereco.web.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,10 +43,9 @@ import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
-import com.libereco.core.domain.ShippingInformation;
-import com.libereco.core.domain.ShippingType;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
+import com.libereco.core.service.ShippingInformationService;
 import com.libereco.web.security.SecurityUtils;
 
 @RequestMapping("/liberecolistings")
@@ -56,6 +56,8 @@ public class LiberecoListingController {
     LiberecoListingService liberecoListingService;
     @Autowired
     LiberecoUserService liberecoUserService;
+    @Autowired
+    ShippingInformationService shippingInformationService;
 
     private Logger logger = Logger.getLogger(LiberecoListingController.class);
 
@@ -129,8 +131,12 @@ public class LiberecoListingController {
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         LiberecoListing liberecoListing = new LiberecoListing();
-        liberecoListing.getShippingInformations().add(new ShippingInformation());
         populateEditForm(uiModel, liberecoListing);
+        List<String[]> dependencies = new ArrayList<String[]>();
+        if (shippingInformationService.countAllShippingInformations() == 0) {
+            dependencies.add(new String[] { "shippinginformation", "shippinginformations" });
+        }
+        uiModel.addAttribute("dependencies", dependencies);
         return "liberecolistings/create";
     }
 
@@ -214,6 +220,7 @@ public class LiberecoListingController {
         uiModel.addAttribute("liberecocategorys", Arrays.asList(LiberecoCategory.values()));
         uiModel.addAttribute("listingconditions", ListingCondition.messages());
         uiModel.addAttribute("listingstates", Arrays.asList(ListingState.values()));
+        uiModel.addAttribute("shippinginformations", shippingInformationService.findAllShippingInformations());
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

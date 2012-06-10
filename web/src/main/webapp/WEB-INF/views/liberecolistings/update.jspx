@@ -12,6 +12,10 @@
         <field:select field="listingCondition" id="c_com_libereco_core_domain_LiberecoListing_listingCondition" items="${listingconditions}" path="listingconditions" required="true" z="OvcDMsZJEeCKCsbwUH/NRQklzKo="/>
         <field:input field="itemLocation.itemLocation" id="c_itemlocation_itemLocation"  label="Item Location" required="true" z="user-managed"/>
         <field:input field="itemLocation.postalCode" id="c_itemlocation_postalCode"  label="Item PostalCode" required="true" z="user-managed"/>
+        <field:select field="shippingInformations"
+			id="c_com_libereco_core_domain_EbayListing_shippingInformation"
+			itemValue="id" items="${shippinginformations}" path="/liberecolisting/shippinginformations"
+			required="true" z="user-managed" label="Shipping Informations"/>
         <field:input field="picture" id="c_com_libereco_core_domain_LiberecoListing_picture" z="user-managed" type="file"/>
     </form:update>
 </div>
