@@ -82,6 +82,12 @@ public class EbayAddListingClient {
             ebayListing.setEbayItemUrl(ebayItemUrl);
             return ebayListing;
         } catch (Exception e) {
+            String message = e.getMessage();
+            String cause = e.getCause() == null ? "" : e.getCause().getMessage();
+
+            StringBuilder exceptionMessageBuilder = new StringBuilder("Not able to addListing ");
+            exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
+
             throw new RuntimeException("Not able to addListing ", e);
         }
     }

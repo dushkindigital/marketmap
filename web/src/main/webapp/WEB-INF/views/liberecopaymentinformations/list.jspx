@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_libereco_core_domain_LiberecoPaymentInformation" items="${liberecopaymentinformations}" z="JntJuDCk59wzi1FY5HWS8iRB3Iw=">
+        <table:table data="${liberecopaymentinformations}" id="l_com_libereco_core_domain_LiberecoPaymentInformation" path="/liberecopaymentinformations" z="O0TIGq2gzbeKpDS6sCIS4Htggj0=">
+            <table:column id="c_com_libereco_core_domain_LiberecoPaymentInformation_paymentMethod" property="paymentMethod" z="5PgCG5HSEqxKEHa2r7s9Cfxp4+c="/>
+        </table:table>
+    </page:list>
+</div>

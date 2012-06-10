@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_libereco_core_domain_LiberecoPaymentInformation" modelAttribute="liberecoPaymentInformation" path="/liberecopaymentinformations" versionField="Version" z="I1zFqM9dYha99JpDhij2QQz0oRo=">
+        <field:select field="paymentMethod" id="c_com_libereco_core_domain_LiberecoPaymentInformation_paymentMethod" items="${paymentmethods}" path="paymentmethods" required="true" z="WSHIl+rwA2/GvfO1LK53eGz5HeA="/>
+    </form:update>
+</div>
