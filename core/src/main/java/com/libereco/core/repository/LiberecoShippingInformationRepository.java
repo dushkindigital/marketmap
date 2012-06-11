@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
 
 @Repository
-public interface ShippingInformationRepository extends JpaRepository<ShippingInformation, Long>, JpaSpecificationExecutor<ShippingInformation> {
+public interface LiberecoShippingInformationRepository extends JpaRepository<LiberecoShippingInformation, Long>, JpaSpecificationExecutor<LiberecoShippingInformation> {
 }

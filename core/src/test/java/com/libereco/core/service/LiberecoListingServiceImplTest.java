@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
+import com.libereco.core.domain.LiberecoPaymentInformation;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
-import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
+import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ShippingType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,7 +57,7 @@ public class LiberecoListingServiceImplTest {
     }
 
     @Test
-    public void shouldFindListingWhenListingIsAssociatedWithMarketplaceButNotWithOneWeAreSearching(){
+    public void shouldFindListingWhenListingIsAssociatedWithMarketplaceButNotWithOneWeAreSearching() {
         LiberecoListing newLiberecoListing = newLiberecoListing(1L);
         Marketplace marketplace = new Marketplace("test", "test");
         marketplaceService.saveMarketplace(marketplace);
@@ -64,8 +66,9 @@ public class LiberecoListingServiceImplTest {
 
         List<LiberecoListing> listings = liberecoListingService.findAllNotListedListingsForUser(1L, "ebay");
         assertEquals(1, listings.size());
-        
+
     }
+
     private LiberecoListing newLiberecoListing(Long userId) {
         LiberecoListing liberecoListing = new LiberecoListing();
         liberecoListing.setCategory(LiberecoCategory.CAT_COMPUTER_OFFICE);
@@ -78,11 +81,14 @@ public class LiberecoListingServiceImplTest {
         liberecoListing.setUserId(userId);
         ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
         liberecoListing.setItemLocation(itemLocation);
-        ShippingInformation shippingInformation = new ShippingInformation();
+        LiberecoShippingInformation shippingInformation = new LiberecoShippingInformation();
         shippingInformation.setShippingType(ShippingType.FLAT);
         shippingInformation.setShippingService("USPSMedia");
         shippingInformation.setShippingCost(2.50);
         liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
+        LiberecoPaymentInformation paymentInformation = new LiberecoPaymentInformation();
+        paymentInformation.setPaymentMethod(PaymentMethod.PAYPAL);
+        liberecoListing.setLiberecoPaymentInformations(Arrays.asList(paymentInformation));
         return liberecoListing;
     }
 

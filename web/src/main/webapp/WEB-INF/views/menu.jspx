@@ -31,6 +31,10 @@
                 <menu:item id="new_shipping_information" label="Create new ShippingInformation" url="/liberecolisting/shippinginformations?form" z="user-managed"/>
                 <menu:item id="shipping_information_list" label="List All ShippingInformation" url="/liberecolisting/shippinginformations?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
             </menu:category>
+            <menu:category id="c_liberecopaymentinformation" z="wSFaUQo9QSByiO+8j6DeCVT8Av4=">
+	            <menu:item id="i_liberecopaymentinformation_new" messageCode="global_menu_new" url="/liberecolisting/paymentinformations?form" z="eGSi89W8p+oE6mnQLjeqvt85yJ0="/>
+	            <menu:item id="i_liberecopaymentinformation_list" messageCode="global_menu_list" url="/liberecolisting/paymentinformations?page=1&amp;size=${empty param.size ? 10 : param.size}" z="7sCb80ttq2Iff4UkJtJur+XSjlc="/>
+        	</menu:category>
             <menu:category id="c_liberecolisting" z="6yc5T73vQiysXcFGXfoTIEcnfIg=">
                 <menu:item id="i_liberecolisting_new" messageCode="global_menu_new" url="/liberecolistings?form" z="9bNRZ0ggcoPwH8ksE0wPPjey/Y4="/>
                 <menu:item id="i_liberecolisting_list" messageCode="global_menu_list" url="/liberecolistings?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Of2QCKo82I2Tf3jAOOet5zUqMd4="/>
@@ -39,10 +43,8 @@
                 <menu:item id="i_ebaylisting_new" messageCode="global_menu_new" url="/ebaylistings?form" z="3ywGBFgooAAXP3/NPdJQHPVKZOw="/>
                 <menu:item id="i_ebaylisting_list" messageCode="global_menu_list" url="/ebaylistings?page=1&amp;size=${empty param.size ? 10 : param.size}" z="P6NxGdc2SZ/0ixpTWfCS4MT/KX0="/>
             </menu:category>
+        	
         </sec:authorize>
-        <menu:category id="c_liberecopaymentinformation" z="wSFaUQo9QSByiO+8j6DeCVT8Av4=">
-            <menu:item id="i_liberecopaymentinformation_new" messageCode="global_menu_new" url="/liberecopaymentinformations?form" z="eGSi89W8p+oE6mnQLjeqvt85yJ0="/>
-            <menu:item id="i_liberecopaymentinformation_list" messageCode="global_menu_list" url="/liberecopaymentinformations?page=1&amp;size=${empty param.size ? 10 : param.size}" z="7sCb80ttq2Iff4UkJtJur+XSjlc="/>
-        </menu:category>
+        
     </menu:menu>
 </div>

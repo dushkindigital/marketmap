@@ -18,7 +18,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -83,11 +82,15 @@ public class LiberecoListing implements Serializable {
     private ItemLocation itemLocation;
 
     @NotNull
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    private List<ShippingInformation> shippingInformations;
-    
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<LiberecoShippingInformation> shippingInformations;
+
+    @NotNull
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<LiberecoPaymentInformation> liberecoPaymentInformations;
+
     public LiberecoListing() {
-        this.shippingInformations = new ArrayList<ShippingInformation>();
+        this.shippingInformations = new ArrayList<LiberecoShippingInformation>();
     }
 
     public Long getId() {
@@ -210,14 +213,22 @@ public class LiberecoListing implements Serializable {
         return itemLocation;
     }
 
-    public void setShippingInformations(List<ShippingInformation> shippingInformations) {
+    public void setShippingInformations(List<LiberecoShippingInformation> shippingInformations) {
         this.shippingInformations = shippingInformations;
     }
 
-    public List<ShippingInformation> getShippingInformations() {
+    public List<LiberecoShippingInformation> getShippingInformations() {
         return shippingInformations;
     }
-    
+
+    public void setLiberecoPaymentInformations(List<LiberecoPaymentInformation> liberecoPaymentInformations) {
+        this.liberecoPaymentInformations = liberecoPaymentInformations;
+    }
+
+    public List<LiberecoPaymentInformation> getLiberecoPaymentInformations() {
+        return liberecoPaymentInformations;
+    }
+
     public String toJson() {
         return new JSONSerializer().exclude("*.class").serialize(this);
     }

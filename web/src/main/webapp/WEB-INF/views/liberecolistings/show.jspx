@@ -46,6 +46,12 @@
 			<label>Shipping Type : </label>
 			<c:out value="${shippingInformation.shippingType}"></c:out><br></br><br></br>
 		</c:forEach>
+		
+		<c:forEach items="${liberecolisting.liberecoPaymentInformations}" var="paymentInformation">
+			<label>Payment Method : </label>
+			<c:out value="${paymentInformation.paymentMethod}"></c:out><br></br><br></br>
+		</c:forEach>
+		
 		<label>Marketplaces : </label>
 		<c:out value="${marketplaces}"></c:out>
 

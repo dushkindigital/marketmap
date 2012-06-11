@@ -44,8 +44,9 @@ import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.service.LiberecoListingService;
+import com.libereco.core.service.LiberecoPaymentInformationService;
 import com.libereco.core.service.LiberecoUserService;
-import com.libereco.core.service.ShippingInformationService;
+import com.libereco.core.service.LiberecoShippingInformationService;
 import com.libereco.web.security.SecurityUtils;
 
 @RequestMapping("/liberecolistings")
@@ -57,7 +58,9 @@ public class LiberecoListingController {
     @Autowired
     LiberecoUserService liberecoUserService;
     @Autowired
-    ShippingInformationService shippingInformationService;
+    LiberecoShippingInformationService liberecoShippingInformationService;
+    @Autowired
+    LiberecoPaymentInformationService liberecoPaymentInformationService;
 
     private Logger logger = Logger.getLogger(LiberecoListingController.class);
 
@@ -133,8 +136,11 @@ public class LiberecoListingController {
         LiberecoListing liberecoListing = new LiberecoListing();
         populateEditForm(uiModel, liberecoListing);
         List<String[]> dependencies = new ArrayList<String[]>();
-        if (shippingInformationService.countAllShippingInformations() == 0) {
+        if (liberecoShippingInformationService.countAllShippingInformations() == 0) {
             dependencies.add(new String[] { "shippinginformation", "shippinginformations" });
+        }
+        if(liberecoPaymentInformationService.countAllLiberecoPaymentInformations() == 0){
+            dependencies.add(new String[] { "paymentinformation", "paymentinformations" });
         }
         uiModel.addAttribute("dependencies", dependencies);
         return "liberecolistings/create";
@@ -220,7 +226,8 @@ public class LiberecoListingController {
         uiModel.addAttribute("liberecocategorys", Arrays.asList(LiberecoCategory.values()));
         uiModel.addAttribute("listingconditions", ListingCondition.messages());
         uiModel.addAttribute("listingstates", Arrays.asList(ListingState.values()));
-        uiModel.addAttribute("shippinginformations", shippingInformationService.findAllShippingInformations());
+        uiModel.addAttribute("shippinginformations", liberecoShippingInformationService.findAllShippingInformations());
+        uiModel.addAttribute("paymentinformations", liberecoPaymentInformationService.findAllLiberecoPaymentInformations());
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

@@ -2,7 +2,7 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_com_libereco_core_domain_LiberecoPaymentInformation" object="${liberecopaymentinformation}" path="/liberecopaymentinformations" z="dFYXsRJxKohh3WTbOVFtY7e7B7c=">
+    <page:show id="ps_com_libereco_core_domain_LiberecoPaymentInformation" object="${liberecopaymentinformation}" path="/liberecolisting/paymentinformations" z="dFYXsRJxKohh3WTbOVFtY7e7B7c=">
         <field:display field="paymentMethod" id="s_com_libereco_core_domain_LiberecoPaymentInformation_paymentMethod" object="${liberecopaymentinformation}" z="CqpM/6jk0qlpVkMq76Bow/txnqw="/>
     </page:show>
 </div>

@@ -20,11 +20,13 @@ import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
+import com.libereco.core.domain.LiberecoPaymentInformation;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
+import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ReturnPolicy;
-import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ShippingType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -93,11 +95,14 @@ public class EbayListingRepositoryTest {
         liberecoListing.setUserId(userId);
         ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
         liberecoListing.setItemLocation(itemLocation);
-        ShippingInformation shippingInformation = new ShippingInformation();
+        LiberecoShippingInformation shippingInformation = new LiberecoShippingInformation();
         shippingInformation.setShippingType(ShippingType.FLAT);
         shippingInformation.setShippingService("USPSMedia");
         shippingInformation.setShippingCost(2.50);
         liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
+        LiberecoPaymentInformation paymentInformation = new LiberecoPaymentInformation();
+        paymentInformation.setPaymentMethod(PaymentMethod.PAYPAL);
+        liberecoListing.setLiberecoPaymentInformations(Arrays.asList(paymentInformation));
         liberecoListing = liberecoListingRepository.save(liberecoListing);
         ebayListing.setLiberecoListing(liberecoListing);
         return ebayListing;

@@ -8,17 +8,19 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 
 import com.libereco.core.domain.LiberecoListing;
+import com.libereco.core.domain.LiberecoPaymentInformation;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
-import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.service.LiberecoListingService;
+import com.libereco.core.service.LiberecoPaymentInformationService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceAuthorizationsService;
 import com.libereco.core.service.MarketplaceService;
-import com.libereco.core.service.ShippingInformationService;
+import com.libereco.core.service.LiberecoShippingInformationService;
 
 @Configurable
 /**
@@ -28,9 +30,21 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     @Autowired
     MarketplaceService marketplaceService;
+
+    @Autowired
+    LiberecoShippingInformationService shippingInformationService;
     
     @Autowired
-    ShippingInformationService shippingInformationService;
+    LiberecoUserService liberecoUserService;
+
+    @Autowired
+    MarketplaceAuthorizationsService marketplaceAuthorizationsService;
+
+    @Autowired
+    LiberecoListingService liberecoListingService;
+    
+    @Autowired
+    LiberecoPaymentInformationService liberecoPaymentInformationService;
 
     @Override
     protected void installFormatters(FormatterRegistry registry) {
@@ -77,31 +91,40 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
         });
 
-        registry.addConverter(new Converter<ShippingInformation, String>() {
+        registry.addConverter(new Converter<LiberecoShippingInformation, String>() {
 
             @Override
-            public String convert(ShippingInformation source) {
+            public String convert(LiberecoShippingInformation source) {
                 return new StringBuilder().append(source.getShippingService()).append(" ").append(source.getShippingCost()).toString();
             }
         });
-        
-        registry.addConverter(new Converter<String, ShippingInformation>() {
+
+        registry.addConverter(new Converter<String, LiberecoShippingInformation>() {
 
             @Override
-            public ShippingInformation convert(String id) {
+            public LiberecoShippingInformation convert(String id) {
                 return shippingInformationService.findShippingInformation(Long.valueOf(id));
             }
         });
+
+        registry.addConverter(new Converter<LiberecoPaymentInformation, String>() {
+
+            @Override
+            public String convert(LiberecoPaymentInformation source) {
+                return new StringBuilder().append(source.getPaymentMethod()).toString();
+            }
+        });
+        
+        registry.addConverter(new Converter<String, LiberecoPaymentInformation>() {
+
+            @Override
+            public LiberecoPaymentInformation convert(String id) {
+                return liberecoPaymentInformationService.findLiberecoPaymentInformation(Long.valueOf(id));
+            }
+        });
+        
     }
 
-    @Autowired
-    LiberecoUserService liberecoUserService;
-
-    @Autowired
-    MarketplaceAuthorizationsService marketplaceAuthorizationsService;
-
-    @Autowired
-    LiberecoListingService liberecoListingService;
 
     public Converter<LiberecoUser, String> getLiberecoUserToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.libereco.core.domain.LiberecoUser, java.lang.String>() {

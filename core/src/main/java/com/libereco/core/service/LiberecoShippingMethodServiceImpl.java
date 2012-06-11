@@ -7,39 +7,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @Transactional
 public class LiberecoShippingMethodServiceImpl implements LiberecoShippingMethodService {
 
-	@Autowired
+    @Autowired
     LiberecoShippingMethodRepository liberecoShippingMethorRepository;
 
-	public long countAllLiberecoShippingMethods() {
+    public long countAllLiberecoShippingMethods() {
         return liberecoShippingMethorRepository.count();
     }
 
-	public void deleteLiberecoShippingMethod(LiberecoShippingMethod liberecoShippingMethod) {
+    public void deleteLiberecoShippingMethod(LiberecoShippingMethod liberecoShippingMethod) {
         liberecoShippingMethorRepository.delete(liberecoShippingMethod);
     }
 
-	public LiberecoShippingMethod findLiberecoShippingMethod(Long id) {
+    public LiberecoShippingMethod findLiberecoShippingMethod(Long id) {
         return liberecoShippingMethorRepository.findOne(id);
     }
 
-	public List<LiberecoShippingMethod> findAllLiberecoShippingMethods() {
+    public List<LiberecoShippingMethod> findAllLiberecoShippingMethods() {
         return liberecoShippingMethorRepository.findAll();
     }
 
-	public List<LiberecoShippingMethod> findLiberecoShippingMethodEntries(int firstResult, int maxResults) {
-        return liberecoShippingMethorRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
+    public List<LiberecoShippingMethod> findLiberecoShippingMethodEntries(int firstResult, int maxResults) {
+        return liberecoShippingMethorRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults))
+                .getContent();
     }
 
-	public void saveLiberecoShippingMethod(LiberecoShippingMethod liberecoShippingMethod) {
+    public void saveLiberecoShippingMethod(LiberecoShippingMethod liberecoShippingMethod) {
         liberecoShippingMethorRepository.save(liberecoShippingMethod);
     }
 
-	public LiberecoShippingMethod updateLiberecoShippingMethod(LiberecoShippingMethod liberecoShippingMethod) {
+    public LiberecoShippingMethod updateLiberecoShippingMethod(LiberecoShippingMethod liberecoShippingMethod) {
         return liberecoShippingMethorRepository.save(liberecoShippingMethod);
     }
 }

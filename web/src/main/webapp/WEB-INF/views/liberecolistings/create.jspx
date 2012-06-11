@@ -48,6 +48,11 @@
 			id="c_com_libereco_core_domain_EbayListing_shippingInformation"
 			itemValue="id" items="${shippinginformations}" path="/liberecolisting/shippinginformations"
 			required="true" z="user-managed" label="Shipping Informations"/>
+		
+		<field:select field="liberecoPaymentInformations"
+			id="c_com_libereco_core_domain_EbayListing_paymentInformation"
+			itemValue="id" items="${paymentinformations}" path="/liberecolisting/paymentinformations"
+			required="true" z="user-managed" label="Payment Informations"/>
 
 	</form:create>
 	<form:dependency dependencies="${dependencies}"

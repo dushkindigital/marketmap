@@ -27,9 +27,11 @@ import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
 import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoListing;
+import com.libereco.core.domain.LiberecoPaymentInformation;
 import com.libereco.core.domain.ListingCondition;
+import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ReturnPolicy;
-import com.libereco.core.domain.ShippingInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ShippingType;
 
 @Component
@@ -88,7 +90,7 @@ public class EbayAddListingClient {
             StringBuilder exceptionMessageBuilder = new StringBuilder("Not able to addListing ");
             exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
 
-            throw new RuntimeException("Not able to addListing ", e);
+            throw new RuntimeException(exceptionMessageBuilder.toString(), e);
         }
     }
 
@@ -126,12 +128,17 @@ public class EbayAddListingClient {
 
         item.setQuantity(liberecoListing.getQuantity());
 
-        BuyerPaymentMethodCodeType[] arrPaymentMethods = { BuyerPaymentMethodCodeType.AM_EX };
+        List<LiberecoPaymentInformation> liberecoPaymentInformations = liberecoListing.getLiberecoPaymentInformations();
+        BuyerPaymentMethodCodeType[] arrPaymentMethods = new BuyerPaymentMethodCodeType[liberecoPaymentInformations.size()];
+
+        for (int i = 0; i < liberecoPaymentInformations.size(); i++) {
+            arrPaymentMethods[i] = toEbayBuyerPaymentMethod(liberecoPaymentInformations.get(i).getPaymentMethod());
+        }
         item.setPaymentMethods(arrPaymentMethods);
 
         if (!CollectionUtils.isEmpty(liberecoListing.getShippingInformations()) && (liberecoListing.getShippingInformations().size() == 1)) {
-            List<ShippingInformation> shippingInformations = liberecoListing.getShippingInformations();
-            ShippingInformation shippingInformation = shippingInformations.get(0);
+            List<LiberecoShippingInformation> shippingInformations = liberecoListing.getShippingInformations();
+            LiberecoShippingInformation shippingInformation = shippingInformations.get(0);
             ShippingDetailsType shippingDetails = toEbayShippingDetails(shippingInformation);
             item.setShippingDetails(shippingDetails);
         }
@@ -140,7 +147,25 @@ public class EbayAddListingClient {
         return item;
     }
 
-    public ShippingDetailsType toEbayShippingDetails(ShippingInformation shippingInformation) {
+    private BuyerPaymentMethodCodeType toEbayBuyerPaymentMethod(PaymentMethod paymentMethod) {
+        switch (paymentMethod) {
+        case AM_EX:
+            return BuyerPaymentMethodCodeType.AM_EX;
+        case CASH_IN_PERSON:
+            return BuyerPaymentMethodCodeType.CASH_IN_PERSON;
+        case CASH_ON_PICKUP:
+            return BuyerPaymentMethodCodeType.CASH_ON_PICKUP;
+        case CC_ACCEPTED:
+            return BuyerPaymentMethodCodeType.CC_ACCEPTED;
+        case COD:
+            return BuyerPaymentMethodCodeType.COD;
+        case PAYPAL:
+            return BuyerPaymentMethodCodeType.PAY_PAL;
+        }
+        throw new IllegalArgumentException("No valid BuyerPaymentMethodCodeType found for " + paymentMethod);
+    }
+
+    public ShippingDetailsType toEbayShippingDetails(LiberecoShippingInformation shippingInformation) {
         ShippingDetailsType shippingDetails = new ShippingDetailsType();
         shippingDetails.setShippingType(toEbayShippingType(shippingInformation.getShippingType()));
 
