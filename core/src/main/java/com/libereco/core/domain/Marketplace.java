@@ -115,4 +115,30 @@ public class Marketplace implements Serializable {
     public static Collection<Marketplace> fromJsonArrayToMarketplaces(String json) {
         return new JSONDeserializer<List<Marketplace>>().use(null, ArrayList.class).use("values", Marketplace.class).deserialize(json);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((marketplaceName == null) ? 0 : marketplaceName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Marketplace other = (Marketplace) obj;
+        if (marketplaceName == null) {
+            if (other.marketplaceName != null)
+                return false;
+        } else if (!marketplaceName.equals(other.marketplaceName))
+            return false;
+        return true;
+    }
+
 }

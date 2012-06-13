@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.libereco.core.domain.DelistingReason;
 import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
@@ -134,6 +135,13 @@ public class EbayListingController {
             return "ebaylistings/update";
         }
         uiModel.asMap().clear();
+        String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
+        ebayClient.reviseListing(ebayListing, ebayAuthorizationToken);
+        ebayListingService.updateEbayListing(ebayListing);
+        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+    }
+
+    private String getMarketplaceToken(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
             throw new RuntimeException("No marketplace found for marketplace ebay");
@@ -141,9 +149,7 @@ public class EbayListingController {
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
                 .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
-        ebayClient.reviseListing(ebayListing, ebayAuthorization.getToken());
-        ebayListingService.updateEbayListing(ebayListing);
-        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+        return ebayAuthorization.getToken();
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
@@ -156,7 +162,18 @@ public class EbayListingController {
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
+        Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
+        if (marketplace == null) {
+            throw new RuntimeException("No marketplace found for marketplace ebay");
+        }
+        LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
+        MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
+
+        ebayClient.delistItem(ebayListing, ebayAuthorization.getToken(), DelistingReason.OTHER_REASON);
         ebayListingService.deleteEbayListing(ebayListing);
+        liberecoListing.getMarketplaces().remove(marketplace);
+        liberecoListingService.updateLiberecoListing(liberecoListing);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

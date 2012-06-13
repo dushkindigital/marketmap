@@ -9,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.AddFixedPriceItemCall;
+import com.ebay.sdk.call.EndFixedPriceItemCall;
 import com.ebay.sdk.call.ReviseFixedPriceItemCall;
 import com.ebay.soap.eBLBaseComponents.AmountType;
 import com.ebay.soap.eBLBaseComponents.BuyerPaymentMethodCodeType;
@@ -16,6 +17,7 @@ import com.ebay.soap.eBLBaseComponents.CategoryType;
 import com.ebay.soap.eBLBaseComponents.CountryCodeType;
 import com.ebay.soap.eBLBaseComponents.CurrencyCodeType;
 import com.ebay.soap.eBLBaseComponents.DetailLevelCodeType;
+import com.ebay.soap.eBLBaseComponents.EndReasonCodeType;
 import com.ebay.soap.eBLBaseComponents.FeesType;
 import com.ebay.soap.eBLBaseComponents.GalleryTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.ItemType;
@@ -26,13 +28,14 @@ import com.ebay.soap.eBLBaseComponents.ShippingDetailsType;
 import com.ebay.soap.eBLBaseComponents.ShippingServiceOptionsType;
 import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
+import com.libereco.core.domain.DelistingReason;
 import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoPaymentInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ReturnPolicy;
-import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ShippingType;
 
 @Component
@@ -74,14 +77,13 @@ public class EbayClient {
             String itemId = item.getItemID();
             System.out.println("Item: " + itemId);
             ebayListing.setEbayItemId(itemId);
-            
+
             String ebayItemUrl = environment.getProperty("libereco.ebay.item.url");
             ebayItemUrl += itemId;
             ebayListing.setEbayItemUrl(ebayItemUrl);
             return ebayListing;
         } catch (Exception e) {
             String exceptionMessage = getExceptionMessage(e);
-
             throw new RuntimeException(exceptionMessage, e);
         }
     }
@@ -124,6 +126,34 @@ public class EbayClient {
         }
     }
 
+    public void delistItem(EbayListing ebayListing, String token, DelistingReason reason) {
+        EndFixedPriceItemCall endFixedPriceItemCall = new EndFixedPriceItemCall();
+        endFixedPriceItemCall.setApiContext(apiContext);
+        endFixedPriceItemCall.setEndingReason(toEbayEndingReason(reason));
+        endFixedPriceItemCall.setItemID(ebayListing.getEbayItemId());
+        try {
+            endFixedPriceItemCall.endFixedPriceItem();
+        } catch (Exception e) {
+            String exceptionMessage = getExceptionMessage(e);
+            throw new RuntimeException(exceptionMessage, e);
+        }
+    }
+
+    private EndReasonCodeType toEbayEndingReason(DelistingReason reason) {
+        switch (reason) {
+        case INCORRECT_PRICE:
+            return EndReasonCodeType.INCORRECT;
+        case LOST_OR_BROKEN:
+            return EndReasonCodeType.LOST_OR_BROKEN;
+        case OTHER_REASON:
+            return EndReasonCodeType.OTHER_LISTING_ERROR;
+        case SOLD:
+            return EndReasonCodeType.SOLD;
+        }
+        
+        throw new IllegalArgumentException("No Ebay EndReasonCodeType found for delisting reason : " + reason);
+    }
+
     private String getExceptionMessage(Exception e) {
         String message = e.getMessage();
         String cause = e.getCause() == null ? "" : e.getCause().getMessage();
@@ -132,8 +162,6 @@ public class EbayClient {
         exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
         return exceptionMessageBuilder.toString();
     }
-
-   
 
     /**
      * @param ebayListing

@@ -32,6 +32,7 @@ import com.ebay.soap.eBLBaseComponents.ShippingDetailsType;
 import com.ebay.soap.eBLBaseComponents.ShippingServiceOptionsType;
 import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.WarningLevelCodeType;
+import com.libereco.core.domain.DelistingReason;
 import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
@@ -112,6 +113,17 @@ public class EbayClientTest {
         assertNotNull(ebayItemUrl);
     }
 
+    @Test
+    public void shouldDelistItemOnEbay(){
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
+        String ebayItemUrl = ebayListing.getEbayItemUrl();
+        System.out.println(ebayItemUrl);
+        assertNotNull(ebayItemUrl);
+        
+        ebayClient.delistItem(ebayListing, TOKEN, DelistingReason.OTHER_REASON);
+    }
+    
     @Test
     public void shouldCreateEbayListingsWithAllListingConditions() {
         List<String> notCreated = new ArrayList<String>();
