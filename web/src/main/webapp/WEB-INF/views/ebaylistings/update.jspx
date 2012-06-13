@@ -3,11 +3,13 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_libereco_core_domain_EbayListing" modelAttribute="ebayListing" path="/ebaylistings" versionField="Version" z="8RBq0W7f9JQRCqIYWxnSVYUWJ0w=">
+    	<field:input id="c_com_libereco_core_domain_EbayListing_ebayItemId" field="ebayItemId" label="ebayItemId"></field:input>
         <field:select field="returnPolicy" id="c_com_libereco_core_domain_EbayListing_returnPolicy" items="${returnpolicys}" path="returnpolicys" z="0rGKqRPmX4eSHxcM9GW23cf1x5U="/>
+        <field:select field="listingDuration" id="c_com_libereco_core_domain_EbayListing_listingDuration" label="Listing Duration" items="${listingDurations}" path="listingDurations" z="user-managed"/>
         <field:input field="dispatchTimeMax" id="c_com_libereco_core_domain_EbayListing_dispatchTimeMax" validationMessageCode="field_invalid_integer" z="idbOJ1sqj07bh77GAVH7jb4fNds="/>
         <field:input field="startPrice" id="c_com_libereco_core_domain_EbayListing_startPrice" validationMessageCode="field_invalid_number" z="Pg5eczSYqLzdQGJ+3YcZA69X5bQ="/>
         <field:input field="paypalEmail" id="c_com_libereco_core_domain_EbayListing_paypalEmail" z="8TAKqHUrD8/4ElgmHU0WqNpUiqo="/>
         <field:input field="lotSize" id="c_com_libereco_core_domain_EbayListing_lotSize" validationMessageCode="field_invalid_integer" z="coZOiH3uCtil/4np5xirK9NJuS4="/>
-        <field:select field="liberecoListing" id="c_com_libereco_core_domain_EbayListing_liberecoListing" itemValue="id" items="${liberecolistings}" path="/liberecolistings" required="true" z="8nYB3fzuCSGl/xvu4YpvOpJwauE="/>
+        <field:select field="liberecoListing" id="c_com_libereco_core_domain_EbayListing_liberecoListing" itemValue="id" items="${liberecolistingforupdate}" path="/liberecolistings" z="8nYB3fzuCSGl/xvu4YpvOpJwauE="/>
     </form:update>
 </div>

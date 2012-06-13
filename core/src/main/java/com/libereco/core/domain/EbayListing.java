@@ -58,6 +58,8 @@ public class EbayListing implements Serializable {
     @ManyToOne
     private LiberecoListing liberecoListing;
 
+    private String ebayItemId;
+
     public ReturnPolicy getReturnPolicy() {
         return this.returnPolicy;
     }
@@ -161,6 +163,14 @@ public class EbayListing implements Serializable {
 
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public void setEbayItemId(String ebayItemId) {
+        this.ebayItemId = ebayItemId;
+    }
+    
+    public String getEbayItemId() {
+        return ebayItemId;
     }
 
 }

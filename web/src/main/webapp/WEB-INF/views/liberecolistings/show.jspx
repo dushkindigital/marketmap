@@ -57,7 +57,7 @@
 
 		<c:if test="${not empty liberecolisting.pictureName}">
 			<IMG alt="${liberecolisting.pictureName}"
-				src="/libereco/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
+				src="/web/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />
 		</c:if>
 	</page:show>
 </div>

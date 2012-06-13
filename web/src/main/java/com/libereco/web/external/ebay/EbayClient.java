@@ -9,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.AddFixedPriceItemCall;
+import com.ebay.sdk.call.ReviseFixedPriceItemCall;
 import com.ebay.soap.eBLBaseComponents.AmountType;
 import com.ebay.soap.eBLBaseComponents.BuyerPaymentMethodCodeType;
 import com.ebay.soap.eBLBaseComponents.CategoryType;
@@ -35,13 +36,13 @@ import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ShippingType;
 
 @Component
-public class EbayAddListingClient {
+public class EbayClient {
 
     private ApiContext apiContext;
     private Environment environment;
 
     @Autowired
-    public EbayAddListingClient(ApiContext apiContext, Environment environment) {
+    public EbayClient(ApiContext apiContext, Environment environment) {
         this.apiContext = apiContext;
         this.environment = environment;
     }
@@ -60,14 +61,7 @@ public class EbayAddListingClient {
 
             ItemType item = toItemType(ebayListing);
 
-            if (ebayListing.getLiberecoListing().getPictureUrl() != null) {
-                String[] pictureURLs = { ebayListing.getLiberecoListing().getPictureUrl() };
-                PictureDetailsType pictureDetailsObj = new PictureDetailsType();
-                pictureDetailsObj.setPictureURL(pictureURLs);
-                // To specify a Gallery Image
-                pictureDetailsObj.setGalleryType(GalleryTypeCodeType.GALLERY);
-                item.setPictureDetails(pictureDetailsObj);
-            }
+            setPictureDetails(ebayListing, item);
             addFixedPriceItemCall.setItem(item);
             /**
              * Defines a single new item and lists it on a specified eBay site.
@@ -79,20 +73,67 @@ public class EbayAddListingClient {
             FeesType fees = addFixedPriceItemCall.addFixedPriceItem();
             String itemId = item.getItemID();
             System.out.println("Item: " + itemId);
+            ebayListing.setEbayItemId(itemId);
+            
             String ebayItemUrl = environment.getProperty("libereco.ebay.item.url");
             ebayItemUrl += itemId;
             ebayListing.setEbayItemUrl(ebayItemUrl);
             return ebayListing;
         } catch (Exception e) {
-            String message = e.getMessage();
-            String cause = e.getCause() == null ? "" : e.getCause().getMessage();
+            String exceptionMessage = getExceptionMessage(e);
 
-            StringBuilder exceptionMessageBuilder = new StringBuilder("Not able to addListing ");
-            exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
-
-            throw new RuntimeException(exceptionMessageBuilder.toString(), e);
+            throw new RuntimeException(exceptionMessage, e);
         }
     }
+
+    public EbayListing reviseListing(EbayListing ebayListing, String token) {
+        try {
+            this.apiContext
+                    .getApiCredential()
+                    .seteBayToken(token);
+            ReviseFixedPriceItemCall reviseFixedPriceItemCall = new ReviseFixedPriceItemCall(apiContext);
+            reviseFixedPriceItemCall.setSite(SiteCodeType.US);
+            // Set detail level to retrieve item description.
+            reviseFixedPriceItemCall.addDetailLevel(DetailLevelCodeType.ITEM_RETURN_DESCRIPTION);
+            ItemType item = toItemType(ebayListing);
+            setPictureDetails(ebayListing, item);
+            item.setItemID(ebayListing.getEbayItemId());
+            reviseFixedPriceItemCall.setItemToBeRevised(item);
+            FeesType fees = reviseFixedPriceItemCall.reviseFixedPriceItem();
+            String itemId = item.getItemID();
+            System.out.println("Item: " + itemId);
+            ebayListing.setEbayItemId(itemId);
+            String ebayItemUrl = environment.getProperty("libereco.ebay.item.url");
+            ebayItemUrl += itemId;
+            ebayListing.setEbayItemUrl(ebayItemUrl);
+            return ebayListing;
+        } catch (Exception e) {
+            String exceptionMessage = getExceptionMessage(e);
+            throw new RuntimeException(exceptionMessage, e);
+        }
+    }
+
+    private void setPictureDetails(EbayListing ebayListing, ItemType item) {
+        if (ebayListing.getLiberecoListing().getPictureUrl() != null) {
+            String[] pictureURLs = { ebayListing.getLiberecoListing().getPictureUrl() };
+            PictureDetailsType pictureDetailsObj = new PictureDetailsType();
+            pictureDetailsObj.setPictureURL(pictureURLs);
+            // To specify a Gallery Image
+            pictureDetailsObj.setGalleryType(GalleryTypeCodeType.GALLERY);
+            item.setPictureDetails(pictureDetailsObj);
+        }
+    }
+
+    private String getExceptionMessage(Exception e) {
+        String message = e.getMessage();
+        String cause = e.getCause() == null ? "" : e.getCause().getMessage();
+
+        StringBuilder exceptionMessageBuilder = new StringBuilder("Not able to addListing ");
+        exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
+        return exceptionMessageBuilder.toString();
+    }
+
+   
 
     /**
      * @param ebayListing

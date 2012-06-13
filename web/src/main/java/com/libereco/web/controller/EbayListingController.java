@@ -41,7 +41,7 @@ import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceAuthorizationsService;
 import com.libereco.core.service.MarketplaceService;
 import com.libereco.web.common.MarketplaceName;
-import com.libereco.web.external.ebay.EbayAddListingClient;
+import com.libereco.web.external.ebay.EbayClient;
 import com.libereco.web.security.SecurityUtils;
 
 @RequestMapping("/ebaylistings")
@@ -55,7 +55,7 @@ public class EbayListingController {
     LiberecoListingService liberecoListingService;
 
     @Autowired
-    EbayAddListingClient ebayAddListingClient;
+    EbayClient ebayClient;
 
     @Autowired
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
@@ -81,7 +81,7 @@ public class EbayListingController {
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
                 .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
 
-        ebayAddListingClient.addListing(ebayListing, ebayAuthorization.getToken());
+        ebayClient.addListing(ebayListing, ebayAuthorization.getToken());
         ebayListingService.saveEbayListing(ebayListing);
         Set<Marketplace> marketplaces = liberecoListing.getMarketplaces();
         marketplaces = marketplaces == null ? new HashSet<Marketplace>() : marketplaces;
@@ -134,6 +134,14 @@ public class EbayListingController {
             return "ebaylistings/update";
         }
         uiModel.asMap().clear();
+        Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
+        if (marketplace == null) {
+            throw new RuntimeException("No marketplace found for marketplace ebay");
+        }
+        LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
+        MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
+        ebayClient.reviseListing(ebayListing, ebayAuthorization.getToken());
         ebayListingService.updateEbayListing(ebayListing);
         return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
@@ -163,6 +171,7 @@ public class EbayListingController {
         uiModel.addAttribute("liberecolistings", liberecoListingService.findAllNotListedListingsForUser(user.getId(), "ebay"));
         uiModel.addAttribute("returnpolicys", Arrays.asList(ReturnPolicy.values()));
         uiModel.addAttribute("listingDurations", Arrays.asList(ListingDuration.values()));
+        uiModel.addAttribute("liberecolistingforupdate", Arrays.asList(ebayListing.getLiberecoListing()));
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

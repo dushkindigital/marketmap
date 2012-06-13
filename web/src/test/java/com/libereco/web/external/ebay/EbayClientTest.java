@@ -48,12 +48,12 @@ import com.libereco.core.domain.ShippingType;
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext-web.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
-public class EbayAddListingClientTest {
+public class EbayClientTest {
 
     private static final String TOKEN = "AgAAAA**AQAAAA**aAAAAA**u5LJTw**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhCJiKpQ6dj6x9nY+seQ**5dEBAA**AAMAAA**K3YLHsnW2N67j6uI2leG4Ear6Z67/0ktEDFc439VTfKE/nB8uzBEBD9H7pwexITBtFgSp5InGJyYnCIx1S+KblwvVD+qrvU5pEFviGlKhf1EwaGy3ha2X1GB+bmBELGbN9h3PdeS5JRZqVgAsRM8KM4mjTy0ojYJ6F0uSz7v8lPAmo5PXkKB72PNWBqPJDNfklf8zc3isSsOFvqYDlFY7iZ36W01wR2AVf0AXmWyM3aphtAVfMSGHzXayPqw3djEq96upt8P6mRrcu8Gj1JKTyHwg1gT6wJs6X/Hu4R4506wvlDZ1ijB0Hi7NxBDh4VdmhRDe6G2GFJjkisHcwkbpKR0dFhZxTOwL3JtG+CQ5IB/tc8g0Ns37FAYj1K5Zjtlwya9wVYhiTPJTa9LmzhsSO0zvwr6zpVm/H5ULGSdVbxx0R2bNV2nGj2zOxIMotvwcwvXyXMfXxG1ouIIXnSIMHIFopE8GXsghj12njvg+evLXXYCB95GlMQHBxsjDkJsHljixaZZbQPDSKt77NxonpUACTNZN/CqDDzF1Dig+Iy61r3SD+3p//wXCF8u2yXMZ64XIYhMsxL2EHUyPmfJh/dvwxOZOSaIg3srm4SewhhQmK6wMSYhZX3g12xQf1JajBJot3eTKbbnPTwO67LlcaLzwl6mhLyIPpE7d2hiKOjixJKX2U2Y5HWyEfG9UU0i+ABiwQAFyqbqQI9PHHofkDBUyE/bvBH0CBOixeyqFmyflKEgANPLFLCOFt6f+PnT";
 
     @Autowired
-    private EbayAddListingClient ebayAddListingClient;
+    private EbayClient ebayClient;
 
     @Autowired
     private ApiContext apiContext;
@@ -61,7 +61,7 @@ public class EbayAddListingClientTest {
     @Test
     public void shouldAddEbayListing() {
         EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
-        ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
+        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         String ebayItemUrl = ebayListing.getEbayItemUrl();
         System.out.println(ebayItemUrl);
         assertNotNull(ebayItemUrl);
@@ -71,9 +71,45 @@ public class EbayAddListingClientTest {
     public void shouldAddEbayListingWithImage() {
         EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
         ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
-        ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
+        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         assertNotNull(ebayListing.getEbayItemUrl());
         System.out.println(ebayListing.getEbayItemUrl());
+    }
+    
+    @Test
+    public void shouldUpdateEbayListing() {
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
+        String ebayItemUrl = ebayListing.getEbayItemUrl();
+        System.out.println(ebayItemUrl);
+        assertNotNull(ebayItemUrl);
+        
+        ebayListing.setDispatchTimeMax(10);
+        ebayListing.setStartPrice(2.0);
+        
+        EbayListing revisedEbayListing = ebayClient.reviseListing(ebayListing, TOKEN);
+        
+        ebayItemUrl = revisedEbayListing.getEbayItemUrl();
+        System.out.println(ebayItemUrl);
+        assertNotNull(ebayItemUrl);
+    }
+    
+    @Test
+    public void shouldUpdateEbayListingWithImage() {
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
+        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
+        assertNotNull(ebayListing.getEbayItemUrl());
+        System.out.println(ebayListing.getEbayItemUrl());
+        
+        ebayListing.setDispatchTimeMax(10);
+        ebayListing.setStartPrice(2.0);
+        ebayListing.getLiberecoListing().setPictureUrl("http://1revolution.info/wp-content/uploads/2012/06/iphone-5.png");
+        EbayListing revisedEbayListing = ebayClient.reviseListing(ebayListing, TOKEN);
+        
+        String ebayItemUrl = revisedEbayListing.getEbayItemUrl();
+        System.out.println(ebayItemUrl);
+        assertNotNull(ebayItemUrl);
     }
 
     @Test
@@ -84,7 +120,7 @@ public class EbayAddListingClientTest {
         for (ListingCondition listingCondition : listingConditions) {
             try {
                 EbayListing ebayListing = newEbayListing(listingCondition);
-                ebayListing = ebayAddListingClient.addListing(ebayListing, TOKEN);
+                ebayListing = ebayClient.addListing(ebayListing, TOKEN);
                 assertNotNull(ebayListing.getEbayItemUrl());
                 created.add("Created listing for " + listingCondition);
             } catch (Exception e) {
