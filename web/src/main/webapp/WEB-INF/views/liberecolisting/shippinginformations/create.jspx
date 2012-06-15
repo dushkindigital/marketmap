@@ -11,16 +11,17 @@
 		modelAttribute="shippingInformation"
 		path="/liberecolisting/shippinginformations" z="user-managed"
 		label="Create new Shipping Information">
-		
-		<field:input field="shippingService" id="_shippingService"
-			required="true" label="Shipping Service"
-			z="user-managed" />
 
+		<field:select field="shippingService" id="_shippingService"
+			items="${shippingservices}" path="shippingservices" required="true"
+			label="Shipping Service" z="user-managed" />
+			
 		<field:input field="shippingCost" id="_shippingCost" required="true"
 			label="Shipping Cost" z="user-managed" />
 
 		<field:select field="shippingType" id="_shippingType"
-			items="${shippingTypes}" path="shippingTypes" required="true" label="Shipping Type"
-			z="user-managed" />
+			items="${shippingTypes}" path="shippingTypes" required="true"
+			label="Shipping Type" z="user-managed" />
+
 	</form:create>
 </div>

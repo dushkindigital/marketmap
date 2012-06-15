@@ -22,6 +22,7 @@ import com.ebay.soap.eBLBaseComponents.BuyerPaymentMethodCodeType;
 import com.ebay.soap.eBLBaseComponents.CategoryType;
 import com.ebay.soap.eBLBaseComponents.CountryCodeType;
 import com.ebay.soap.eBLBaseComponents.CurrencyCodeType;
+import com.ebay.soap.eBLBaseComponents.DetailNameCodeType;
 import com.ebay.soap.eBLBaseComponents.ErrorHandlingCodeType;
 import com.ebay.soap.eBLBaseComponents.FeesType;
 import com.ebay.soap.eBLBaseComponents.ItemType;
@@ -29,6 +30,7 @@ import com.ebay.soap.eBLBaseComponents.ListingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.ProductListingDetailsType;
 import com.ebay.soap.eBLBaseComponents.ReturnPolicyType;
 import com.ebay.soap.eBLBaseComponents.ShippingDetailsType;
+import com.ebay.soap.eBLBaseComponents.ShippingServiceDetailsType;
 import com.ebay.soap.eBLBaseComponents.ShippingServiceOptionsType;
 import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.WarningLevelCodeType;
@@ -38,12 +40,13 @@ import com.libereco.core.domain.ItemLocation;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoPaymentInformation;
+import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ReturnPolicy;
-import com.libereco.core.domain.LiberecoShippingInformation;
+import com.libereco.core.domain.ShippingService;
 import com.libereco.core.domain.ShippingType;
 
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext-web.xml" })
@@ -61,7 +64,7 @@ public class EbayClientTest {
 
     @Test
     public void shouldAddEbayListing() {
-        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW, getUspsMediaShippingInformation());
         ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         String ebayItemUrl = ebayListing.getEbayItemUrl();
         System.out.println(ebayItemUrl);
@@ -70,60 +73,60 @@ public class EbayClientTest {
 
     @Test
     public void shouldAddEbayListingWithImage() {
-        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW, getUspsMediaShippingInformation());
         ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
         ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         assertNotNull(ebayListing.getEbayItemUrl());
         System.out.println(ebayListing.getEbayItemUrl());
     }
-    
+
     @Test
     public void shouldUpdateEbayListing() {
-        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW, getUspsMediaShippingInformation());
         ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         String ebayItemUrl = ebayListing.getEbayItemUrl();
         System.out.println(ebayItemUrl);
         assertNotNull(ebayItemUrl);
-        
+
         ebayListing.setDispatchTimeMax(10);
         ebayListing.setStartPrice(2.0);
-        
+
         EbayListing revisedEbayListing = ebayClient.reviseListing(ebayListing, TOKEN);
-        
+
         ebayItemUrl = revisedEbayListing.getEbayItemUrl();
         System.out.println(ebayItemUrl);
         assertNotNull(ebayItemUrl);
     }
-    
+
     @Test
     public void shouldUpdateEbayListingWithImage() {
-        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW, getUspsMediaShippingInformation());
         ebayListing.getLiberecoListing().setPictureUrl("http://resources.infosecinstitute.com/wp-content/uploads/iphone.jpg");
         ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         assertNotNull(ebayListing.getEbayItemUrl());
         System.out.println(ebayListing.getEbayItemUrl());
-        
+
         ebayListing.setDispatchTimeMax(10);
         ebayListing.setStartPrice(2.0);
         ebayListing.getLiberecoListing().setPictureUrl("http://1revolution.info/wp-content/uploads/2012/06/iphone-5.png");
         EbayListing revisedEbayListing = ebayClient.reviseListing(ebayListing, TOKEN);
-        
+
         String ebayItemUrl = revisedEbayListing.getEbayItemUrl();
         System.out.println(ebayItemUrl);
         assertNotNull(ebayItemUrl);
     }
 
     @Test
-    public void shouldDelistItemOnEbay(){
-        EbayListing ebayListing = newEbayListing(ListingCondition.NEW);
+    public void shouldDelistItemOnEbay() {
+        EbayListing ebayListing = newEbayListing(ListingCondition.NEW, getUspsMediaShippingInformation());
         ebayListing = ebayClient.addListing(ebayListing, TOKEN);
         String ebayItemUrl = ebayListing.getEbayItemUrl();
         System.out.println(ebayItemUrl);
         assertNotNull(ebayItemUrl);
-        
+
         ebayClient.delistItem(ebayListing, TOKEN, DelistingReason.OTHER_REASON);
     }
-    
+
     @Test
     public void shouldCreateEbayListingsWithAllListingConditions() {
         List<String> notCreated = new ArrayList<String>();
@@ -131,7 +134,7 @@ public class EbayClientTest {
         ListingCondition[] listingConditions = ListingCondition.values();
         for (ListingCondition listingCondition : listingConditions) {
             try {
-                EbayListing ebayListing = newEbayListing(listingCondition);
+                EbayListing ebayListing = newEbayListing(listingCondition, getUspsMediaShippingInformation());
                 ebayListing = ebayClient.addListing(ebayListing, TOKEN);
                 assertNotNull(ebayListing.getEbayItemUrl());
                 created.add("Created listing for " + listingCondition);
@@ -150,6 +153,58 @@ public class EbayClientTest {
         for (String message : notCreated) {
             System.out.println(message);
         }
+    }
+
+    @Test
+    public void shouldAddItemWithShippingInformationFedEx() {
+
+        // String[] shippingServices = { "FedExHomeDelivery","USPSPriority",
+        // "UPSGround", "UPSNextDay" };
+
+        ShippingServiceDetailsType[] shippingServiceDetails = ebayClient.getEbayShippingServiceDetails(DetailNameCodeType.SHIPPING_SERVICE_DETAILS,
+                TOKEN);
+
+        List<String> successfulListing = new ArrayList<String>();
+        List<String> failedListing = new ArrayList<String>();
+        for (ShippingServiceDetailsType shippingService : shippingServiceDetails) {
+            try {
+                LiberecoShippingInformation shippingInformation = new LiberecoShippingInformation();
+                shippingInformation.setShippingType(ShippingType.FLAT);
+                String shippingServiceInfo = shippingService.getShippingService();
+                shippingInformation.setShippingService(ShippingService.fromString(shippingServiceInfo));
+                shippingInformation.setShippingCost(2.50);
+
+                EbayListing ebayListing = newEbayListing(ListingCondition.NEW, shippingInformation);
+                ebayListing = ebayClient.addListing(ebayListing, TOKEN);
+                String ebayItemUrl = ebayListing.getEbayItemUrl();
+                assertNotNull(ebayItemUrl);
+                successfulListing.add("SuccessFully Created Listing for shipping service : " + shippingServiceInfo);
+            } catch (Exception e) {
+                failedListing.add("Not able to create listing " + e.getMessage());
+                failedListing.add("Not able to create listing for " + shippingService.getShippingService());
+            }
+        }
+
+        System.out.println("Successful Listings");
+        for (String success : successfulListing) {
+            System.out.println(success);
+        }
+
+        System.out.println("Failed Listings");
+        for (String failed : failedListing) {
+            System.out.println(failed);
+        }
+    }
+
+    @Test
+    public void shouldGetEbayDetails() {
+        ShippingServiceDetailsType[] ebayShippingServiceDetails = ebayClient.getEbayShippingServiceDetails(
+                DetailNameCodeType.SHIPPING_SERVICE_DETAILS, TOKEN);
+        StringBuilder sb = new StringBuilder();
+        for (ShippingServiceDetailsType shippingServiceDetailsType : ebayShippingServiceDetails) {
+            sb.append(shippingServiceDetailsType.getShippingService()).append(",");
+        }
+        System.out.println(sb);
     }
 
     @Ignore
@@ -213,7 +268,7 @@ public class EbayClientTest {
         return amountType;
     }
 
-    private EbayListing newEbayListing(ListingCondition listingCondition) {
+    private EbayListing newEbayListing(ListingCondition listingCondition, LiberecoShippingInformation shippingInformation) {
         EbayListing ebayListing = new EbayListing();
         ebayListing.setDispatchTimeMax(1);
         ebayListing.setLotSize(Integer.valueOf(1));
@@ -235,16 +290,22 @@ public class EbayClientTest {
         liberecoListing.setUserId(Long.valueOf(1));
         ItemLocation itemLocation = new ItemLocation("San Jose, CA", "95125");
         liberecoListing.setItemLocation(itemLocation);
-        LiberecoShippingInformation shippingInformation = new LiberecoShippingInformation();
-        shippingInformation.setShippingType(ShippingType.FLAT);
-        shippingInformation.setShippingService("USPSMedia");
-        shippingInformation.setShippingCost(2.50);
-        liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
         LiberecoPaymentInformation paymentInformation = new LiberecoPaymentInformation();
         paymentInformation.setPaymentMethod(PaymentMethod.PAYPAL);
         liberecoListing.setLiberecoPaymentInformations(Arrays.asList(paymentInformation));
+
+        liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
+
         ebayListing.setLiberecoListing(liberecoListing);
         return ebayListing;
+    }
+
+    public LiberecoShippingInformation getUspsMediaShippingInformation() {
+        LiberecoShippingInformation shippingInformation = new LiberecoShippingInformation();
+        shippingInformation.setShippingType(ShippingType.FLAT);
+        shippingInformation.setShippingService(ShippingService.USPSMedia);
+        shippingInformation.setShippingCost(2.50);
+        return shippingInformation;
     }
 
 }

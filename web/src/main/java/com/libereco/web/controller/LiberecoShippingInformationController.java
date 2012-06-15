@@ -17,6 +17,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.libereco.core.domain.LiberecoShippingInformation;
+import com.libereco.core.domain.ShippingService;
 import com.libereco.core.domain.ShippingType;
 import com.libereco.core.service.LiberecoShippingInformationService;
 
@@ -79,6 +80,7 @@ public class LiberecoShippingInformationController {
     void populateEditForm(Model uiModel, LiberecoShippingInformation shippingInformation) {
         uiModel.addAttribute("shippingInformation", shippingInformation);
         uiModel.addAttribute("shippingTypes", Arrays.asList(ShippingType.values()));
+        uiModel.addAttribute("shippingservices", Arrays.asList(ShippingService.values()));
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

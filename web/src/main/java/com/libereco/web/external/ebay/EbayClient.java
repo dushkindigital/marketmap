@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.AddFixedPriceItemCall;
 import com.ebay.sdk.call.EndFixedPriceItemCall;
+import com.ebay.sdk.call.GeteBayDetailsCall;
 import com.ebay.sdk.call.ReviseFixedPriceItemCall;
 import com.ebay.soap.eBLBaseComponents.AmountType;
 import com.ebay.soap.eBLBaseComponents.BuyerPaymentMethodCodeType;
@@ -17,6 +18,7 @@ import com.ebay.soap.eBLBaseComponents.CategoryType;
 import com.ebay.soap.eBLBaseComponents.CountryCodeType;
 import com.ebay.soap.eBLBaseComponents.CurrencyCodeType;
 import com.ebay.soap.eBLBaseComponents.DetailLevelCodeType;
+import com.ebay.soap.eBLBaseComponents.DetailNameCodeType;
 import com.ebay.soap.eBLBaseComponents.EndReasonCodeType;
 import com.ebay.soap.eBLBaseComponents.FeesType;
 import com.ebay.soap.eBLBaseComponents.GalleryTypeCodeType;
@@ -25,6 +27,7 @@ import com.ebay.soap.eBLBaseComponents.ListingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.PictureDetailsType;
 import com.ebay.soap.eBLBaseComponents.ReturnPolicyType;
 import com.ebay.soap.eBLBaseComponents.ShippingDetailsType;
+import com.ebay.soap.eBLBaseComponents.ShippingServiceDetailsType;
 import com.ebay.soap.eBLBaseComponents.ShippingServiceOptionsType;
 import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
@@ -139,6 +142,21 @@ public class EbayClient {
         }
     }
 
+    public ShippingServiceDetailsType[] getEbayShippingServiceDetails(DetailNameCodeType detailName, String token) {
+        this.apiContext
+                .getApiCredential()
+                .seteBayToken(token);
+        GeteBayDetailsCall geteBayDetailsCall = new GeteBayDetailsCall(apiContext);
+        geteBayDetailsCall.setDetailName(new DetailNameCodeType[] { detailName });
+        try {
+            geteBayDetailsCall.geteBayDetails();
+            ShippingServiceDetailsType[] shippingServiceDetails = geteBayDetailsCall.getReturnedShippingServiceDetails();
+            return shippingServiceDetails;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private EndReasonCodeType toEbayEndingReason(DelistingReason reason) {
         switch (reason) {
         case INCORRECT_PRICE:
@@ -150,7 +168,7 @@ public class EbayClient {
         case SOLD:
             return EndReasonCodeType.SOLD;
         }
-        
+
         throw new IllegalArgumentException("No Ebay EndReasonCodeType found for delisting reason : " + reason);
     }
 
@@ -234,12 +252,12 @@ public class EbayClient {
         throw new IllegalArgumentException("No valid BuyerPaymentMethodCodeType found for " + paymentMethod);
     }
 
-    public ShippingDetailsType toEbayShippingDetails(LiberecoShippingInformation shippingInformation) {
+    private ShippingDetailsType toEbayShippingDetails(LiberecoShippingInformation shippingInformation) {
         ShippingDetailsType shippingDetails = new ShippingDetailsType();
         shippingDetails.setShippingType(toEbayShippingType(shippingInformation.getShippingType()));
 
         ShippingServiceOptionsType shippingServiceOption = new ShippingServiceOptionsType();
-        shippingServiceOption.setShippingService(shippingInformation.getShippingService());
+        shippingServiceOption.setShippingService(shippingInformation.getShippingService().name());
         AmountType at = new AmountType();
         at.setValue(shippingInformation.getShippingCost());
         shippingServiceOption.setShippingServiceCost(at);
@@ -253,6 +271,22 @@ public class EbayClient {
         switch (shippingType) {
         case FLAT:
             return ShippingTypeCodeType.FLAT;
+        case CALCULATED:
+            return ShippingTypeCodeType.CALCULATED;
+        case CALCULATED_DOMESTIC_FLAT_INTERNATIONAL:
+            return ShippingTypeCodeType.CALCULATED_DOMESTIC_FLAT_INTERNATIONAL;
+        case CUSTOM_CODE:
+            return ShippingTypeCodeType.CUSTOM_CODE;
+        case FLAT_DOMESTIC_CALCULATED_INTERNATIONAL:
+            return ShippingTypeCodeType.FLAT_DOMESTIC_CALCULATED_INTERNATIONAL;
+        case FREE:
+            return ShippingTypeCodeType.FREE;
+        case FREIGHT:
+            return ShippingTypeCodeType.FREIGHT;
+        case FREIGHT_FLAT:
+            return ShippingTypeCodeType.FREIGHT_FLAT;
+        case NOT_SPECIFIED:
+            return ShippingTypeCodeType.NOT_SPECIFIED;
         }
         throw new IllegalArgumentException("No Ebay ShippingTypeCodeType found for shippingType : " + shippingType);
 

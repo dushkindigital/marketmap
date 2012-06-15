@@ -20,7 +20,8 @@ public class LiberecoShippingInformation {
     private ShippingType shippingType;
 
     @NotNull
-    private String shippingService;
+    @Enumerated
+    private ShippingService shippingService;
 
     @NotNull
     private double shippingCost;
@@ -58,11 +59,11 @@ public class LiberecoShippingInformation {
         this.shippingType = shippingType;
     }
 
-    public String getShippingService() {
+    public ShippingService getShippingService() {
         return this.shippingService;
     }
 
-    public void setShippingService(String shippingService) {
+    public void setShippingService(ShippingService shippingService) {
         this.shippingService = shippingService;
     }
 

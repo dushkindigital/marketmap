@@ -27,6 +27,7 @@ import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ReturnPolicy;
 import com.libereco.core.domain.LiberecoShippingInformation;
+import com.libereco.core.domain.ShippingService;
 import com.libereco.core.domain.ShippingType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -97,7 +98,7 @@ public class EbayListingRepositoryTest {
         liberecoListing.setItemLocation(itemLocation);
         LiberecoShippingInformation shippingInformation = new LiberecoShippingInformation();
         shippingInformation.setShippingType(ShippingType.FLAT);
-        shippingInformation.setShippingService("USPSMedia");
+        shippingInformation.setShippingService(ShippingService.USPSMedia);
         shippingInformation.setShippingCost(2.50);
         liberecoListing.setShippingInformations(Arrays.asList(shippingInformation));
         LiberecoPaymentInformation paymentInformation = new LiberecoPaymentInformation();
