@@ -156,6 +156,7 @@ public class EbayClientTest {
     }
 
     @Test
+    @Ignore
     public void shouldAddItemWithShippingInformationFedEx() {
 
         // String[] shippingServices = { "FedExHomeDelivery","USPSPriority",

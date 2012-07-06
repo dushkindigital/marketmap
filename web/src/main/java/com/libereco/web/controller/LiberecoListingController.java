@@ -37,6 +37,7 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.libereco.core.domain.DelistingReason;
 import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
@@ -223,7 +224,7 @@ public class LiberecoListingController {
         ebayClient.reviseListing(ebayListing, ebayAuthorizationToken);
         ebayListingService.updateEbayListing(ebayListing);
     }
-    
+
     private String getMarketplaceToken(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
@@ -237,7 +238,7 @@ public class LiberecoListingController {
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, liberecoListingService.findLiberecoListing(id)); 
+        populateEditForm(uiModel, liberecoListingService.findLiberecoListing(id));
         return "liberecolistings/update";
     }
 
@@ -245,6 +246,9 @@ public class LiberecoListingController {
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
+        EbayListing ebayListing = ebayListingService.findEbayListing(liberecoListing);
+        String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
+        ebayClient.delistItem(ebayListing, ebayAuthorizationToken, DelistingReason.OTHER_REASON);
         liberecoListingService.deleteLiberecoListing(liberecoListing);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
