@@ -22,7 +22,7 @@ import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @Entity
-public class EbayListing implements Serializable {
+public class EbayListing implements Serializable, Listing {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class EbayListing implements Serializable {
     @Enumerated
     @NotNull
     private ListingDuration listingDuration;
-    
+
     private String ebayItemUrl;
 
     @Id
@@ -84,8 +84,6 @@ public class EbayListing implements Serializable {
         this.startPrice = startPrice;
     }
 
-    
-
     public String getPaypalEmail() {
         return this.paypalEmail;
     }
@@ -93,8 +91,6 @@ public class EbayListing implements Serializable {
     public void setPaypalEmail(String paypalEmail) {
         this.paypalEmail = paypalEmail;
     }
-
-    
 
     public Integer getLotSize() {
         return this.lotSize;
@@ -127,24 +123,23 @@ public class EbayListing implements Serializable {
     public void setVersion(Integer version) {
         this.version = version;
     }
-    
+
     public void setListingDuration(ListingDuration listingDuration) {
         this.listingDuration = listingDuration;
     }
-    
+
     public ListingDuration getListingDuration() {
         return listingDuration;
     }
 
-    
     public void setEbayItemUrl(String ebayItemUrl) {
         this.ebayItemUrl = ebayItemUrl;
     }
-    
+
     public String getEbayItemUrl() {
         return ebayItemUrl;
     }
-    
+
     public String toJson() {
         return new JSONSerializer().exclude("*.class").serialize(this);
     }
@@ -168,7 +163,7 @@ public class EbayListing implements Serializable {
     public void setEbayItemId(String ebayItemId) {
         this.ebayItemId = ebayItemId;
     }
-    
+
     public String getEbayItemId() {
         return ebayItemId;
     }

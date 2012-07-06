@@ -1,6 +1,7 @@
 package com.libereco.core.service;
 
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.repository.EbayListingRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,10 @@ public class EbayListingServiceImpl implements EbayListingService {
     public List<EbayListing> findEbayListingEntries(Long userId, int firstResult, int maxResults) {
         return ebayListingRepository.findAllEbayListingByLiberecoListing_UserId(userId,
                 new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
+    }
+
+    @Override
+    public EbayListing findEbayListing(LiberecoListing liberecoListing) {
+        return ebayListingRepository.findByLiberecoListing(liberecoListing);
     }
 }

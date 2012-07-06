@@ -76,6 +76,21 @@ public class EbayListingRepositoryTest {
         assertEquals(10, listings.getContent().size());
     }
 
+    @Test
+    public void shouldFindEbayListingForThePersistedLiberecoListing() throws Exception {
+        EbayListing ebayListing = newEbayListing(1L);
+        ebayListingRepository.save(ebayListing);
+
+        LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
+        assertNotNull(liberecoListing);
+        assertNotNull(liberecoListing.getId());
+        
+        EbayListing persistedEbayListing = ebayListingRepository.findByLiberecoListing(liberecoListing);
+        assertNotNull(persistedEbayListing);
+        
+        assertEquals(ebayListing.getId(), persistedEbayListing.getId());
+    }
+
     private EbayListing newEbayListing(Long userId) {
         EbayListing ebayListing = new EbayListing();
         ebayListing.setDispatchTimeMax(Integer.valueOf(3));

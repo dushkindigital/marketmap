@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.LiberecoListing;
 
 @Repository
 public interface EbayListingRepository extends JpaSpecificationExecutor<EbayListing>, JpaRepository<EbayListing, Long> {
@@ -16,4 +17,6 @@ public interface EbayListingRepository extends JpaSpecificationExecutor<EbayList
     List<EbayListing> findAllEbayListingByLiberecoListing_UserId(Long userId);
 
     Page<EbayListing> findAllEbayListingByLiberecoListing_UserId(Long userId, Pageable pageable);
+
+    EbayListing findByLiberecoListing(LiberecoListing liberecoListing);
 }

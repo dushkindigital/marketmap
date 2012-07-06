@@ -37,16 +37,24 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.libereco.core.domain.EbayListing;
 import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
+import com.libereco.core.domain.MarketplaceAuthorizations;
+import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
+import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoPaymentInformationService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.LiberecoShippingInformationService;
+import com.libereco.core.service.MarketplaceAuthorizationsService;
+import com.libereco.core.service.MarketplaceService;
+import com.libereco.web.common.MarketplaceName;
+import com.libereco.web.external.ebay.EbayClient;
 import com.libereco.web.security.SecurityUtils;
 
 @RequestMapping("/liberecolistings")
@@ -61,6 +69,14 @@ public class LiberecoListingController {
     LiberecoShippingInformationService liberecoShippingInformationService;
     @Autowired
     LiberecoPaymentInformationService liberecoPaymentInformationService;
+    @Autowired
+    EbayListingService ebayListingService;
+    @Autowired
+    EbayClient ebayClient;
+    @Autowired
+    MarketplaceService marketplaceService;
+    @Autowired
+    MarketplaceAuthorizationsService marketplaceAuthorizationsService;
 
     private Logger logger = Logger.getLogger(LiberecoListingController.class);
 
@@ -139,7 +155,7 @@ public class LiberecoListingController {
         if (liberecoShippingInformationService.countAllShippingInformations() == 0) {
             dependencies.add(new String[] { "shippinginformation", "shippinginformations" });
         }
-        if(liberecoPaymentInformationService.countAllLiberecoPaymentInformations() == 0){
+        if (liberecoPaymentInformationService.countAllLiberecoPaymentInformations() == 0) {
             dependencies.add(new String[] { "paymentinformation", "paymentinformations" });
         }
         uiModel.addAttribute("dependencies", dependencies);
@@ -195,13 +211,33 @@ public class LiberecoListingController {
         liberecoListing.setMarketplaces(oldLiberecoListing.getMarketplaces());
         setPicture(liberecoListing, picture);
         updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
+        updateAllMarketplaceListings(liberecoListing);
         liberecoListingService.updateLiberecoListing(liberecoListing);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
 
+    private void updateAllMarketplaceListings(LiberecoListing liberecoListing) {
+        EbayListing ebayListing = ebayListingService.findEbayListing(liberecoListing);
+        ebayListing.setLiberecoListing(liberecoListing);
+        String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
+        ebayClient.reviseListing(ebayListing, ebayAuthorizationToken);
+        ebayListingService.updateEbayListing(ebayListing);
+    }
+    
+    private String getMarketplaceToken(EbayListing ebayListing) {
+        Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
+        if (marketplace == null) {
+            throw new RuntimeException("No marketplace found for marketplace ebay");
+        }
+        LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
+        MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
+        return ebayAuthorization.getToken();
+    }
+
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, liberecoListingService.findLiberecoListing(id));
+        populateEditForm(uiModel, liberecoListingService.findLiberecoListing(id)); 
         return "liberecolistings/update";
     }
 

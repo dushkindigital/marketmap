@@ -3,6 +3,7 @@ package com.libereco.core.service;
 import java.util.List;
 
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.LiberecoListing;
 
 public interface EbayListingService {
 
@@ -23,5 +24,7 @@ public interface EbayListingService {
     public abstract List<EbayListing> findAllEbayListings(Long userId);
 
     public abstract List<EbayListing> findEbayListingEntries(Long userId, int firstResult, int maxResults);
+
+    public abstract EbayListing findEbayListing(LiberecoListing liberecoListing);
 
 }
