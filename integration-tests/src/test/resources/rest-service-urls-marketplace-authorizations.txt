@@ -1,0 +1,15 @@
+Getting Signin url
+
+curl --user shekhar:password -i -H "Accept: application/json" http://localhost:8080/libereco/marketplaces/ebay/authorize
+
+Fetch Token
+
+curl --user shekhar:password -i -H "Accept: application/json" http://localhost:8080/libereco/marketplaces/ebay/fetchToken
+
+Show MarketplaceAuthorization
+
+curl --user shekhar:password -i -H "Accept: application/json" http://localhost:8080/libereco/shekhar/marketplaceauthorizations/ebay
+
+list MarketplaceAuthorizations
+
+curl --user shekhar:password -i -H "Accept: application/json" http://localhost:8080/libereco/shekhar/marketplaceauthorizations

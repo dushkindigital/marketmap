@@ -26,6 +26,8 @@ import flexjson.JSONSerializer;
 @Entity
 public class MarketplaceAuthorizations implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     @NotNull
     @Size(max = 4000)
     private String token;
@@ -65,29 +67,6 @@ public class MarketplaceAuthorizations implements Serializable {
         this.version = version;
     }
 
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    public String toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
-    }
-
-    public static MarketplaceAuthorizations fromJsonToMarketplaceAuthorizations(String json) {
-        return new JSONDeserializer<MarketplaceAuthorizations>().use(null, MarketplaceAuthorizations.class).deserialize(json);
-    }
-
-    public static String toJsonArray(Collection<MarketplaceAuthorizations> collection) {
-        return new JSONSerializer().exclude("*.class").serialize(collection);
-    }
-
-    public static Collection<MarketplaceAuthorizations> fromJsonArrayToMarketplaceAuthorizationses(String json) {
-        return new JSONDeserializer<List<MarketplaceAuthorizations>>().use(null, ArrayList.class).use("values", MarketplaceAuthorizations.class)
-                .deserialize(json);
-    }
-
-    private static final long serialVersionUID = 1L;
-
     public String getToken() {
         return this.token;
     }
@@ -118,5 +97,26 @@ public class MarketplaceAuthorizations implements Serializable {
 
     public void setLiberecoUser(LiberecoUser liberecoUser) {
         this.liberecoUser = liberecoUser;
+    }
+
+    public String toJson() {
+        return new JSONSerializer().exclude("*.class").serialize(this);
+    }
+
+    public static MarketplaceAuthorizations fromJsonToMarketplaceAuthorizations(String json) {
+        return new JSONDeserializer<MarketplaceAuthorizations>().use(null, MarketplaceAuthorizations.class).deserialize(json);
+    }
+
+    public static String toJsonArray(Collection<MarketplaceAuthorizations> collection) {
+        return new JSONSerializer().exclude("*.class").serialize(collection);
+    }
+
+    public static Collection<MarketplaceAuthorizations> fromJsonArrayToMarketplaceAuthorizationses(String json) {
+        return new JSONDeserializer<List<MarketplaceAuthorizations>>().use(null, ArrayList.class).use("values", MarketplaceAuthorizations.class)
+                .deserialize(json);
+    }
+
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }
