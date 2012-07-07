@@ -51,6 +51,25 @@ public class LiberecoUserController {
         return "redirect:/liberecousers/" + encodeUrlPathSegment(liberecoUser.getId().toString(), httpServletRequest);
     }
 
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJson(@RequestBody String json) {
+        LiberecoUser liberecoUser = LiberecoUser.fromJsonToLiberecoUser(json);
+        liberecoUserService.saveLiberecoUser(liberecoUser);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
+        for (LiberecoUser liberecoUser : LiberecoUser.fromJsonArrayToLiberecoUsers(json)) {
+            liberecoUserService.saveLiberecoUser(liberecoUser);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         populateEditForm(uiModel, new LiberecoUser());
@@ -63,6 +82,18 @@ public class LiberecoUserController {
         uiModel.addAttribute("liberecouser", liberecoUserService.findLiberecoUser(id));
         uiModel.addAttribute("itemId", id);
         return "liberecousers/show";
+    }
+
+    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        LiberecoUser liberecoUser = liberecoUserService.findLiberecoUser(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (liberecoUser == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(liberecoUser.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(produces = "text/html")
@@ -81,6 +112,15 @@ public class LiberecoUserController {
         return "liberecousers/list";
     }
 
+    @RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<LiberecoUser> result = liberecoUserService.findAllLiberecoUsers();
+        return new ResponseEntity<String>(LiberecoUser.toJsonArray(result), headers, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid LiberecoUser liberecoUser, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -90,6 +130,29 @@ public class LiberecoUserController {
         uiModel.asMap().clear();
         liberecoUserService.updateLiberecoUser(liberecoUser);
         return "redirect:/liberecousers/" + encodeUrlPathSegment(liberecoUser.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        LiberecoUser liberecoUser = LiberecoUser.fromJsonToLiberecoUser(json);
+        if (liberecoUserService.updateLiberecoUser(liberecoUser) == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJsonArray(@RequestBody String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        for (LiberecoUser liberecoUser : LiberecoUser.fromJsonArrayToLiberecoUsers(json)) {
+            if (liberecoUserService.updateLiberecoUser(liberecoUser) == null) {
+                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            }
+        }
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
@@ -107,6 +170,18 @@ public class LiberecoUserController {
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/liberecousers";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        LiberecoUser liberecoUser = liberecoUserService.findLiberecoUser(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (liberecoUser == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        liberecoUserService.deleteLiberecoUser(liberecoUser);
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
     void addDateTimeFormatPatterns(Model uiModel) {
@@ -133,78 +208,4 @@ public class LiberecoUserController {
         return pathSegment;
     }
 
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-        LiberecoUser liberecoUser = liberecoUserService.findLiberecoUser(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        if (liberecoUser == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(liberecoUser.toJson(), headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> listJson() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        List<LiberecoUser> result = liberecoUserService.findAllLiberecoUsers();
-        return new ResponseEntity<String>(LiberecoUser.toJsonArray(result), headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createFromJson(@RequestBody String json) {
-        LiberecoUser liberecoUser = LiberecoUser.fromJsonToLiberecoUser(json);
-        liberecoUserService.saveLiberecoUser(liberecoUser);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-        for (LiberecoUser liberecoUser : LiberecoUser.fromJsonArrayToLiberecoUsers(json)) {
-            liberecoUserService.saveLiberecoUser(liberecoUser);
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        LiberecoUser liberecoUser = LiberecoUser.fromJsonToLiberecoUser(json);
-        if (liberecoUserService.updateLiberecoUser(liberecoUser) == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFromJsonArray(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        for (LiberecoUser liberecoUser : LiberecoUser.fromJsonArrayToLiberecoUsers(json)) {
-            if (liberecoUserService.updateLiberecoUser(liberecoUser) == null) {
-                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-            }
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
-        LiberecoUser liberecoUser = liberecoUserService.findLiberecoUser(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        if (liberecoUser == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        liberecoUserService.deleteLiberecoUser(liberecoUser);
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
 }

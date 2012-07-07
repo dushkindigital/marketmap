@@ -1,0 +1,20 @@
+CREATE USER 
+
+curl -i -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"username":"test_user_007","password":"password","status":"ACTIVE","lastUpdated":"FriJul 06 15:45:27 IST 2012"}' http://localhost:8080/libereco/liberecousers
+
+READ USER 
+
+curl -i -H "Accept: application/json" http://localhost:8080/libereco/liberecousers/1
+
+
+CREATE MULTIPLE USERS IN ONE REQUEST
+
+curl -i -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d '[{"username":"test","password":"password","status":"ACTIVE"},{"username":"test1","password":"password1","status":"ACTIVE"}]' http://localhost:8080/libereco/liberecousers
+
+LIST ALL USERS 
+
+curl -i -H "Accept: application/json" http://localhost:8080/libereco/liberecousers
+
+UPDATE USER
+
+curl -i -X PUT -H "Content-Type: application/json" -H "Accept: application/json" -d '{"username":"test_user_007jkjbjb","password":"password","status":"ACTIVE","id":1,"version":0}' http://localhost:8080/libereco/liberecousers
