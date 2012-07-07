@@ -8,12 +8,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.webapp.WebAppContext;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -22,34 +20,22 @@ import com.jayway.restassured.response.Header;
 
 public class LiberecoUserRestServiceIntegrationTest {
 
-    private static final int PORT = 8080;
     private static Server server;
 
     @BeforeClass
     public static void startJettyServer() throws Exception {
-        server = new Server(PORT);
-        server.setStopAtShutdown(true);
-        WebAppContext wac = new WebAppContext(getWarPath(), "/libereco");
-        wac.setClassLoader(LiberecoUserRestServiceIntegrationTest.class.getClass().getClassLoader());
-        server.addHandler(wac);
-        server.start();
-    }
-
-    private static String getWarPath() {
-        String path = System.getProperty("libereco.war.path");
-        path = StringUtils.isBlank(path) == true ? "../web/target/libereco.war" : path;
-        return path;
+        server = ServerUtils.startServer(8080, "/libereco", "../web/target/libereco.war");
     }
 
     @Test
     public void shouldCreateReadUpdateAndDeleteLiberecoUser() throws Exception {
-        String user1Json = userJson("test_user_007", "password");
+        String userJson = userJson("test_user_007", "password");
 
         // CREATE USER
 
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
-                body(user1Json).
+                body(userJson).
                 expect().
                 statusCode(201).
                 log().all().
@@ -193,25 +179,6 @@ public class LiberecoUserRestServiceIntegrationTest {
     @AfterClass
     public static void shutdownServer() throws Exception {
         server.stop();
-    }
-
-    public static void main(String[] args) {
-        JsonArray jsonArray = new JsonArray();
-        JsonObject first = new JsonObject();
-        first.addProperty("username", "test");
-        first.addProperty("password", "password");
-        first.addProperty("status", "ACTIVE");
-
-        JsonObject second = new JsonObject();
-        second.addProperty("username", "test1");
-        second.addProperty("password", "password1");
-        second.addProperty("status", "ACTIVE");
-
-        jsonArray.add(first);
-        jsonArray.add(second);
-
-        String json = jsonArray.toString();
-        System.out.println(json);
     }
 
 }
