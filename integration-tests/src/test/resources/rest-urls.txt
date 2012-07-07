@@ -18,3 +18,7 @@ curl -i -H "Accept: application/json" http://localhost:8080/libereco/liberecouse
 UPDATE USER
 
 curl -i -X PUT -H "Content-Type: application/json" -H "Accept: application/json" -d '{"username":"test_user_007jkjbjb","password":"password","status":"ACTIVE","id":1,"version":0}' http://localhost:8080/libereco/liberecousers
+
+DELETE USER
+
+curl -i -X DELETE -H "Accept: application/json" http://localhost:8080/libereco/liberecousers/1
