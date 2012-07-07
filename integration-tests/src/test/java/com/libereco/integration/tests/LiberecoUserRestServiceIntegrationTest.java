@@ -150,6 +150,12 @@ public class LiberecoUserRestServiceIntegrationTest {
                 statusCode(405).
                 log().all().
                 post("/libereco/liberecousers");
+        given().log().all().
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                expect().
+                statusCode(404).
+                log().all().
+                when().delete("/libereco/liberecousers/1");
     }
 
     private String userJson(String username, String password) {
