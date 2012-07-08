@@ -70,7 +70,7 @@ public class MarketPlaceAuthorizationController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET)
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET,produces = "text/html")
     public String authorize(@PathVariable("marketplace") String name) {
         String redirectUrl = getRedirectUrl(name);
         return "redirect:" + redirectUrl;
@@ -105,7 +105,7 @@ public class MarketPlaceAuthorizationController {
         return redirectUrl;
     }
 
-    @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET, produces = "text/html")
     public String fetchToken(@PathVariable("marketplace") String name) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         persistMarketplaceAuthorizationToken(name, username);
