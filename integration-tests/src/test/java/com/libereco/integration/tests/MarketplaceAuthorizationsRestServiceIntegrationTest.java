@@ -53,9 +53,10 @@ public class MarketplaceAuthorizationsRestServiceIntegrationTest {
                 log().all().
                 post("/libereco/liberecousers");
 
+        // CREATE MARKETPLACE
         String marketplaceJson = toJson(ImmutableMap.<String, String> builder().put("marketplaceName", "ebay")
                 .put("marketplaceShortName", "ebay").build());
-
+        
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(marketplaceJson).
@@ -99,7 +100,9 @@ public class MarketplaceAuthorizationsRestServiceIntegrationTest {
                 get("/libereco/marketplaces/ebay/fetchToken").asString();
 
         assertNotNull(token);
-
+        
+        // SHOW MARKETPLACE_AUTHORIZATIONS
+        
         given().
                 auth().form("test_user", "password", config).
                 log().all().
