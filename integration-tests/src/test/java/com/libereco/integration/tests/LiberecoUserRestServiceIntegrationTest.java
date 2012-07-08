@@ -25,6 +25,11 @@ public class LiberecoUserRestServiceIntegrationTest {
         server = ServerUtils.startServer(8080, "/libereco", "../web/target/libereco.war");
     }
 
+    @AfterClass
+    public static void shutdownServer() throws Exception {
+        server.stop();
+    }
+
     @Test
     public void shouldCreateReadUpdateAndDeleteLiberecoUser() throws Exception {
         String userJson = userJson("test_user_007", "password");
@@ -154,11 +159,6 @@ public class LiberecoUserRestServiceIntegrationTest {
                 statusCode(404).
                 log().all().
                 when().delete("/libereco/liberecousers/1");
-    }
-
-    @AfterClass
-    public static void shutdownServer() throws Exception {
-        server.stop();
     }
 
 }
