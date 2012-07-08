@@ -1,19 +1,17 @@
 package com.libereco.integration.tests;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.libereco.integration.tests.JsonUtils.userJson;
+import static com.libereco.integration.tests.JsonUtils.userJsonWithId;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jayway.restassured.response.Header;
@@ -156,30 +154,6 @@ public class LiberecoUserRestServiceIntegrationTest {
                 statusCode(404).
                 log().all().
                 when().delete("/libereco/liberecousers/1");
-    }
-
-    private String userJson(String username, String password) {
-        Map<String, String> parameters = new LinkedHashMap<String, String>();
-        parameters.put("username", username);
-        parameters.put("password", password);
-        parameters.put("status", "ACTIVE");
-        parameters.put("lastUpdated", new Date().toString());
-        Gson gson = new Gson();
-        String userJson = gson.toJson(parameters);
-        return userJson;
-    }
-
-    private String userJsonWithId(String username, String password, Long id) {
-        Map<String, String> parameters = new LinkedHashMap<String, String>();
-        parameters.put("id", String.valueOf(id));
-        parameters.put("username", username);
-        parameters.put("password", password);
-        parameters.put("status", "ACTIVE");
-        parameters.put("lastUpdated", new Date().toString());
-        parameters.put("version", String.valueOf(0));
-        Gson gson = new Gson();
-        String userJson = gson.toJson(parameters);
-        return userJson;
     }
 
     @AfterClass

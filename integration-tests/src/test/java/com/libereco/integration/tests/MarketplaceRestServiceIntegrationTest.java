@@ -1,34 +1,32 @@
 package com.libereco.integration.tests;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.libereco.integration.tests.JsonUtils.toJson;
+import static com.libereco.integration.tests.JsonUtils.toJsonObject;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.jayway.restassured.response.Header;
 
 public class MarketplaceRestServiceIntegrationTest {
 
-    private static Server server;
+    private Server server;
 
-    @BeforeClass
-    public static void startJettyServer() throws Exception {
+    @Before
+    public void startJettyServer() throws Exception {
         server = ServerUtils.startServer(8080, "/libereco", "../web/target/libereco.war");
     }
 
-    @AfterClass
-    public static void shutdownJettyServer() throws Exception {
+    @After
+    public void shutdownJettyServer() throws Exception {
         server.stop();
     }
 
@@ -154,22 +152,9 @@ public class MarketplaceRestServiceIntegrationTest {
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
-                statusCode(404).
+                statusCode(200).
                 log().all().
                 when().delete("/libereco/marketplaces/1");
-    }
-
-    public static String toJson(Map<String, String> properties) {
-        Gson gson = new Gson();
-        return gson.toJson(properties);
-    }
-
-    public static JsonObject toJsonObject(Map<String, String> properties) {
-        JsonObject object = new JsonObject();
-        for (Entry<String, String> entry : properties.entrySet()) {
-            object.addProperty(entry.getKey(), entry.getValue());
-        }
-        return object;
     }
 
 }
