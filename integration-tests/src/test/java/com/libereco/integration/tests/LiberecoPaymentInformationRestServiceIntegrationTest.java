@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import com.jayway.restassured.authentication.FormAuthConfig;
 import com.jayway.restassured.response.Header;
 
-public class LiberecoShippingInformationRestServiceIntegrationTest {
+public class LiberecoPaymentInformationRestServiceIntegrationTest {
 
     private static Server server;
 
@@ -51,22 +51,21 @@ public class LiberecoShippingInformationRestServiceIntegrationTest {
     @Test
     public void shouldCreateReadUpdateAndDeleteLiberecoShippingInformation() throws Exception {
 
-        // CREATE SHIPPING_INFORMATION
+        // CREATE PAYMENT_INFORMATION
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
-        String shippingInformationJson = toJson(ImmutableMap.<String, String> builder().put("shippingType", "FLAT")
-                .put("shippingService", "USPSMedia").put("shippingCost", "2.50").build());
+        String paymentInformationJson = toJson(ImmutableMap.<String, String> builder().put("paymentMethod", "AM_EX").build());
 
         given().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
-                body(shippingInformationJson).
+                body(paymentInformationJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/liberecolisting/shippinginformations");
+                post("/libereco/liberecolisting/paymentinformations");
 
-        // READ SHIPPING_INFORMATION
+        // READ PAYMENT_INFORMATION
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -74,12 +73,11 @@ public class LiberecoShippingInformationRestServiceIntegrationTest {
                 expect().
                 statusCode(200).
                 body("id", equalTo(1)).
-                body("shippingType", equalTo("FLAT")).
-                body("shippingService", equalTo("USPSMedia")).
+                body("paymentMethod", equalTo("AM_EX")).
                 log().all().
-                when().get("/libereco/liberecolisting/shippinginformations/1");
+                when().get("/libereco/liberecolisting/paymentinformations/1");
 
-        // READ SHIPPING_INFORMATION WHICH DOES NOT EXIST RETURNS ERROR CODE 404
+        // READ PAYMENT_INFORMATION WHICH DOES NOT EXIST RETURNS ERROR CODE 404
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -87,9 +85,9 @@ public class LiberecoShippingInformationRestServiceIntegrationTest {
                 expect().
                 statusCode(404).
                 log().all().
-                when().get("/libereco/liberecolisting/shippinginformations/12345");
+                when().get("/libereco/liberecolisting/paymentinformations/12345");
 
-        // LIST ALL SHIPPING_INFORMATIONS
+        // LIST ALL PAYMENT_INFORMATIONS
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -97,26 +95,25 @@ public class LiberecoShippingInformationRestServiceIntegrationTest {
                 expect().
                 statusCode(200).
                 body("id", equalTo(Arrays.asList(1))).
-                body("shippingType", equalTo(Arrays.asList("FLAT"))).
-                body("shippingService", equalTo(Arrays.asList("USPSMedia"))).
+                body("paymentMethod", equalTo(Arrays.asList("AM_EX"))).
                 log().all().
-                when().get("/libereco/liberecolisting/shippinginformations");
+                when().get("/libereco/liberecolisting/paymentinformations");
 
-        // UPDATE SHIPPING_INFORMATION
+        // UPDATE PAYMENT_INFORMATION
 
-        String shippingInformationUpdateJson = toJson(ImmutableMap.<String, String> builder().put("id", "1").put("shippingType", "CALCULATED")
-                .put("shippingService", "USPSMedia").put("shippingCost", "2.50").put("version", "0").build());
+        String paymentInformationUpdateJson = toJson(ImmutableMap.<String, String> builder().put("id", "1").put("paymentMethod", "AM_EX")
+                .put("version", "0").build());
 
         given().log().all().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
-                body(shippingInformationUpdateJson).
+                body(paymentInformationUpdateJson).
                 expect().
                 statusCode(200).
                 log().all().
-                put("/libereco/liberecolisting/shippinginformations");
+                put("/libereco/liberecolisting/paymentinformations");
 
-        // DELETE SHIPPING_INFORMATION
+        // DELETE PAYMENT_INFORMATION
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -124,7 +121,7 @@ public class LiberecoShippingInformationRestServiceIntegrationTest {
                 expect().
                 statusCode(200).
                 log().all().
-                when().delete("/libereco/liberecolisting/shippinginformations/1");
+                when().delete("/libereco/liberecolisting/paymentinformations/1");
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -132,6 +129,6 @@ public class LiberecoShippingInformationRestServiceIntegrationTest {
                 expect().
                 statusCode(404).
                 log().all().
-                when().delete("/libereco/liberecolisting/shippinginformations/1");
+                when().delete("/libereco/liberecolisting/paymentinformations/1");
     }
 }

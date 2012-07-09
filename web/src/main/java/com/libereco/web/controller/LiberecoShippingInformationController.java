@@ -24,7 +24,6 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.libereco.core.domain.LiberecoShippingInformation;
-import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.ShippingService;
 import com.libereco.core.domain.ShippingType;
 import com.libereco.core.service.LiberecoShippingInformationService;
