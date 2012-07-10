@@ -224,6 +224,17 @@ public class LiberecoListingController {
         addDateTimeFormatPatterns(uiModel);
         return "liberecolistings/list";
     }
+    
+    @RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<LiberecoListing> result = liberecoListingService.findAllLiberecoListings(user.getId());
+        return new ResponseEntity<String>(LiberecoListing.toJsonArray(result), headers, HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = "text/html")
     public String update(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest,
@@ -307,17 +318,6 @@ public class LiberecoListingController {
         } catch (UnsupportedEncodingException uee) {
         }
         return pathSegment;
-    }
-
-    @RequestMapping(headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> listJson() {
-        String username = SecurityUtils.getCurrentLoggedInUsername();
-        LiberecoUser user = liberecoUserService.findUserByUsername(username);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        List<LiberecoListing> result = liberecoListingService.findAllLiberecoListings(user.getId());
-        return new ResponseEntity<String>(LiberecoListing.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")

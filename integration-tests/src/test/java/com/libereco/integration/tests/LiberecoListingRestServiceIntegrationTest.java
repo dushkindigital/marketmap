@@ -5,14 +5,13 @@ import static com.libereco.integration.tests.JsonUtils.toJson;
 import static com.libereco.integration.tests.JsonUtils.toJsonObject;
 import static com.libereco.integration.tests.TestDataUtils.shouldAutheticateWithEbay;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateMarketplace;
-import static com.libereco.integration.tests.TestDataUtils.shouldCreatePaymentInformation;
-import static com.libereco.integration.tests.TestDataUtils.shouldCreateShippingMethod;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateUser;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -116,5 +115,32 @@ public class LiberecoListingRestServiceIntegrationTest {
                 log().all().
                 when().get("/libereco/liberecolistings/1");
 
+        // READ LIBERECO_LISTING WHICH DOES NOT EXIST RETURNS ERROR CODE 404
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                expect().
+                statusCode(404).
+                log().all().
+                when().get("/libereco/liberecolistings/12345");
+
+        // LIST ALL LIBERECO_LISTING
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                expect().
+                statusCode(200).
+                body("name", equalTo(Arrays.asList(listingName))).
+                body("quantity", equalTo(Arrays.asList(1))).
+                body("description", equalTo(Arrays.asList("test listing"))).
+                body("category", equalTo(Arrays.asList("CAT_ELECTRONICS"))).
+                body("listingCondition", equalTo(Arrays.asList("NEW"))).
+                body("pictureName", equalTo(Arrays.asList("samsung-galaxy.jpg"))).
+                body("pictureUrl", equalTo(Arrays.asList("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy.jpg"))).
+                body("userId", equalTo(Arrays.asList(1))).
+                log().all().
+                when().get("/libereco/liberecolistings");
     }
 }
