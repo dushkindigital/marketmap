@@ -1,0 +1,7 @@
+{"category":"CAT_ELECTRONICS","description":"Test Listing 12345","id":null,"itemLocation":{"itemLocation":"San Jose, CA","postalCode":"95125"},"listingCondition":"NEW","listingState":null,"name":"Test Listing 12345","pictureName":null,"pictureUrl":null,"price":100.0,"quantity":1,"userId":null,"version":null}
+
+
+{"category":"CAT_ELECTRONICS","description":"test listing 12345","id":null,"itemLocation":{"itemLocation":"San Jose, CA","postalCode":"95125"},"liberecoPaymentInformations":[{"id":1,"paymentMethod":"AM_EX","version":0}],"listingCondition":"NEW","listingState":null,"name":"test listing 12345","pictureName":null,"pictureUrl":null,"price":100.0,"quantity":1,"shippingInformations":[{"id":1,"shippingCost":2.5,"shippingService":"USPSMedia","shippingType":"FLAT","version":0}],"userId":null,"version":null}
+
+curl --user shekhar:password -i -X POST  -H "Content-Type: multipart/mixed" -d @samsung-galaxy-note_1.jpg -d '{"category":"CAT_ELECTRONICS","description":"test listing 123456","id":null,"itemLocation":{"itemLocation":"San Jose, CA","postalCode":"95125"},"liberecoPaymentInformations":[{"id":1,"paymentMethod":"AM_EX","version":0}],"listingCondition":"NEW","listingState":null,"name":"test listing 123456","pictureName":null,"pictureUrl":null,"price":100.0,"quantity":1,"shippingInformations":[{"id":1,"shippingCost":2.5,"shippingService":"USPSMedia","shippingType":"FLAT","version":0}],"userId":null,"version":null}' http://localhost:8080/web/liberecolistings
+

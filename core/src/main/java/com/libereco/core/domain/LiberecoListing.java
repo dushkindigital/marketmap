@@ -230,7 +230,7 @@ public class LiberecoListing implements Serializable {
     }
 
     public String toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
+        return new JSONSerializer().exclude("*.class").include("shippingInformations").include("liberecoPaymentInformations").serialize(this);
     }
 
     public static LiberecoListing fromJsonToLiberecoListing(String json) {

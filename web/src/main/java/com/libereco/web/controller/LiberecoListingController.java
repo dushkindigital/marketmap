@@ -95,6 +95,22 @@ public class LiberecoListingController {
             return "liberecolistings/create";
         }
         uiModel.asMap().clear();
+        System.out.println(liberecoListing.toJson());
+        createLiberecoListing(liberecoListing, httpServletRequest, picture);
+        return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> createFromJson(@RequestBody String json, HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
+        LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
+        createLiberecoListing(liberecoListing, httpServletRequest, picture);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+    private void createLiberecoListing(LiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         liberecoListing.setUserId(user.getId());
@@ -103,7 +119,6 @@ public class LiberecoListingController {
         liberecoListingService.saveLiberecoListing(liberecoListing);
         updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
         liberecoListingService.updateLiberecoListing(liberecoListing);
-        return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
 
     private void updateLiberecoListingWithPicture(LiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
@@ -303,15 +318,6 @@ public class LiberecoListingController {
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<LiberecoListing> result = liberecoListingService.findAllLiberecoListings(user.getId());
         return new ResponseEntity<String>(LiberecoListing.toJsonArray(result), headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createFromJson(@RequestBody String json) {
-        LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
-        liberecoListingService.saveLiberecoListing(liberecoListing);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
