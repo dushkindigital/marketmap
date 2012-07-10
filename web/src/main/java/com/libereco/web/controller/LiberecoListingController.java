@@ -194,6 +194,18 @@ public class LiberecoListingController {
         }
         return "liberecolistings/show";
     }
+    
+    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (liberecoListing == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(liberecoListing.toJson(), headers, HttpStatus.OK);
+    }
 
     @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
@@ -295,18 +307,6 @@ public class LiberecoListingController {
         } catch (UnsupportedEncodingException uee) {
         }
         return pathSegment;
-    }
-
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        if (liberecoListing == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(liberecoListing.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")

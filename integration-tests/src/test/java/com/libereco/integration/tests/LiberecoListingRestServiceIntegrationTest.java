@@ -8,14 +8,13 @@ import static com.libereco.integration.tests.TestDataUtils.shouldCreateMarketpla
 import static com.libereco.integration.tests.TestDataUtils.shouldCreatePaymentInformation;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateShippingMethod;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateUser;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.UUID;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,6 +24,7 @@ import org.mortbay.jetty.Server;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.jayway.restassured.authentication.FormAuthConfig;
+import com.jayway.restassured.response.Header;
 
 public class LiberecoListingRestServiceIntegrationTest {
 
@@ -46,8 +46,8 @@ public class LiberecoListingRestServiceIntegrationTest {
         shouldCreateUser();
         shouldCreateMarketplace();
         shouldAutheticateWithEbay();
-        shouldCreateShippingMethod();
-        shouldCreatePaymentInformation();
+        // shouldCreateShippingMethod();
+        // shouldCreatePaymentInformation();
     }
 
     @Test
@@ -68,8 +68,10 @@ public class LiberecoListingRestServiceIntegrationTest {
         paymentInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("paymentMethod", "AM_EX").build()));
         String paymentInformationJson = paymentInformationJsonArray.toString();
 
+        String listingName = "test_listing" + UUID.randomUUID().toString();
+
         String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
-                put("name", "test_listing" + UUID.randomUUID().toString()).
+                put("name", listingName).
                 put("price", "100").
                 put("quantity", "1").
                 put("description", "test listing").
@@ -93,8 +95,26 @@ public class LiberecoListingRestServiceIntegrationTest {
                 auth().form("test_user", "password", config).
                 expect().
                 get("/libereco/liberecolistings/1/image/samsung-galaxy.jpg").asInputStream();
-        
+
         assertNotNull(inputStream);
+
+        // READ LIBERECO_LISTING
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                expect().
+                statusCode(200).
+                body("name", equalTo(listingName)).
+                body("quantity", equalTo(1)).
+                body("description", equalTo("test listing")).
+                body("category", equalTo("CAT_ELECTRONICS")).
+                body("listingCondition", equalTo("NEW")).
+                body("pictureName", equalTo("samsung-galaxy.jpg")).
+                body("pictureUrl", equalTo("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy.jpg")).
+                body("userId", equalTo(1)).
+                log().all().
+                when().get("/libereco/liberecolistings/1");
 
     }
 }
