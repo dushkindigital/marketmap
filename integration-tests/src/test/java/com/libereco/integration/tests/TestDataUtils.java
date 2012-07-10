@@ -82,7 +82,7 @@ public abstract class TestDataUtils {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
         String shippingInformationJson = toJson(ImmutableMap.<String, String> builder().put("shippingType", "FLAT")
-                .put("shippingService", "USPSMedia").put("shippingCost", "2.50").build());
+                .put("shippingService", "USPSMedia").put("shippingCost", "2.5").build());
 
         given().
                 auth().form("test_user", "password", config).

@@ -1,10 +1,13 @@
 package com.libereco.core.domain;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,8 +28,13 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+import flexjson.ObjectBinder;
+import flexjson.ObjectFactory;
 
 @Entity
 public class LiberecoListing implements Serializable {
@@ -234,7 +242,36 @@ public class LiberecoListing implements Serializable {
     }
 
     public static LiberecoListing fromJsonToLiberecoListing(String json) {
-        return new JSONDeserializer<LiberecoListing>().use(null, LiberecoListing.class).deserialize(json);
+        return new JSONDeserializer<LiberecoListing>().
+                use(null, LiberecoListing.class).
+                use("liberecoPaymentInformations", new ObjectFactory() {
+                    
+                    @Override
+                    public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
+                        return LiberecoPaymentInformation.fromJsonArrayToLiberecoPaymentInformations((String)value);
+                    }
+                }).
+                use("shippingInformations", new ObjectFactory() {
+                    
+                    @Override
+                    public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
+                        return LiberecoShippingInformation.fromJsonArrayToLiberecoShippingInformations((String)value);
+                    }
+                }).
+                use(ItemLocation.class, new ObjectFactory() {
+
+                    @Override
+                    public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
+                        Type type =
+                                new TypeToken<Map<String, String>>() {
+                                }.getType();
+                        Map<String, String> map =
+                                new Gson().fromJson((String) value, type);
+                        ItemLocation itemLocation = new ItemLocation(map.get("itemLocation"), map.get("postalCode"));
+                        return itemLocation;
+                    }
+                }).
+                deserialize(json);
     }
 
     public static String toJsonArray(Collection<LiberecoListing> collection) {
@@ -247,5 +284,32 @@ public class LiberecoListing implements Serializable {
 
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public static void main(String[] args) {
+        String json = json();
+        System.out.println(LiberecoListing.fromJsonToLiberecoListing(json));
+    }
+
+    private static String json() {
+        LiberecoListing listing = new LiberecoListing();
+        listing.category = LiberecoCategory.CAT_ELECTRONICS;
+        listing.description = "Test listing 12345";
+        listing.name = "Test Listing";
+        listing.itemLocation = new ItemLocation("San Jose,CA", "95125");
+        LiberecoPaymentInformation liberecoPaymentInformation = new LiberecoPaymentInformation();
+        liberecoPaymentInformation.setPaymentMethod(PaymentMethod.AM_EX);
+        listing.liberecoPaymentInformations = Arrays.asList(liberecoPaymentInformation);
+        LiberecoShippingInformation liberecoShippingInformation = new LiberecoShippingInformation();
+        liberecoShippingInformation.setShippingCost(2.5d);
+        liberecoShippingInformation.setShippingService(ShippingService.USPSMedia);
+        liberecoShippingInformation.setShippingType(ShippingType.FLAT);
+        listing.shippingInformations = Arrays.asList(liberecoShippingInformation);
+        listing.listingCondition = ListingCondition.NEW;
+        listing.listingState = ListingState.NEW;
+
+        String json = listing.toJson();
+        System.out.println(json);
+        return json;
     }
 }

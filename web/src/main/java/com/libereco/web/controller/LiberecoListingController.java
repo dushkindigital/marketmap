@@ -50,8 +50,8 @@ import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
 import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoPaymentInformationService;
-import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.LiberecoShippingInformationService;
+import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceAuthorizationsService;
 import com.libereco.core.service.MarketplaceService;
 import com.libereco.web.common.MarketplaceName;
@@ -102,7 +102,7 @@ public class LiberecoListingController {
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> createFromJson(@RequestBody String json, HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
+    public ResponseEntity<String> createFromJson(@RequestParam String json, HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
         LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
         createLiberecoListing(liberecoListing, httpServletRequest, picture);
         HttpHeaders headers = new HttpHeaders();
