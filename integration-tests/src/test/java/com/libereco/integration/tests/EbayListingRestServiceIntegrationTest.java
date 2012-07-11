@@ -48,9 +48,11 @@ public class EbayListingRestServiceIntegrationTest {
         shouldCreateLiberecoListing();
     }
 
-    
-    
-    
+    @Test
+    public void shouldCreateEbayListing() throws Exception {
+
+    }
+
     private void shouldCreateLiberecoListing() throws Exception {
 
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");

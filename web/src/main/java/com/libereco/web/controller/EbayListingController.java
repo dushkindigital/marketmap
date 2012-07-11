@@ -74,6 +74,20 @@ public class EbayListingController {
             return "ebaylistings/create";
         }
         uiModel.asMap().clear();
+        createEbayListing(ebayListing);
+        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJson(@RequestBody String json) {
+        EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
+        createEbayListing(ebayListing);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+    private void createEbayListing(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
             throw new RuntimeException("No marketplace found for marketplace ebay");
@@ -90,7 +104,6 @@ public class EbayListingController {
         liberecoListing.setMarketplaces(marketplaces);
         liberecoListing.setListingState(ListingState.LISTED);
         liberecoListingService.updateLiberecoListing(liberecoListing);
-        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
@@ -111,6 +124,18 @@ public class EbayListingController {
         return "ebaylistings/show";
     }
 
+    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        EbayListing ebayListing = ebayListingService.findEbayListing(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (ebayListing == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(ebayListing.toJson(), headers, HttpStatus.OK);
+    }
+
     @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
             Model uiModel) {
@@ -128,6 +153,17 @@ public class EbayListingController {
         return "ebaylistings/list";
     }
 
+    @RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<EbayListing> result = ebayListingService.findAllEbayListings(user.getId());
+        return new ResponseEntity<String>(EbayListing.toJsonArray(result), headers, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EbayListing ebayListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -135,10 +171,26 @@ public class EbayListingController {
             return "ebaylistings/update";
         }
         uiModel.asMap().clear();
+        updateEbayListing(ebayListing);
+        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
+        if (updateEbayListing(ebayListing) == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+    private EbayListing updateEbayListing(EbayListing ebayListing) {
         String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
         ebayClient.reviseListing(ebayListing, ebayAuthorizationToken);
         ebayListingService.updateEbayListing(ebayListing);
-        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+        return ebayListing;
     }
 
     private String getMarketplaceToken(EbayListing ebayListing) {
@@ -162,6 +214,26 @@ public class EbayListingController {
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
+        deleteEbayListing(ebayListing);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        return "redirect:/ebaylistings";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        EbayListing ebayListing = ebayListingService.findEbayListing(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (ebayListing == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        deleteEbayListing(ebayListing);
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+    private void deleteEbayListing(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
             throw new RuntimeException("No marketplace found for marketplace ebay");
@@ -174,10 +246,6 @@ public class EbayListingController {
         ebayListingService.deleteEbayListing(ebayListing);
         liberecoListing.getMarketplaces().remove(marketplace);
         liberecoListingService.updateLiberecoListing(liberecoListing);
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/ebaylistings";
     }
 
     void populateEditForm(Model uiModel, EbayListing ebayListing) {
@@ -203,39 +271,6 @@ public class EbayListingController {
         return pathSegment;
     }
 
-    // ******************** JSON Methods *******************************//
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-        EbayListing ebayListing = ebayListingService.findEbayListing(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        if (ebayListing == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(ebayListing.toJson(), headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> listJson() {
-        String username = SecurityUtils.getCurrentLoggedInUsername();
-        LiberecoUser user = liberecoUserService.findUserByUsername(username);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        List<EbayListing> result = ebayListingService.findAllEbayListings(user.getId());
-        return new ResponseEntity<String>(EbayListing.toJsonArray(result), headers, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createFromJson(@RequestBody String json) {
-        EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
-        ebayListingService.saveEbayListing(ebayListing);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
         for (EbayListing ebayListing : EbayListing.fromJsonArrayToEbayListings(json)) {
@@ -244,17 +279,6 @@ public class EbayListingController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
-        if (ebayListingService.updateEbayListing(ebayListing) == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -269,15 +293,4 @@ public class EbayListingController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
-        EbayListing ebayListing = ebayListingService.findEbayListing(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        if (ebayListing == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        ebayListingService.deleteEbayListing(ebayListing);
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
 }
