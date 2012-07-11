@@ -1,5 +1,6 @@
 package com.libereco.web.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -194,7 +195,7 @@ public class LiberecoListingController {
         }
         return "liberecolistings/show";
     }
-    
+
     @RequestMapping(value = "/{id}", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
@@ -224,7 +225,7 @@ public class LiberecoListingController {
         addDateTimeFormatPatterns(uiModel);
         return "liberecolistings/list";
     }
-    
+
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
@@ -244,23 +245,58 @@ public class LiberecoListingController {
             return "liberecolistings/update";
         }
         uiModel.asMap().clear();
-        LiberecoListing oldLiberecoListing =
-                liberecoListingService.findLiberecoListing(liberecoListing.getId());
-        liberecoListing.setListingState(oldLiberecoListing.getListingState());
-        liberecoListing.setMarketplaces(oldLiberecoListing.getMarketplaces());
-        setPicture(liberecoListing, picture);
-        updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
-        updateAllMarketplaceListings(liberecoListing);
-        liberecoListingService.updateLiberecoListing(liberecoListing);
+        updateLiberecoListing(liberecoListing, httpServletRequest, picture);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestParam String json, HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
+        if (updateLiberecoListing(liberecoListing, httpServletRequest, picture) == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+    private LiberecoListing updateLiberecoListing(LiberecoListing updatedLiberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
+        LiberecoListing persistedLiberecoListing =
+                liberecoListingService.findLiberecoListing(updatedLiberecoListing.getId());
+        
+        try {
+            persistedLiberecoListing.setPicture(picture.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        persistedLiberecoListing.setPictureName(picture.getOriginalFilename());
+        updateLiberecoListingWithPicture(persistedLiberecoListing, httpServletRequest, picture);
+        updateAllMarketplaceListings(persistedLiberecoListing);
+        copyProperties(persistedLiberecoListing,updatedLiberecoListing);
+        liberecoListingService.updateLiberecoListing(persistedLiberecoListing);
+        return persistedLiberecoListing;
+    }
+
+    private void copyProperties(LiberecoListing persistedLiberecoListing, LiberecoListing updatedLiberecoListing) {
+        persistedLiberecoListing.setName(updatedLiberecoListing.getName());
+        persistedLiberecoListing.setDescription(updatedLiberecoListing.getDescription());
+        persistedLiberecoListing.setItemLocation(updatedLiberecoListing.getItemLocation());
+        persistedLiberecoListing.setLiberecoPaymentInformations(updatedLiberecoListing.getLiberecoPaymentInformations());
+        persistedLiberecoListing.setCategory(updatedLiberecoListing.getCategory());
+        persistedLiberecoListing.setListingCondition(updatedLiberecoListing.getListingCondition());
+        persistedLiberecoListing.setListingState(updatedLiberecoListing.getListingState());
+        persistedLiberecoListing.setPrice(updatedLiberecoListing.getPrice());
+        persistedLiberecoListing.setQuantity(updatedLiberecoListing.getQuantity());
     }
 
     private void updateAllMarketplaceListings(LiberecoListing liberecoListing) {
         EbayListing ebayListing = ebayListingService.findEbayListing(liberecoListing);
-        ebayListing.setLiberecoListing(liberecoListing);
-        String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
-        ebayClient.reviseListing(ebayListing, ebayAuthorizationToken);
-        ebayListingService.updateEbayListing(ebayListing);
+        if (ebayListing != null) {
+            ebayListing.setLiberecoListing(liberecoListing);
+            String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
+            ebayClient.reviseListing(ebayListing, ebayAuthorizationToken);
+            ebayListingService.updateEbayListing(ebayListing);
+        }
     }
 
     private String getMarketplaceToken(EbayListing ebayListing) {
@@ -328,17 +364,6 @@ public class LiberecoListingController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
-        if (liberecoListingService.updateLiberecoListing(liberecoListing) == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")

@@ -142,5 +142,59 @@ public class LiberecoListingRestServiceIntegrationTest {
                 body("userId", equalTo(Arrays.asList(1))).
                 log().all().
                 when().get("/libereco/liberecolistings");
+
+        // UPDATE LIBERECO_LISTING
+
+        JsonArray updateShippingInformationJsonArray = new JsonArray();
+        updateShippingInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", "1").put("shippingCost", "2.5")
+                .put("shippingService", "USPSMedia").put("shippingType", "FLAT").put("version", "0").build()));
+
+        String updatedShippingInformationJson = updateShippingInformationJsonArray.toString();
+
+        JsonArray updatePaymentInformationJsonArray = new JsonArray();
+        updatePaymentInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", "1").put("paymentMethod", "AM_EX").put("version", "0").build()));
+        String updatePaymentInformationJson = updatePaymentInformationJsonArray.toString();
+        
+        String updateLiberecoListingJson = toJson(ImmutableMap.<String, String> builder().
+                put("name", listingName).
+                put("id", "1").
+                put("userId","1").
+                put("price", "1000").
+                put("quantity", "10").
+                put("description", "Samsung Galaxy S3 Listing").
+                put("category", "CAT_ELECTRONICS").
+                put("listingCondition", "NEW").
+                put("itemLocation", itemLocationJson).
+                put("shippingInformations", updatedShippingInformationJson).
+                put("liberecoPaymentInformations", updatePaymentInformationJson).
+                put("version", "0").
+                build());
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                multiPart("picture", new File("src/test/resources/samsung-galaxy-s3.jpg")).
+                multiPart("json", updateLiberecoListingJson).
+                expect().
+                statusCode(200).
+                log().all().
+                post("/libereco/liberecolistings/update");
+
+        // READ UPDATED LIBERECO_LISTING
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                expect().
+                statusCode(200).
+                body("name", equalTo(listingName)).
+                body("quantity", equalTo(10)).
+                body("description", equalTo("Samsung Galaxy S3 Listing")).
+                body("category", equalTo("CAT_ELECTRONICS")).
+                body("listingCondition", equalTo("NEW")).
+                body("pictureName", equalTo("samsung-galaxy-s3.jpg")).
+                body("pictureUrl", equalTo("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy-s3.jpg")).
+                body("userId", equalTo(1)).
+                log().all().
+                when().get("/libereco/liberecolistings/1");
     }
 }
