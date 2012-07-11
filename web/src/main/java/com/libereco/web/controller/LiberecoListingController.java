@@ -263,7 +263,7 @@ public class LiberecoListingController {
     private LiberecoListing updateLiberecoListing(LiberecoListing updatedLiberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
         LiberecoListing persistedLiberecoListing =
                 liberecoListingService.findLiberecoListing(updatedLiberecoListing.getId());
-        
+
         try {
             persistedLiberecoListing.setPicture(picture.getBytes());
         } catch (IOException e) {
@@ -272,7 +272,7 @@ public class LiberecoListingController {
         persistedLiberecoListing.setPictureName(picture.getOriginalFilename());
         updateLiberecoListingWithPicture(persistedLiberecoListing, httpServletRequest, picture);
         updateAllMarketplaceListings(persistedLiberecoListing);
-        copyProperties(persistedLiberecoListing,updatedLiberecoListing);
+        copyProperties(persistedLiberecoListing, updatedLiberecoListing);
         liberecoListingService.updateLiberecoListing(persistedLiberecoListing);
         return persistedLiberecoListing;
     }
@@ -320,14 +320,32 @@ public class LiberecoListingController {
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
-        EbayListing ebayListing = ebayListingService.findEbayListing(liberecoListing);
-        String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
-        ebayClient.delistItem(ebayListing, ebayAuthorizationToken, DelistingReason.OTHER_REASON);
-        liberecoListingService.deleteLiberecoListing(liberecoListing);
+        deleteLiberecoListing(liberecoListing);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/liberecolistings";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (liberecoListing == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        deleteLiberecoListing(liberecoListing);
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+    private void deleteLiberecoListing(LiberecoListing liberecoListing) {
+        EbayListing ebayListing = ebayListingService.findEbayListing(liberecoListing);
+        if (ebayListing != null) {
+            String ebayAuthorizationToken = getMarketplaceToken(ebayListing);
+            ebayClient.delistItem(ebayListing, ebayAuthorizationToken, DelistingReason.OTHER_REASON);
+        }
+        liberecoListingService.deleteLiberecoListing(liberecoListing);
     }
 
     void addDateTimeFormatPatterns(Model uiModel) {
@@ -378,15 +396,4 @@ public class LiberecoListingController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
-        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        if (liberecoListing == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        liberecoListingService.deleteLiberecoListing(liberecoListing);
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
 }

@@ -3,7 +3,6 @@ package com.libereco.core.domain;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -286,30 +285,4 @@ public class LiberecoListing implements Serializable {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-    public static void main(String[] args) {
-        String json = json();
-        System.out.println(LiberecoListing.fromJsonToLiberecoListing(json));
-    }
-
-    private static String json() {
-        LiberecoListing listing = new LiberecoListing();
-        listing.category = LiberecoCategory.CAT_ELECTRONICS;
-        listing.description = "Test listing 12345";
-        listing.name = "Test Listing";
-        listing.itemLocation = new ItemLocation("San Jose,CA", "95125");
-        LiberecoPaymentInformation liberecoPaymentInformation = new LiberecoPaymentInformation();
-        liberecoPaymentInformation.setPaymentMethod(PaymentMethod.AM_EX);
-        listing.liberecoPaymentInformations = Arrays.asList(liberecoPaymentInformation);
-        LiberecoShippingInformation liberecoShippingInformation = new LiberecoShippingInformation();
-        liberecoShippingInformation.setShippingCost(2.5d);
-        liberecoShippingInformation.setShippingService(ShippingService.USPSMedia);
-        liberecoShippingInformation.setShippingType(ShippingType.FLAT);
-        listing.shippingInformations = Arrays.asList(liberecoShippingInformation);
-        listing.listingCondition = ListingCondition.NEW;
-        listing.listingState = ListingState.NEW;
-
-        String json = listing.toJson();
-        System.out.println(json);
-        return json;
-    }
 }

@@ -25,7 +25,7 @@ import com.google.gson.JsonArray;
 import com.jayway.restassured.authentication.FormAuthConfig;
 import com.jayway.restassured.response.Header;
 
-public class LiberecoListingRestServiceIntegrationTest {
+public class EbayListingRestServiceIntegrationTest {
 
     private static Server server;
 
@@ -45,12 +45,13 @@ public class LiberecoListingRestServiceIntegrationTest {
         shouldCreateUser();
         shouldCreateMarketplace();
         shouldAutheticateWithEbay();
-        // shouldCreateShippingMethod();
-        // shouldCreatePaymentInformation();
+        shouldCreateLiberecoListing();
     }
 
-    @Test
-    public void shouldCreateLiberecoListing() throws Exception {
+    
+    
+    
+    private void shouldCreateLiberecoListing() throws Exception {
 
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
@@ -199,7 +200,7 @@ public class LiberecoListingRestServiceIntegrationTest {
                 when().get("/libereco/liberecolistings/1");
 
         // DELETE LIBERECO_LISTING
-        
+
         given().log().all().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
