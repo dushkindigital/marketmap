@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import com.jayway.restassured.authentication.FormAuthConfig;
 import com.jayway.restassured.response.Header;
 
-public class LiberecoShippingMethodRestServiceIntegrationTest {
+public class LiberecoShippingInformationRestServiceIntegrationTest {
 
     private static Server server;
 

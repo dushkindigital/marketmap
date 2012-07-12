@@ -81,6 +81,8 @@ public class EbayListingController {
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json) {
         EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(ebayListing.getLiberecoListing().getId());
+        ebayListing.setLiberecoListing(liberecoListing);
         createEbayListing(ebayListing);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -180,6 +182,9 @@ public class EbayListingController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
+        ebayListing.setEbayItemId(ebayListingService.findEbayListing(ebayListing.getId()).getEbayItemId());
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(ebayListing.getLiberecoListing().getId());
+        ebayListing.setLiberecoListing(liberecoListing);
         if (updateEbayListing(ebayListing) == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }

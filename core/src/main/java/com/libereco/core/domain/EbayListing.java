@@ -1,6 +1,7 @@
 package com.libereco.core.domain;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+import flexjson.ObjectBinder;
+import flexjson.ObjectFactory;
 
 @Entity
 public class EbayListing implements Serializable, Listing {
@@ -145,7 +148,16 @@ public class EbayListing implements Serializable, Listing {
     }
 
     public static EbayListing fromJsonToEbayListing(String json) {
-        return new JSONDeserializer<EbayListing>().use(null, EbayListing.class).deserialize(json);
+        return new JSONDeserializer<EbayListing>().
+                use(null, EbayListing.class).
+                use("liberecoListing", new ObjectFactory() {
+
+                    @Override
+                    public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
+                        return LiberecoListing.fromJsonToLiberecoListing((String) value);
+                    }
+                }).
+                deserialize(json);
     }
 
     public static String toJsonArray(Collection<EbayListing> collection) {

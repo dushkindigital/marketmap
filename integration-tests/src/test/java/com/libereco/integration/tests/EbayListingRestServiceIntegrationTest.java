@@ -2,15 +2,12 @@ package com.libereco.integration.tests;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.libereco.integration.tests.JsonUtils.toJson;
-import static com.libereco.integration.tests.JsonUtils.toJsonObject;
 import static com.libereco.integration.tests.TestDataUtils.shouldAutheticateWithEbay;
+import static com.libereco.integration.tests.TestDataUtils.shouldCreateLiberecoListing;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateMarketplace;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateUser;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -21,13 +18,13 @@ import org.junit.Test;
 import org.mortbay.jetty.Server;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonArray;
 import com.jayway.restassured.authentication.FormAuthConfig;
 import com.jayway.restassured.response.Header;
 
 public class EbayListingRestServiceIntegrationTest {
 
     private static Server server;
+    private String listingName;
 
     @BeforeClass
     public static void startJettyServer() throws Exception {
@@ -45,80 +42,49 @@ public class EbayListingRestServiceIntegrationTest {
         shouldCreateUser();
         shouldCreateMarketplace();
         shouldAutheticateWithEbay();
-        shouldCreateLiberecoListing();
+        listingName = "Test Listing " + UUID.randomUUID().toString();
+        shouldCreateLiberecoListing(listingName);
     }
 
     @Test
-    public void shouldCreateEbayListing() throws Exception {
+    public void shouldCreateReadUpdateAndDeleteEbayListing() throws Exception {
 
-    }
-
-    private void shouldCreateLiberecoListing() throws Exception {
+        // CREATE EBAY_LISTING
 
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
-        String itemLocationJson = toJson(ImmutableMap.<String, String> builder().put("itemLocation", "SanJose, CA").put("postalCode", "95125")
-                .build());
-
-        JsonArray shippingInformationJsonArray = new JsonArray();
-        shippingInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("shippingCost", "2.5")
-                .put("shippingService", "USPSMedia").put("shippingType", "FLAT").build()));
-
-        String shippingInformationJson = shippingInformationJsonArray.toString();
-
-        JsonArray paymentInformationJsonArray = new JsonArray();
-        paymentInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("paymentMethod", "AM_EX").build()));
-        String paymentInformationJson = paymentInformationJsonArray.toString();
-
-        String listingName = "test_listing" + UUID.randomUUID().toString();
-
         String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
-                put("name", listingName).
-                put("price", "100").
-                put("quantity", "1").
-                put("description", "test listing").
-                put("category", "CAT_ELECTRONICS").
-                put("listingCondition", "NEW").
-                put("itemLocation", itemLocationJson).
-                put("shippingInformations", shippingInformationJson).
-                put("liberecoPaymentInformations", paymentInformationJson).
+                put("name", listingName).put("id", "1").put("version", "0").
                 build());
 
-        given().log().all().
+        String ebayListingJson = toJson(ImmutableMap.<String, String> builder().put("returnPolicy", "NO_RETURN").put("dispatchTimeMax", "3")
+                .put("startPrice", "100").put("paypalEmail", "test@gmail.com")
+                .put("lotSize", "1").put("listingDuration", "DAYS_3").put("liberecoListing", liberecoListingJson).build());
+
+        given().
                 auth().form("test_user", "password", config).
-                multiPart("picture", new File("src/test/resources/samsung-galaxy.jpg")).
-                multiPart("json", liberecoListingJson).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                body(ebayListingJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/liberecolistings");
+                post("/libereco/ebaylistings");
 
-        InputStream inputStream = given().log().all().
-                auth().form("test_user", "password", config).
-                expect().
-                get("/libereco/liberecolistings/1/image/samsung-galaxy.jpg").asInputStream();
-
-        assertNotNull(inputStream);
-
-        // READ LIBERECO_LISTING
+        // READ EBAY_LISTING
 
         given().log().all().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(200).
-                body("name", equalTo(listingName)).
-                body("quantity", equalTo(1)).
-                body("description", equalTo("test listing")).
-                body("category", equalTo("CAT_ELECTRONICS")).
-                body("listingCondition", equalTo("NEW")).
-                body("pictureName", equalTo("samsung-galaxy.jpg")).
-                body("pictureUrl", equalTo("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy.jpg")).
-                body("userId", equalTo(1)).
+                body("id", equalTo(1)).
+                body("returnPolicy", equalTo("NO_RETURN")).
+                body("paypalEmail", equalTo("test@gmail.com")).
+                body("listingDuration", equalTo("DAYS_3")).
                 log().all().
-                when().get("/libereco/liberecolistings/1");
+                when().get("/libereco/ebaylistings/1");
 
-        // READ LIBERECO_LISTING WHICH DOES NOT EXIST RETURNS ERROR CODE 404
+        // READ EBAY_LISTING WHICH DOES NOT EXIST RETURNS ERROR CODE 404
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -126,82 +92,53 @@ public class EbayListingRestServiceIntegrationTest {
                 expect().
                 statusCode(404).
                 log().all().
-                when().get("/libereco/liberecolistings/12345");
+                when().get("/libereco/ebaylistings/12345");
 
-        // LIST ALL LIBERECO_LISTING
-
-        given().log().all().
-                auth().form("test_user", "password", config).
-                contentType("application/json").header(new Header("Accept", "application/json")).
-                expect().
-                statusCode(200).
-                body("name", equalTo(Arrays.asList(listingName))).
-                body("quantity", equalTo(Arrays.asList(1))).
-                body("description", equalTo(Arrays.asList("test listing"))).
-                body("category", equalTo(Arrays.asList("CAT_ELECTRONICS"))).
-                body("listingCondition", equalTo(Arrays.asList("NEW"))).
-                body("pictureName", equalTo(Arrays.asList("samsung-galaxy.jpg"))).
-                body("pictureUrl", equalTo(Arrays.asList("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy.jpg"))).
-                body("userId", equalTo(Arrays.asList(1))).
-                log().all().
-                when().get("/libereco/liberecolistings");
-
-        // UPDATE LIBERECO_LISTING
-
-        JsonArray updateShippingInformationJsonArray = new JsonArray();
-        updateShippingInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", "1").put("shippingCost", "2.5")
-                .put("shippingService", "USPSMedia").put("shippingType", "FLAT").put("version", "0").build()));
-
-        String updatedShippingInformationJson = updateShippingInformationJsonArray.toString();
-
-        JsonArray updatePaymentInformationJsonArray = new JsonArray();
-        updatePaymentInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", "1").put("paymentMethod", "AM_EX")
-                .put("version", "0").build()));
-        String updatePaymentInformationJson = updatePaymentInformationJsonArray.toString();
-
-        String updateLiberecoListingJson = toJson(ImmutableMap.<String, String> builder().
-                put("name", listingName).
-                put("id", "1").
-                put("userId", "1").
-                put("price", "1000").
-                put("quantity", "10").
-                put("description", "Samsung Galaxy S3 Listing").
-                put("category", "CAT_ELECTRONICS").
-                put("listingCondition", "NEW").
-                put("itemLocation", itemLocationJson).
-                put("shippingInformations", updatedShippingInformationJson).
-                put("liberecoPaymentInformations", updatePaymentInformationJson).
-                put("version", "0").
-                build());
-
-        given().log().all().
-                auth().form("test_user", "password", config).
-                multiPart("picture", new File("src/test/resources/samsung-galaxy-s3.jpg")).
-                multiPart("json", updateLiberecoListingJson).
-                expect().
-                statusCode(200).
-                log().all().
-                post("/libereco/liberecolistings/update");
-
-        // READ UPDATED LIBERECO_LISTING
+        // LIST ALL EBAY_LISTINGS
 
         given().log().all().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(200).
-                body("name", equalTo(listingName)).
-                body("quantity", equalTo(10)).
-                body("description", equalTo("Samsung Galaxy S3 Listing")).
-                body("category", equalTo("CAT_ELECTRONICS")).
-                body("listingCondition", equalTo("NEW")).
-                body("pictureName", equalTo("samsung-galaxy-s3.jpg")).
-                body("pictureUrl", equalTo("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy-s3.jpg")).
-                body("userId", equalTo(1)).
+                body("id", equalTo(Arrays.asList(1))).
+                body("returnPolicy", equalTo(Arrays.asList("NO_RETURN"))).
+                body("paypalEmail", equalTo(Arrays.asList("test@gmail.com"))).
+                body("listingDuration", equalTo((Arrays.asList("DAYS_3")))).
                 log().all().
-                when().get("/libereco/liberecolistings/1");
+                when().get("/libereco/ebaylistings");
 
-        // DELETE LIBERECO_LISTING
+        // UPDATE EBAY_LISTING
+
+        String ebayListingUpdateJson = toJson(ImmutableMap.<String, String> builder().put("id", "1").put("returnPolicy", "THIRTY_DAY_RETURN")
+                .put("dispatchTimeMax", "5")
+                .put("startPrice", "1000").put("paypalEmail", "test_updated@gmail.com")
+                .put("lotSize", "1").put("listingDuration", "DAYS_7").put("liberecoListing", liberecoListingJson).put("version", "0").build());
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                body(ebayListingUpdateJson).
+                expect().
+                statusCode(200).
+                log().all().
+                put("/libereco/ebaylistings");
+
+        // READ UPDATED EBAY_LISTING
+
+        given().log().all().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                expect().
+                statusCode(200).
+                body("id", equalTo(1)).
+                body("returnPolicy", equalTo("THIRTY_DAY_RETURN")).
+                body("paypalEmail", equalTo("test_updated@gmail.com")).
+                body("listingDuration", equalTo("DAYS_7")).
+                log().all().
+                when().get("/libereco/ebaylistings/1");
+
+        // DELETE EBAY_LISTING
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -209,7 +146,7 @@ public class EbayListingRestServiceIntegrationTest {
                 expect().
                 statusCode(200).
                 log().all().
-                when().delete("/libereco/liberecolistings/1");
+                when().delete("/libereco/ebaylistings/1");
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -217,6 +154,8 @@ public class EbayListingRestServiceIntegrationTest {
                 expect().
                 statusCode(404).
                 log().all().
-                when().delete("/libereco/liberecolistings/1");
+                when().delete("/libereco/ebaylistings/1");
+
     }
+
 }
