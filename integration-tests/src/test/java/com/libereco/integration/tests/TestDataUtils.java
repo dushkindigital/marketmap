@@ -610,16 +610,16 @@ public abstract class TestDataUtils {
                 when().delete("/libereco/liberecolistings/" + liberecoListingId);
     }
 
-    public static String shouldCreateEbayListing(String listingName) {
+    public static String shouldCreateEbayListing(String listingName, String liberecoListingId, String liberecoListingVersion) {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
-                put("name", listingName).put("id", "1").put("version", "0").
+                put("name", listingName).put("id", liberecoListingId).put("version", liberecoListingVersion).
                 build());
 
         String ebayListingJson = toJson(ImmutableMap.<String, String> builder().put("returnPolicy", "NO_RETURN").put("dispatchTimeMax", "3")
                 .put("startPrice", "100").put("paypalEmail", "test@gmail.com")
-                .put("lotSize", "1").put("listingDuration", "DAYS_3").put("liberecoListing", liberecoListingJson).build());
 
+                .put("lotSize", "1").put("listingDuration", "DAYS_3").put("liberecoListing", liberecoListingJson).build());
         String json = given().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
@@ -629,7 +629,7 @@ public abstract class TestDataUtils {
                 log().all().
                 post("/libereco/ebaylistings").asString();
 
-        return JsonUtils.toMap(json).get("id");
+        return json;
     }
 
     public static void shouldReadEbayListing() {
@@ -662,11 +662,11 @@ public abstract class TestDataUtils {
                 when().get("/libereco/ebaylistings");
     }
 
-    public static void shouldUpdateEbayListing(String listingName) {
+    public static void shouldUpdateEbayListing(String listingName, String liberecoListingId, String liberecoListingVersion) {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
         String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
-                put("name", listingName).put("id", "1").put("version", "0").
+                put("name", listingName).put("id", liberecoListingId).put("version", liberecoListingVersion).
                 build());
 
         String ebayListingUpdateJson = toJson(ImmutableMap.<String, String> builder().put("id", "1").put("returnPolicy", "THIRTY_DAY_RETURN")

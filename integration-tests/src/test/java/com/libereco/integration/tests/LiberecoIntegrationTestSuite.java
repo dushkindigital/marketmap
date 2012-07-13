@@ -149,18 +149,25 @@ public class LiberecoIntegrationTestSuite {
         shouldDeleteUser(userId);
     }
 
-    // @Test
+    @Test
     public void shouldDoCRUDOperationsOnEbayListing() throws Exception {
         String userId = shouldCreateUser();
-        shouldCreateMarketplace();
+        String marketplaceId = shouldCreateMarketplace();
         shouldAutheticateWithEbay();
 
         String listingName = "Test Listing " + UUID.randomUUID().toString();
-        shouldCreateEbayListing(listingName);
+        String json = shouldCreateLiberecoListing(listingName, userId);
+        JsonPath jsonPath = new JsonPath(json);
+        String liberecoListingId = jsonPath.getString("id");
+        String liberecoListingVersionId = jsonPath.getString("version");
+
+        shouldCreateEbayListing(listingName, liberecoListingId, liberecoListingVersionId);
         shouldReadEbayListing();
         shouldReadAllEbayListing();
-        shouldUpdateEbayListing(listingName);
+        shouldUpdateEbayListing(listingName, liberecoListingId, liberecoListingVersionId);
         shouldDeleteEbayListing();
+
+        shouldDeleteMarketplace(marketplaceId);
         shouldDeleteUser(userId);
     }
 }
