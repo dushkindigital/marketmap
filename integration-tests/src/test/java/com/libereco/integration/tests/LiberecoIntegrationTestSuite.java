@@ -35,14 +35,15 @@ import static com.libereco.integration.tests.TestDataUtils.shouldUpdatePaymentIn
 import static com.libereco.integration.tests.TestDataUtils.shouldUpdateShippingInformation;
 import static com.libereco.integration.tests.TestDataUtils.shouldUpdateUser;
 
+import java.util.List;
 import java.util.UUID;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
+
+import com.jayway.restassured.path.json.JsonPath;
 
 public class LiberecoIntegrationTestSuite {
 
@@ -60,28 +61,29 @@ public class LiberecoIntegrationTestSuite {
 
     @Test
     public void shouldDoCRUDOperationsOnLiberecoUser() {
-        shouldCreateUser();
-        shouldReadUser();
+        String userId = shouldCreateUser();
+        shouldReadUser(userId);
         shouldNotFindUserWhichDoesNotExist();
         shouldReadAllUsers();
-        shouldUpdateUser();
-        shouldDeleteUser();
+        shouldUpdateUser(userId);
+        shouldDeleteUser(userId);
     }
 
     @Test
     public void shouldDoCRUDOperationsOnMarketplace() {
-        shouldCreateMarketplace();
-        shouldReadMarketplace();
+        String marketplaceId = shouldCreateMarketplace();
+        shouldReadMarketplace(marketplaceId);
         shouldNotFindMarketplaceWhichDoesNotExist();
         shouldReadAllMarketplaces();
-        shouldUpdateMarketplace();
-        shouldDeleteMarketplace();
+        shouldUpdateMarketplace(marketplaceId);
+        shouldDeleteMarketplace(marketplaceId);
+
     }
 
     @Test
     public void shouldDoCRUDOperationsOnLiberecoPaymentInformation() throws Exception {
-        shouldCreateUser();
-        shouldCreateMarketplace();
+        String userId = shouldCreateUser();
+        String marketplaceId = shouldCreateMarketplace();
 
         shouldCreatePaymentInformation();
         shouldReadPaymentInformation();
@@ -89,44 +91,67 @@ public class LiberecoIntegrationTestSuite {
         shouldReadAllPaymentInformation();
         shouldUpdatePaymentInformation();
         shouldDeletePaymentInformation();
+
+        shouldDeleteMarketplace(marketplaceId);
+        shouldDeleteUser(userId);
     }
 
     @Test
     public void shouldDoCRUDOperationsOnLiberecoShippingInformation() throws Exception {
-        shouldCreateUser();
-        shouldCreateMarketplace();
+        String userId = shouldCreateUser();
+        String marketplaceId = shouldCreateMarketplace();
 
         shouldCreateShippingInformation();
         shouldReadShippingInformation();
         shouldReadAllShippingInformation();
         shouldUpdateShippingInformation();
         shouldDeleteShippingInformation();
+
+        shouldDeleteMarketplace(marketplaceId);
+        shouldDeleteUser(userId);
     }
-    
+
     @Test
     public void shouldAuthenticateWithMarketplaces() throws Exception {
-        shouldCreateUser();
-        shouldCreateMarketplace();
+        String userId = shouldCreateUser();
+        String marketplaceId = shouldCreateMarketplace();
         shouldAutheticateWithEbay();
+
+        shouldDeleteMarketplace(marketplaceId);
+        shouldDeleteUser(userId);
     }
 
     @Test
     public void shouldDoCRUDOperationsOnLiberecoListing() throws Exception {
-        shouldCreateUser();
-        shouldCreateMarketplace();
+        String userId = shouldCreateUser();
+        String marketplaceId = shouldCreateMarketplace();
         shouldAutheticateWithEbay();
 
         String listingName = "Test Listing " + UUID.randomUUID().toString();
-        shouldCreateLiberecoListing(listingName);
-        shouldReadLiberecoListing(listingName);
-        shouldReadAllLiberecoListing(listingName);
-        shouldUpdateLiberecoListing(listingName);
-        shouldDeleteLiberecoListing();
+        System.out.println("UserId ************** " + userId);
+        String json = shouldCreateLiberecoListing(listingName, userId);
+        JsonPath jsonPath = new JsonPath(json);
+        int liberecoListingId = jsonPath.getInt("id");
+        int liberecoListingVersionId = jsonPath.getInt("version");
+        List<Integer> liberecoPaymentInformationIds = jsonPath.get("liberecoPaymentInformations.id");
+        List<Integer> liberecoPaymentInformationVersions = jsonPath.get("liberecoPaymentInformations.version");
+        List<Integer> liberecoShippingInformationIds = jsonPath.get("shippingInformations.id");
+        List<Integer> liberecoShippingInformationVersions = jsonPath.get("shippingInformations.version");
+        shouldReadLiberecoListing(listingName, userId, String.valueOf(liberecoListingId));
+
+        shouldReadAllLiberecoListing(listingName, userId, String.valueOf(liberecoListingId));
+
+        shouldUpdateLiberecoListing(listingName, userId, liberecoListingId, liberecoListingVersionId, liberecoShippingInformationIds.get(0),
+                liberecoShippingInformationVersions.get(0), liberecoPaymentInformationIds.get(0), liberecoPaymentInformationVersions.get(0));
+        shouldDeleteLiberecoListing(String.valueOf(liberecoListingId));
+
+        shouldDeleteMarketplace(marketplaceId);
+        shouldDeleteUser(userId);
     }
-    
-    @Test
+
+    // @Test
     public void shouldDoCRUDOperationsOnEbayListing() throws Exception {
-        shouldCreateUser();
+        String userId = shouldCreateUser();
         shouldCreateMarketplace();
         shouldAutheticateWithEbay();
 
@@ -136,5 +161,6 @@ public class LiberecoIntegrationTestSuite {
         shouldReadAllEbayListing();
         shouldUpdateEbayListing(listingName);
         shouldDeleteEbayListing();
+        shouldDeleteUser(userId);
     }
 }

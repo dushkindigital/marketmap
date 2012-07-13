@@ -25,20 +25,22 @@ import com.jayway.restassured.response.Header;
 
 public abstract class TestDataUtils {
 
-    public static void shouldCreateUser() {
+    public static String shouldCreateUser() {
         String userJson = toJson(ImmutableMap.<String, String> builder().put("username", "test_user").put("password", "password")
                 .put("status", "ACTIVE").put("lastUpdated", new Date().toString()).build());
 
-        given().log().all().
+        String json = given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(userJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/liberecousers");
+                post("/libereco/liberecousers").asString();
+
+        return JsonUtils.toMap(json).get("id");
     }
 
-    public static void shouldReadUser() {
+    public static void shouldReadUser(String userId) {
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
@@ -48,7 +50,7 @@ public abstract class TestDataUtils {
                 body("password", equalTo("password")).
                 body("status", equalTo("ACTIVE")).
                 log().all().
-                when().get("/libereco/liberecousers/1");
+                when().get("/libereco/liberecousers/" + userId);
     }
 
     public static void shouldNotFindUserWhichDoesNotExist() {
@@ -88,7 +90,6 @@ public abstract class TestDataUtils {
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(200).
-                body("id", equalTo(Arrays.asList(1, 2, 3))).
                 body("username", equalTo(Arrays.asList("test_user", "test_user_008", "test_user_009"))).
                 body("password", equalTo(Arrays.asList("password", "password", "password"))).
                 body("status", equalTo(Arrays.asList("ACTIVE", "ACTIVE", "ACTIVE"))).
@@ -96,8 +97,8 @@ public abstract class TestDataUtils {
                 when().get("/libereco/liberecousers");
     }
 
-    public static void shouldUpdateUser() {
-        String userUpdateJson = userJsonWithId("test_user", "password", 1L);
+    public static void shouldUpdateUser(String userId) {
+        String userUpdateJson = userJsonWithId("test_user", "password", Long.valueOf(userId));
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(userUpdateJson).
@@ -107,36 +108,37 @@ public abstract class TestDataUtils {
                 put("/libereco/liberecousers");
     }
 
-    public static void shouldDeleteUser() {
+    public static void shouldDeleteUser(String userId) {
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(200).
                 log().all().
-                when().delete("/libereco/liberecousers/1");
+                when().delete("/libereco/liberecousers/" + userId);
 
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(404).
                 log().all().
-                when().delete("/libereco/liberecousers/1");
+                when().delete("/libereco/liberecousers/" + userId);
     }
 
-    public static void shouldCreateMarketplace() {
+    public static String shouldCreateMarketplace() {
         String marketplaceJson = toJson(ImmutableMap.<String, String> builder().put("marketplaceName", "ebay")
                 .put("marketplaceShortName", "ebay").build());
 
-        given().log().all().
+        String json = given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(marketplaceJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/marketplaces");
+                post("/libereco/marketplaces").asString();
+        return JsonUtils.toMap(json).get("id");
     }
 
-    public static void shouldReadMarketplace() {
+    public static void shouldReadMarketplace(String marketplaceId) {
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
@@ -145,7 +147,7 @@ public abstract class TestDataUtils {
                 body("marketplaceName", equalTo("ebay")).
                 body("marketplaceShortName", equalTo("ebay")).
                 log().all().
-                when().get("/libereco/marketplaces/1");
+                when().get("/libereco/marketplaces/" + marketplaceId);
 
     }
 
@@ -184,7 +186,6 @@ public abstract class TestDataUtils {
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(200).
-                body("id", equalTo(Arrays.asList(1, 2, 3))).
                 body("marketplaceName", equalTo(Arrays.asList("ebay", "test_marketplace_1", "test_marketplace_2"))).
                 body("marketplaceShortName",
                         equalTo(Arrays.asList("ebay", "test_marketplace_shortname_1", "test_marketplace_shortname_2"))).
@@ -192,8 +193,9 @@ public abstract class TestDataUtils {
                 when().get("/libereco/marketplaces");
     }
 
-    public static void shouldUpdateMarketplace() {
-        String marketplaceUpdateJson = toJson(ImmutableMap.<String, String> builder().put("id", "1").put("marketplaceName", "test_marketplace")
+    public static void shouldUpdateMarketplace(String marketplaceId) {
+        String marketplaceUpdateJson = toJson(ImmutableMap.<String, String> builder().put("id", marketplaceId)
+                .put("marketplaceName", "test_marketplace")
                 .put("marketplaceShortName", "test_marketplace_shortname").put("version", "0").build());
 
         given().log().all().
@@ -205,20 +207,20 @@ public abstract class TestDataUtils {
                 put("/libereco/marketplaces");
     }
 
-    public static void shouldDeleteMarketplace() {
+    public static void shouldDeleteMarketplace(String marketplaceId) {
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(200).
                 log().all().
-                when().delete("/libereco/marketplaces/1");
+                when().delete("/libereco/marketplaces/" + marketplaceId);
 
         given().log().all().
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 expect().
                 statusCode(404).
                 log().all().
-                when().delete("/libereco/marketplaces/1");
+                when().delete("/libereco/marketplaces/" + marketplaceId);
     }
 
     public static void shouldAutheticateWithEbay() throws Exception {
@@ -255,21 +257,23 @@ public abstract class TestDataUtils {
         assertNotNull(token);
     }
 
-    public static void shouldCreateShippingInformation() {
+    public static String shouldCreateShippingInformation() {
         // CREATE SHIPPING_INFORMATION
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
         String shippingInformationJson = toJson(ImmutableMap.<String, String> builder().put("shippingType", "FLAT")
                 .put("shippingService", "USPSMedia").put("shippingCost", "2.5").build());
 
-        given().
+        String json = given().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(shippingInformationJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/liberecolisting/shippinginformations");
+                post("/libereco/liberecolisting/shippinginformations").asString();
+
+        return JsonUtils.toMap(json).get("id");
     }
 
     public static void shouldReadShippingInformation() {
@@ -334,20 +338,22 @@ public abstract class TestDataUtils {
                 when().delete("/libereco/liberecolisting/shippinginformations/1");
     }
 
-    public static void shouldCreatePaymentInformation() {
+    public static String shouldCreatePaymentInformation() {
         // CREATE PAYMENT_INFORMATION
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
         String paymentInformationJson = toJson(ImmutableMap.<String, String> builder().put("paymentMethod", "AM_EX").build());
 
-        given().
+        String json = given().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(paymentInformationJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/liberecolisting/paymentinformations");
+                post("/libereco/liberecolisting/paymentinformations").asString();
+
+        return JsonUtils.toMap(json).get("id");
 
     }
 
@@ -438,7 +444,7 @@ public abstract class TestDataUtils {
 
     }
 
-    public static void shouldCreateLiberecoListing(String listingName) throws Exception {
+    public static String shouldCreateLiberecoListing(String listingName, String userId) throws Exception {
 
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
@@ -467,14 +473,14 @@ public abstract class TestDataUtils {
                 put("liberecoPaymentInformations", paymentInformationJson).
                 build());
 
-        given().log().all().
+        String json = given().log().all().
                 auth().form("test_user", "password", config).
                 multiPart("picture", new File("src/test/resources/samsung-galaxy.jpg")).
                 multiPart("json", liberecoListingJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/liberecolistings");
+                post("/libereco/liberecolistings").asString();
 
         InputStream inputStream = given().log().all().
                 auth().form("test_user", "password", config).
@@ -482,9 +488,11 @@ public abstract class TestDataUtils {
                 get("/libereco/liberecolistings/1/image/samsung-galaxy.jpg").asInputStream();
 
         assertNotNull(inputStream);
+
+        return json;
     }
 
-    public static void shouldReadLiberecoListing(String listingName) {
+    public static void shouldReadLiberecoListing(String listingName, String userId, String liberecoListingId) {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -498,12 +506,12 @@ public abstract class TestDataUtils {
                 body("listingCondition", equalTo("NEW")).
                 body("pictureName", equalTo("samsung-galaxy.jpg")).
                 body("pictureUrl", equalTo("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy.jpg")).
-                body("userId", equalTo(1)).
+                body("userId", equalTo(Long.valueOf(userId).intValue())).
                 log().all().
                 when().get("/libereco/liberecolistings/1");
     }
 
-    public static void shouldReadAllLiberecoListing(String listingName) {
+    public static void shouldReadAllLiberecoListing(String listingName, String userId, String liberecoListingId) {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -517,31 +525,34 @@ public abstract class TestDataUtils {
                 body("listingCondition", equalTo(Arrays.asList("NEW"))).
                 body("pictureName", equalTo(Arrays.asList("samsung-galaxy.jpg"))).
                 body("pictureUrl", equalTo(Arrays.asList("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy.jpg"))).
-                body("userId", equalTo(Arrays.asList(1))).
+                body("userId", equalTo(Arrays.asList(Long.valueOf(userId).intValue()))).
                 log().all().
                 when().get("/libereco/liberecolistings");
     }
 
-    public static void shouldUpdateLiberecoListing(String listingName) {
+    public static void shouldUpdateLiberecoListing(String listingName, String userId, int liberecoListingId, int version, int shippingId,
+            int shippingVersion, int paymentId, int paymentVersion) {
         String itemLocationJson = toJson(ImmutableMap.<String, String> builder().put("itemLocation", "SanJose, CA").put("postalCode", "95125")
                 .build());
 
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         JsonArray updateShippingInformationJsonArray = new JsonArray();
-        updateShippingInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", "1").put("shippingCost", "2.5")
-                .put("shippingService", "USPSMedia").put("shippingType", "FLAT").put("version", "0").build()));
+        updateShippingInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", String.valueOf(shippingId))
+                .put("shippingCost", "2.5")
+                .put("shippingService", "USPSMedia").put("shippingType", "FLAT").put("version", String.valueOf(shippingVersion)).build()));
 
         String updatedShippingInformationJson = updateShippingInformationJsonArray.toString();
 
         JsonArray updatePaymentInformationJsonArray = new JsonArray();
-        updatePaymentInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", "1").put("paymentMethod", "AM_EX")
-                .put("version", "0").build()));
+        updatePaymentInformationJsonArray.add(toJsonObject(ImmutableMap.<String, String> builder().put("id", String.valueOf(paymentId))
+                .put("paymentMethod", "AM_EX")
+                .put("version", String.valueOf(paymentVersion)).build()));
         String updatePaymentInformationJson = updatePaymentInformationJsonArray.toString();
 
         String updateLiberecoListingJson = toJson(ImmutableMap.<String, String> builder().
                 put("name", listingName).
-                put("id", "1").
-                put("userId", "1").
+                put("id", String.valueOf(liberecoListingId)).
+                put("userId", userId).
                 put("price", "1000").
                 put("quantity", "10").
                 put("description", "Samsung Galaxy S3 Listing").
@@ -550,7 +561,7 @@ public abstract class TestDataUtils {
                 put("itemLocation", itemLocationJson).
                 put("shippingInformations", updatedShippingInformationJson).
                 put("liberecoPaymentInformations", updatePaymentInformationJson).
-                put("version", "0").
+                put("version", String.valueOf(version)).
                 build());
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -575,12 +586,12 @@ public abstract class TestDataUtils {
                 body("listingCondition", equalTo("NEW")).
                 body("pictureName", equalTo("samsung-galaxy-s3.jpg")).
                 body("pictureUrl", equalTo("http://localhost:8080/libereco/liberecolistings/1/image/samsung-galaxy-s3.jpg")).
-                body("userId", equalTo(1)).
+                body("userId", equalTo(Long.valueOf(userId).intValue())).
                 log().all().
-                when().get("/libereco/liberecolistings/1");
+                when().get("/libereco/liberecolistings/" + liberecoListingId);
     }
 
-    public static void shouldDeleteLiberecoListing() {
+    public static void shouldDeleteLiberecoListing(String liberecoListingId) {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -588,7 +599,7 @@ public abstract class TestDataUtils {
                 expect().
                 statusCode(200).
                 log().all().
-                when().delete("/libereco/liberecolistings/1");
+                when().delete("/libereco/liberecolistings/" + liberecoListingId);
 
         given().log().all().
                 auth().form("test_user", "password", config).
@@ -596,10 +607,10 @@ public abstract class TestDataUtils {
                 expect().
                 statusCode(404).
                 log().all().
-                when().delete("/libereco/liberecolistings/1");
+                when().delete("/libereco/liberecolistings/" + liberecoListingId);
     }
 
-    public static void shouldCreateEbayListing(String listingName) {
+    public static String shouldCreateEbayListing(String listingName) {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
                 put("name", listingName).put("id", "1").put("version", "0").
@@ -609,14 +620,16 @@ public abstract class TestDataUtils {
                 .put("startPrice", "100").put("paypalEmail", "test@gmail.com")
                 .put("lotSize", "1").put("listingDuration", "DAYS_3").put("liberecoListing", liberecoListingJson).build());
 
-        given().
+        String json = given().
                 auth().form("test_user", "password", config).
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(ebayListingJson).
                 expect().
                 statusCode(201).
                 log().all().
-                post("/libereco/ebaylistings");
+                post("/libereco/ebaylistings").asString();
+
+        return JsonUtils.toMap(json).get("id");
     }
 
     public static void shouldReadEbayListing() {

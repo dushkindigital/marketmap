@@ -86,7 +86,7 @@ public class EbayListingController {
         createEbayListing(ebayListing);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<String>(ebayListing.toJson(), headers, HttpStatus.CREATED);
     }
 
     private void createEbayListing(EbayListing ebayListing) {

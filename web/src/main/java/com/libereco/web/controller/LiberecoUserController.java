@@ -57,7 +57,7 @@ public class LiberecoUserController {
         liberecoUserService.saveLiberecoUser(liberecoUser);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<String>(liberecoUser.toJson(), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")

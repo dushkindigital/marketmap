@@ -59,7 +59,7 @@ public class LiberecoShippingInformationController {
         liberecoShippingInformationService.saveShippingInformation(shippingInformation);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<String>(shippingInformation.toJson(), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")

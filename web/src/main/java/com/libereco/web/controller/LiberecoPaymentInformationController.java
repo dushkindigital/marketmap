@@ -59,7 +59,7 @@ public class LiberecoPaymentInformationController {
         liberecoPaymentInformationService.saveLiberecoPaymentInformation(liberecoPaymentInformation);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<String>(liberecoPaymentInformation.toJson(), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")

@@ -1,5 +1,6 @@
 package com.libereco.integration.tests;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 public abstract class JsonUtils {
 
@@ -45,5 +47,14 @@ public abstract class JsonUtils {
         Gson gson = new Gson();
         String userJson = gson.toJson(parameters);
         return userJson;
+    }
+
+    public static Map<String, String> toMap(String json) {
+        Type type =
+                new TypeToken<Map<String, String>>() {
+                }.getType();
+        Map<String, String> map =
+                new Gson().fromJson(json, type);
+        return map;
     }
 }

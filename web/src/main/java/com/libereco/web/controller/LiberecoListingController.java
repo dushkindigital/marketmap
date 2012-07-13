@@ -108,7 +108,7 @@ public class LiberecoListingController {
         createLiberecoListing(liberecoListing, httpServletRequest, picture);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<String>(liberecoListing.toJson(), headers, HttpStatus.CREATED);
     }
 
     private void createLiberecoListing(LiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {

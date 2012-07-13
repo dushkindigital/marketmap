@@ -39,11 +39,11 @@ public class EbayListingRestServiceIntegrationTest {
 
     @Before
     public void setup() throws Exception {
-        shouldCreateUser();
+        String userId = shouldCreateUser();
         shouldCreateMarketplace();
         shouldAutheticateWithEbay();
         listingName = "Test Listing " + UUID.randomUUID().toString();
-        shouldCreateLiberecoListing(listingName);
+        shouldCreateLiberecoListing(listingName, userId);
     }
 
     @Test

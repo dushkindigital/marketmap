@@ -59,7 +59,7 @@ public class MarketplaceController {
         marketplaceService.saveMarketplace(marketplace);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<String>(marketplace.toJson(), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
