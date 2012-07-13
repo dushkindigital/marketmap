@@ -45,7 +45,7 @@ import org.mortbay.jetty.Server;
 
 import com.jayway.restassured.path.json.JsonPath;
 
-public class LiberecoIntegrationTestSuite {
+public class LiberecoRestServiceIntegrationTest {
 
     private static Server server;
 

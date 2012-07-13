@@ -10,7 +10,7 @@ public abstract class ServerUtils {
         Server server = new Server(port);
         server.setStopAtShutdown(true);
         WebAppContext wac = new WebAppContext(getWarPath(defaultWarLocation), contextPath);
-        wac.setClassLoader(LiberecoUserRestServiceIntegrationTest.class.getClass().getClassLoader());
+        wac.setClassLoader(ServerUtils.class.getClass().getClassLoader());
         server.addHandler(wac);
         server.start();
         return server;
