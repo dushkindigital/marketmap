@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jayway.restassured.authentication.FormAuthConfig;
+import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Header;
 
 public abstract class TestDataUtils {
@@ -224,8 +225,16 @@ public abstract class TestDataUtils {
     }
 
     public static void shouldAutheticateWithEbay() throws Exception {
-        // GET MARKETPLACE_AUTHORIZATIONS
+        String ebaySigninUrl = shouldGetSessionId();
 
+        // PROGRAMMATICALLY SIGNIN TO EBAY
+
+        signinToEbay(ebaySigninUrl);
+
+        shouldFetchToken();
+    }
+
+    public static String shouldGetSessionId() {
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         String ebaySigninUrl = given().
                 auth().form("test_user", "password", config).
@@ -238,11 +247,11 @@ public abstract class TestDataUtils {
                 body(containsString("https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=Freelancer-Freelanc-61fa-4-utwirrh&SessID=")).
                 log().all().
                 get("/libereco/marketplaces/ebay/authorize").asString();
+        return ebaySigninUrl;
+    }
 
-        // PROGRAMMATICALLY SIGNIN TO EBAY
-
-        signinToEbay(ebaySigninUrl);
-
+    public static void shouldFetchToken() {
+        FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
         // FETCH EBAY MARKETPLACE AUTHORIZATION TOKEN
         String token = given().
                 auth().form("test_user", "password", config).
@@ -482,10 +491,13 @@ public abstract class TestDataUtils {
                 log().all().
                 post("/libereco/liberecolistings").asString();
 
+        JsonPath jsonPath = new JsonPath(json);
+        String liberecoListingId = jsonPath.getString("id");
+
         InputStream inputStream = given().log().all().
                 auth().form("test_user", "password", config).
                 expect().
-                get("/libereco/liberecolistings/1/image/samsung-galaxy.jpg").asInputStream();
+                get("/libereco/liberecolistings/" + liberecoListingId + "/image/samsung-galaxy.jpg").asInputStream();
 
         assertNotNull(inputStream);
 

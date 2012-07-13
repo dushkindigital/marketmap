@@ -70,7 +70,7 @@ public class MarketPlaceAuthorizationController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET,produces = "text/html")
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET, produces = "text/html")
     public String authorize(@PathVariable("marketplace") String name) {
         String redirectUrl = getRedirectUrl(name);
         return "redirect:" + redirectUrl;
@@ -128,14 +128,24 @@ public class MarketPlaceAuthorizationController {
     private String persistMarketplaceAuthorizationToken(String name, String username) {
         LiberecoUser liberecoUser = fetchUser(username);
         Marketplace marketplace = fetchMarketplace(name);
+        MarketplaceAuthorizations persistedMarketplaceAuthorization = marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace
+                        .getId()));
+
+        if (persistedMarketplaceAuthorization != null) {
+            return persistedMarketplaceAuthorization.getToken();
+        }
+        PendingMarketplaceAuthorizations pendingMarketplaceAuthorization = pendingMarketplaceAuthorizationsRepository
+                .findOne(new UserMarketplaceKey(liberecoUser.getId(), marketplace.getId()));
+        if (pendingMarketplaceAuthorization == null) {
+            throw new RuntimeException("Please first authenticate with Marketplace and then ask for token.");
+        }
         MarketplaceName marketplaceName = MarketplaceName.fromString(name);
         String token = null;
         switch (marketplaceName) {
         case EBAY:
             EbayToken ebayToken = null;
             try {
-                PendingMarketplaceAuthorizations pendingMarketplaceAuthorization = pendingMarketplaceAuthorizationsRepository
-                        .findOne(new UserMarketplaceKey(liberecoUser.getId(), marketplace.getId()));
                 String sessionId = pendingMarketplaceAuthorization.getRequestToken();
                 ebayToken = ebayAuthorizer.fetchToken(sessionId);
                 MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorization(liberecoUser, marketplace, ebayToken);

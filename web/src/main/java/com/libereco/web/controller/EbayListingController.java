@@ -97,7 +97,9 @@ public class EbayListingController {
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
                 .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
-
+        if (ebayAuthorization == null) {
+            throw new RuntimeException("No authorization found for Ebay. Please authenticate yourself with Ebay.");
+        }
         ebayClient.addListing(ebayListing, ebayAuthorization.getToken());
         ebayListingService.saveEbayListing(ebayListing);
         Set<Marketplace> marketplaces = liberecoListing.getMarketplaces();

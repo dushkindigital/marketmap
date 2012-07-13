@@ -96,7 +96,6 @@ public class LiberecoListingController {
             return "liberecolistings/create";
         }
         uiModel.asMap().clear();
-        System.out.println(liberecoListing.toJson());
         createLiberecoListing(liberecoListing, httpServletRequest, picture);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
