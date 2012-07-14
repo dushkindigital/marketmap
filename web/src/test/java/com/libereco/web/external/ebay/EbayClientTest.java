@@ -208,6 +208,11 @@ public class EbayClientTest {
         System.out.println(sb);
     }
 
+    @Test
+    public void shouldGetEbayCategories() {
+        ebayClient.getEbayCategories(TOKEN);
+    }
+    
     @Ignore
     @Test
     public void testAddFixedPriceItemListing() throws Exception {

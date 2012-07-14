@@ -2,6 +2,7 @@ package com.libereco.web.external.ebay;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.AddFixedPriceItemCall;
 import com.ebay.sdk.call.EndFixedPriceItemCall;
+import com.ebay.sdk.call.GetCategoriesCall;
 import com.ebay.sdk.call.GeteBayDetailsCall;
 import com.ebay.sdk.call.ReviseFixedPriceItemCall;
 import com.ebay.soap.eBLBaseComponents.AmountType;
@@ -33,6 +35,7 @@ import com.ebay.soap.eBLBaseComponents.ShippingTypeCodeType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
 import com.libereco.core.domain.DelistingReason;
 import com.libereco.core.domain.EbayListing;
+import com.libereco.core.domain.LiberecoCategory;
 import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoPaymentInformation;
 import com.libereco.core.domain.LiberecoShippingInformation;
@@ -48,6 +51,8 @@ public class EbayClient {
 
     private ApiContext apiContext;
     private Environment environment;
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     public EbayClient(ApiContext apiContext, Environment environment) {
@@ -80,7 +85,6 @@ public class EbayClient {
              */
             FeesType fees = addFixedPriceItemCall.addFixedPriceItem();
             String itemId = item.getItemID();
-            System.out.println("Item: " + itemId);
             ebayListing.setEbayItemId(itemId);
 
             String ebayItemUrl = environment.getProperty("libereco.ebay.item.url");
@@ -159,6 +163,22 @@ public class EbayClient {
         }
     }
 
+    public void getEbayCategories(String token) {
+        this.apiContext
+                .getApiCredential()
+                .seteBayToken(token);
+        GetCategoriesCall getCategoriesCall = new GetCategoriesCall(apiContext);
+        getCategoriesCall.setDetailLevel(new DetailLevelCodeType[] { DetailLevelCodeType.RETURN_ALL });
+        try {
+            CategoryType[] categories = getCategoriesCall.getCategories();
+            for (CategoryType categoryType : categories) {
+                logger.info(categoryType.getCategoryName() + " , " + categoryType.getCategoryID());
+            }
+        } catch (Exception e) {
+            throw new ExternalServiceException("Not able to get categories from Ebay at this moment.", e);
+        }
+    }
+
     private EndReasonCodeType toEbayEndingReason(DelistingReason reason) {
         switch (reason) {
         case INCORRECT_PRICE:
@@ -193,8 +213,7 @@ public class EbayClient {
         item.setTitle(liberecoListing.getName());
         item.setDescription(liberecoListing.getDescription());
 
-        CategoryType cat = new CategoryType();
-        cat.setCategoryID("139971");
+        CategoryType cat = toEbayCategoryType(ebayListing.getLiberecoListing().getCategory());
         item.setPrimaryCategory(cat);
 
         AmountType startPrice = toAmountType(ebayListing.getStartPrice());
@@ -207,9 +226,6 @@ public class EbayClient {
         item.setListingDuration(ebayListing.getListingDuration().getName());
         item.setListingType(ListingTypeCodeType.FIXED_PRICE_ITEM);
 
-        // item.setRegionID("0");
-        // item.setLocation("San Jose, CA");
-        // item.setPostalCode("95125");
         item.setCurrency(CurrencyCodeType.USD);
         item.setCountry(CountryCodeType.US);
         item.setLocation(liberecoListing.getItemLocation().getItemLocation());
@@ -234,6 +250,39 @@ public class EbayClient {
         item.setPayPalEmailAddress(ebayListing.getPaypalEmail());
         item.setReturnPolicy(toReturnPolicy(ebayListing.getReturnPolicy()));
         return item;
+    }
+
+    private CategoryType toEbayCategoryType(LiberecoCategory category) {
+        CategoryType cat = new CategoryType();
+        switch (category) {
+        case CAT_BOOKS:
+            cat.setCategoryID("116110");
+            break;
+        case CAT_CLOTHING_SHOES_JEWELLERY:
+            cat.setCategoryID("158776");
+            break;
+        case CAT_COMPUTER_OFFICE:
+            cat.setCategoryID("102490");
+            break;
+        case CAT_ELECTRONICS:
+            cat.setCategoryID("102491");
+            break;
+        case CAT_GROCERY_HEALTH_BEAUTY:
+            cat.setCategoryID("4256");
+            break;
+        case CAT_HOME_GARDEN_PETS:
+            cat.setCategoryID("146110");
+        case CAT_MOVIES_MUSIC_GAME:
+            cat.setCategoryID("175691");
+            break;
+        case CAT_SPORTS_OUTDOOR:
+            cat.setCategoryID("173633");
+            break;
+        case CAT_TOYS_KIDS_BABY:
+            cat.setCategoryID("50306");
+            break;
+        }
+        return cat;
     }
 
     private BuyerPaymentMethodCodeType toEbayBuyerPaymentMethod(PaymentMethod paymentMethod) {
