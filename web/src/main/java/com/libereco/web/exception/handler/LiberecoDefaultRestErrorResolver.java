@@ -1,5 +1,10 @@
 package com.libereco.web.exception.handler;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -17,8 +22,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
-
-import java.util.*;
 
 /**
  * Default {@code RestErrorResolver} implementation that converts discovered Exceptions to
@@ -179,13 +182,13 @@ public class LiberecoDefaultRestErrorResolver implements LiberecoRestErrorResolv
     }
 
     protected String getDeveloperMessage(LiberecoRestError template, ServletWebRequest request, Exception ex) {
-        String devMsg = template.getDeveloperMessage();
-        if (devMsg == null && defaultDeveloperMessage != null) {
-            devMsg = defaultDeveloperMessage;
-        }
-        if (DEFAULT_MESSAGE_VALUE.equals(devMsg)) {
-            devMsg = template.getMessage();
-        }
+        String message = ex.getMessage();
+        String cause = ex.getCause() == null ? "" : ex.getCause().getMessage();
+        
+        StringBuilder exceptionMessageBuilder = new StringBuilder("Not able to addListing ");
+        exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
+        
+        String devMsg = exceptionMessageBuilder.toString();
         return getMessage(devMsg, request, ex);
     }
 
