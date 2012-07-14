@@ -1,6 +1,7 @@
 package com.libereco.integration.tests;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.libereco.integration.tests.JsonUtils.toJson;
 import static com.libereco.integration.tests.TestDataUtils.shouldAutheticateWithEbay;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateEbayListing;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateLiberecoListing;
@@ -47,6 +48,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
 
+import com.google.common.collect.ImmutableMap;
 import com.jayway.restassured.authentication.FormAuthConfig;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Header;
@@ -230,7 +232,24 @@ public class LiberecoRestServiceIntegrationTest {
         String liberecoListingId = jsonPath.getString("id");
         String liberecoListingVersionId = jsonPath.getString("version");
 
-        shouldCreateEbayListing(listingName, liberecoListingId, liberecoListingVersionId);
+        FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
+        String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
+                put("name", listingName).put("id", liberecoListingId).put("version", liberecoListingVersionId).
+                build());
+
+        String ebayListingJson = toJson(ImmutableMap.<String, String> builder().put("returnPolicy", "NO_RETURN").put("dispatchTimeMax", "3")
+                .put("startPrice", "100").put("paypalEmail", "test@gmail.com")
+
+                .put("lotSize", "1").put("listingDuration", "DAYS_3").put("liberecoListing", liberecoListingJson).build());
+        given().
+                auth().form("test_user", "password", config).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                body(ebayListingJson).
+                expect().
+                statusCode(404).
+                log().all().
+                post("/libereco/ebaylistings");
+        
         
         shouldDeleteMarketplace(marketplaceId);
         shouldDeleteUser(userId);

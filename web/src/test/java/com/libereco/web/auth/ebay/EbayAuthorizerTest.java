@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.libereco.web.auth.MarketplaceAuthorizationException;
+import com.libereco.core.exceptions.ExternalMarketplaceAuthorizationException;
 import com.libereco.web.auth.SignInDetails;
 
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext-web.xml" })
@@ -49,7 +49,7 @@ public class EbayAuthorizerTest {
     }
 
     @Test
-    public void shouldGetNotNullSigninDetailsWithValidCredentials() throws MarketplaceAuthorizationException {
+    public void shouldGetNotNullSigninDetailsWithValidCredentials() throws ExternalMarketplaceAuthorizationException {
         SignInDetails signInDetails = ebayAuthorizer.getSignInDetails();
         System.out.println(signInDetails);
         assertNotNull(signInDetails);

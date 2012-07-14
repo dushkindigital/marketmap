@@ -82,6 +82,44 @@
 			</props>
 		</property>
 	</bean>
+	
+	<bean id="jacksonHttpMessageConverter" class="com.libereco.web.exception.handler.DefaultJacksonHttpMessageConverter">
+        <property name="prettyPrint" value="true"/>
+    </bean>
+
+	<!-- Allow Exceptions to be handled in annotated methods if desired. Otherwise 
+		fallback to the 'restExceptionResolver' below: -->
+	<bean id="annotationMethodHandlerExceptionResolver"
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+		<property name="order" value="0" />
+	</bean>
+	<bean id="restExceptionResolver"
+		class="com.libereco.web.exception.handler.LiberecoRestExceptionHandler">
+		<property name="order" value="100" />
+		<property name="messageConverters">
+			<list>
+				<ref bean="jacksonHttpMessageConverter" />
+			</list>
+		</property>
+		<property name="errorResolver">
+			<bean
+				class="com.libereco.web.exception.handler.LiberecoDefaultRestErrorResolver">
+				<property name="localeResolver" ref="localeResolver" />
+				<property name="defaultMoreInfoUrl" value="mailto:support@mycompany.com" />
+				<property name="exceptionMappingDefinitions">
+					<map>
+						<!-- 404 -->
+						<entry
+							key="java.lang.RuntimeException"
+							value="404, _exmsg" />
+
+						<!-- 500 (catch all): -->
+						<entry key="Throwable" value="500" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
 
 	<!-- Enable this for integration of file upload functionality -->
 	<bean

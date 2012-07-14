@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.FetchTokenCall;
 import com.ebay.sdk.call.GetSessionIDCall;
-import com.libereco.web.auth.MarketplaceAuthorizationException;
+import com.libereco.core.exceptions.ExternalMarketplaceAuthorizationException;
 import com.libereco.web.auth.MarketplaceAuthorizer;
 import com.libereco.web.auth.SignInDetails;
 
@@ -73,7 +73,7 @@ public class EbayAuthorizer implements MarketplaceAuthorizer {
     }
 
     @Override
-    public SignInDetails getSignInDetails() throws MarketplaceAuthorizationException {
+    public SignInDetails getSignInDetails() {
         SignInDetails signInDetails = null;
 
         try {
@@ -84,7 +84,7 @@ public class EbayAuthorizer implements MarketplaceAuthorizer {
             signInDetails.setToken(sessionId);
         } catch (Exception e) {
             logger.warn("Failed to get session id", e);
-            throw new MarketplaceAuthorizationException(e);
+            throw new ExternalMarketplaceAuthorizationException("Not able to get sessionId from ebay. Please try again in some time.", e);
         }
         return signInDetails;
     }

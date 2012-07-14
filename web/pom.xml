@@ -61,8 +61,15 @@
 			<url>http://spring-roo-repository.springsource.org/release</url>
 		</pluginRepository>
 	</pluginRepositories>
+	
 	<dependencies>
-
+	
+	<dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.7.6</version>
+        </dependency>
+        
 	<dependency>
 		<artifactId>commons-io</artifactId>
 		<groupId>commons-io</groupId>

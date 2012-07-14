@@ -36,6 +36,7 @@ import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
 import com.libereco.core.domain.ReturnPolicy;
+import com.libereco.core.exceptions.UserMarketplaceAuthorizationException;
 import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
@@ -92,13 +93,14 @@ public class EbayListingController {
     private void createEbayListing(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
-            throw new RuntimeException("No marketplace found for marketplace ebay");
+            throw new RuntimeException(
+                    "You can't create listing on Ebay marketplace as there is no marketplace found ebay in our system. Please contact system administrator.");
         }
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
                 .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoListing.getUserId(), marketplace.getId()));
         if (ebayAuthorization == null) {
-            throw new RuntimeException("No authorization found for Ebay. Please authenticate yourself with Ebay.");
+            throw new UserMarketplaceAuthorizationException(MarketplaceName.EBAY.getName());
         }
         ebayClient.addListing(ebayListing, ebayAuthorization.getToken());
         ebayListingService.saveEbayListing(ebayListing);
