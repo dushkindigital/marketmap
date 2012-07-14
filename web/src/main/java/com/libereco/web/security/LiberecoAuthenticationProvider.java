@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.libereco.core.domain.LiberecoUser;
+import com.libereco.core.exceptions.GenericLiberecoException;
 import com.libereco.core.service.LiberecoUserService;
 
 @Component
@@ -37,9 +38,9 @@ public class LiberecoAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         try {
-            LiberecoUser user = liberecoUserService.findUserbyUsernameAndPassword(username,password);
-            if(user == null){
-                throw new RuntimeException("User does not exist..");
+            LiberecoUser user = liberecoUserService.findUserbyUsernameAndPassword(username, password);
+            if (user == null) {
+                throw new GenericLiberecoException("Username or password incorrect." + username);
             }
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         } catch (Exception e) {

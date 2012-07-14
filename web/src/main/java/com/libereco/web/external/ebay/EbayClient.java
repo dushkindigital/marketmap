@@ -40,6 +40,8 @@ import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.PaymentMethod;
 import com.libereco.core.domain.ReturnPolicy;
 import com.libereco.core.domain.ShippingType;
+import com.libereco.core.exceptions.ExternalServiceException;
+import com.libereco.core.exceptions.GenericLiberecoException;
 
 @Component
 public class EbayClient {
@@ -87,7 +89,7 @@ public class EbayClient {
             return ebayListing;
         } catch (Exception e) {
             String exceptionMessage = getExceptionMessage(e);
-            throw new RuntimeException(exceptionMessage, e);
+            throw new ExternalServiceException("Not able to create listing on Ebay at this moment.", e);
         }
     }
 
@@ -114,7 +116,7 @@ public class EbayClient {
             return ebayListing;
         } catch (Exception e) {
             String exceptionMessage = getExceptionMessage(e);
-            throw new RuntimeException(exceptionMessage, e);
+            throw new ExternalServiceException("Not able to revise listing on Ebay at this moment.", e);
         }
     }
 
@@ -138,7 +140,7 @@ public class EbayClient {
             endFixedPriceItemCall.endFixedPriceItem();
         } catch (Exception e) {
             String exceptionMessage = getExceptionMessage(e);
-            throw new RuntimeException(exceptionMessage, e);
+            throw new ExternalServiceException("Not able to delist item from Ebay at this moment.", e);
         }
     }
 
@@ -153,7 +155,7 @@ public class EbayClient {
             ShippingServiceDetailsType[] shippingServiceDetails = geteBayDetailsCall.getReturnedShippingServiceDetails();
             return shippingServiceDetails;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ExternalServiceException("Not able to get ebay details from Ebay at this moment.", e);
         }
     }
 
@@ -169,7 +171,7 @@ public class EbayClient {
             return EndReasonCodeType.SOLD;
         }
 
-        throw new IllegalArgumentException("No Ebay EndReasonCodeType found for delisting reason : " + reason);
+        throw new GenericLiberecoException("No Ebay EndReasonCodeType found for delisting reason : " + reason);
     }
 
     private String getExceptionMessage(Exception e) {
@@ -249,7 +251,7 @@ public class EbayClient {
         case PAYPAL:
             return BuyerPaymentMethodCodeType.PAY_PAL;
         }
-        throw new IllegalArgumentException("No valid BuyerPaymentMethodCodeType found for " + paymentMethod);
+        throw new GenericLiberecoException("No valid BuyerPaymentMethodCodeType found for " + paymentMethod);
     }
 
     private ShippingDetailsType toEbayShippingDetails(LiberecoShippingInformation shippingInformation) {
@@ -288,7 +290,7 @@ public class EbayClient {
         case NOT_SPECIFIED:
             return ShippingTypeCodeType.NOT_SPECIFIED;
         }
-        throw new IllegalArgumentException("No Ebay ShippingTypeCodeType found for shippingType : " + shippingType);
+        throw new GenericLiberecoException("No Ebay ShippingTypeCodeType found for shippingType : " + shippingType);
 
     }
 
@@ -305,7 +307,7 @@ public class EbayClient {
         case USED:
             return 3000;
         default:
-            throw new IllegalArgumentException("No valid value found for EBay Listing : " + listingCondition);
+            throw new GenericLiberecoException("No valid value found for EBay Listing : " + listingCondition);
         }
     }
 

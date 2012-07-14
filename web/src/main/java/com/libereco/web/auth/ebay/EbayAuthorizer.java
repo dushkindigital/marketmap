@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.call.FetchTokenCall;
 import com.ebay.sdk.call.GetSessionIDCall;
-import com.libereco.core.exceptions.ExternalMarketplaceAuthorizationException;
+import com.libereco.core.exceptions.ExternalServiceException;
 import com.libereco.web.auth.MarketplaceAuthorizer;
 import com.libereco.web.auth.SignInDetails;
 
@@ -49,16 +49,15 @@ public class EbayAuthorizer implements MarketplaceAuthorizer {
         return sessionId;
     }
 
-    // TODO: Define a more specific exception, eBay's SDK throws generic
-    // exception
-    public EbayToken fetchToken(String sessionId) throws Exception {
+    public EbayToken fetchToken(String sessionId) {
         EbayToken token = null;
         FetchTokenCall ftCall = new FetchTokenCall(apiContext);
         ftCall.setSessionID(sessionId);
-
-        // Invoke the method that fetches the token and populate token
-        // information in the call object
-        ftCall.fetchToken();
+        try {
+            ftCall.fetchToken();
+        } catch (Exception e) {
+            throw new ExternalServiceException("Not able to fetch token from ebay.", e);
+        }
 
         token = new EbayToken(ftCall.getReturnedToken(),
                 ftCall.getHardExpirationTime());
@@ -83,8 +82,7 @@ public class EbayAuthorizer implements MarketplaceAuthorizer {
             signInDetails.setSignInUrl(signInUrl);
             signInDetails.setToken(sessionId);
         } catch (Exception e) {
-            logger.warn("Failed to get session id", e);
-            throw new ExternalMarketplaceAuthorizationException("Not able to get sessionId from ebay. Please try again in some time.", e);
+            throw new ExternalServiceException("Not able to get sessionId from ebay. Please try again in some time.", e);
         }
         return signInDetails;
     }

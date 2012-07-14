@@ -246,7 +246,7 @@ public class LiberecoRestServiceIntegrationTest {
                 contentType("application/json").header(new Header("Accept", "application/json")).
                 body(ebayListingJson).
                 expect().
-                statusCode(404).
+                statusCode(401).
                 log().all().
                 post("/libereco/ebaylistings");
         

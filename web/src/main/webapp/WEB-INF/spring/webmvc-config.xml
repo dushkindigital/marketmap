@@ -105,16 +105,24 @@
 			<bean
 				class="com.libereco.web.exception.handler.LiberecoDefaultRestErrorResolver">
 				<property name="localeResolver" ref="localeResolver" />
-				<property name="defaultMoreInfoUrl" value="mailto:support@mycompany.com" />
+				<property name="defaultMoreInfoUrl" value="mailto:support@dushkindigital.com" />
 				<property name="exceptionMappingDefinitions">
 					<map>
-						<!-- 404 -->
-						<entry
-							key="java.lang.RuntimeException"
-							value="404, _exmsg" />
-
+						
+						<!-- 400 We don't have sufficient data to process your request. This might be cause your request does not contain full data or some other data is missing.  -->
+						<entry key="com.libereco.core.exceptions.GenericLiberecoException" value="400,_exmsg"></entry>		
+						
+						<!-- 401 Thrown when you are trying to perform operation and you are not authorized with marketplace  -->
+						<entry key="com.libereco.core.exceptions.UserMarketplaceAuthorizationException" value="401,_exmsg"></entry>				
+					
+						<!-- 500 Something went wrong with LiberecoServer -->
+						<entry key="com.libereco.core.exceptions.LiberecoServerException" value="500,_exmsg"></entry>
+						
+						<!-- 503 External service exception -->
+						<entry key="com.libereco.core.exceptions.ExternalServiceException" value="503,_exmsg"></entry>
+						
 						<!-- 500 (catch all): -->
-						<entry key="Throwable" value="500" />
+						<entry key="Throwable" value="500,_exmsg" />
 					</map>
 				</property>
 			</bean>

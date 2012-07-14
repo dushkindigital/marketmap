@@ -27,6 +27,8 @@ import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
 import com.libereco.core.domain.PendingMarketplaceAuthorizations;
 import com.libereco.core.domain.UserMarketplaceKey;
+import com.libereco.core.exceptions.GenericLiberecoException;
+import com.libereco.core.exceptions.UserMarketplaceAuthorizationException;
 import com.libereco.core.repository.PendingMarketplaceAuthorizationsRepository;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceAuthorizationsService;
@@ -138,27 +140,23 @@ public class MarketPlaceAuthorizationController {
         PendingMarketplaceAuthorizations pendingMarketplaceAuthorization = pendingMarketplaceAuthorizationsRepository
                 .findOne(new UserMarketplaceKey(liberecoUser.getId(), marketplace.getId()));
         if (pendingMarketplaceAuthorization == null) {
-            throw new RuntimeException("Please first authenticate with Marketplace and then ask for token.");
+            throw new UserMarketplaceAuthorizationException("Please first authenticate with Marketplace and then ask for token.");
         }
         MarketplaceName marketplaceName = MarketplaceName.fromString(name);
         String token = null;
         switch (marketplaceName) {
         case EBAY:
             EbayToken ebayToken = null;
-            try {
-                String sessionId = pendingMarketplaceAuthorization.getRequestToken();
-                ebayToken = ebayAuthorizer.fetchToken(sessionId);
-                MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorization(liberecoUser, marketplace, ebayToken);
-                marketplaceAuthorizationsService.saveMarketplaceAuthorizations(marketplaceAuthorization);
-                pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorization);
-                token = ebayToken.getToken();
-            } catch (Exception e) {
-                throw new RuntimeException("Not able to fetch token", e);
-            }
-
+            String sessionId = pendingMarketplaceAuthorization.getRequestToken();
+            ebayToken = ebayAuthorizer.fetchToken(sessionId);
+            MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorization(liberecoUser, marketplace, ebayToken);
+            marketplaceAuthorizationsService.saveMarketplaceAuthorizations(marketplaceAuthorization);
+            pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorization);
+            token = ebayToken.getToken();
             break;
         default:
-            throw new IllegalArgumentException("Illegal Marktplace : " + marketplaceName);
+            throw new GenericLiberecoException(String.format(
+                    "We currently do not support %s marketplace. You can currently only create listing on Ebay.", marketplace));
         }
         return token;
     }
@@ -195,7 +193,7 @@ public class MarketPlaceAuthorizationController {
     private Marketplace fetchMarketplace(String name) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(name);
         if (marketplace == null) {
-            throw new RuntimeException("Marketplace does not exist for given marketplace : " + marketplace);
+            throw new GenericLiberecoException("Marketplace does not exist for given marketplace : " + marketplace);
         }
         return marketplace;
     }
@@ -203,7 +201,7 @@ public class MarketPlaceAuthorizationController {
     private LiberecoUser fetchUser(String username) {
         LiberecoUser liberecoUser = liberecoUserService.findUserByUsername(username);
         if (liberecoUser == null) {
-            throw new RuntimeException("User does not exist for given username : " + username);
+            throw new GenericLiberecoException("User does not exist for given username : " + username);
         }
         return liberecoUser;
     }

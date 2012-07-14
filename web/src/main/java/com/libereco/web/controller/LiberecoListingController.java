@@ -48,6 +48,8 @@ import com.libereco.core.domain.ListingState;
 import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
+import com.libereco.core.exceptions.GenericLiberecoException;
+import com.libereco.core.exceptions.LiberecoServerException;
 import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoPaymentInformationService;
@@ -135,9 +137,8 @@ public class LiberecoListingController {
             logger.info("Image updloaded name : " + picture.getOriginalFilename() + " , and its size " + picture.getSize());
             liberecoListing.setPicture(picture.getBytes());
             liberecoListing.setPictureName(picture.getOriginalFilename());
-
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new LiberecoServerException("Not able to upload the picture at this moment.", e);
         }
     }
 
@@ -146,7 +147,7 @@ public class LiberecoListingController {
             HttpServletResponse res) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
         if (liberecoListing == null) {
-            throw new RuntimeException("No libereco listing found for id " + id);
+            throw new GenericLiberecoException("No libereco listing found for id " + id);
         }
 
         res.setHeader("Cache-Control", "no-store");
@@ -159,7 +160,7 @@ public class LiberecoListingController {
             ostream.flush();
             ostream.close();
         } catch (Exception e) {
-            throw new RuntimeException("Not able to write image ", e);
+            throw new LiberecoServerException("Not able to read image from the server.", e);
         }
     }
 
@@ -266,7 +267,7 @@ public class LiberecoListingController {
         try {
             persistedLiberecoListing.setPicture(picture.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new LiberecoServerException("Not able to upload image to Libereco server.", e);
         }
         persistedLiberecoListing.setPictureName(picture.getOriginalFilename());
         updateLiberecoListingWithPicture(persistedLiberecoListing, httpServletRequest, picture);
@@ -301,7 +302,7 @@ public class LiberecoListingController {
     private String getMarketplaceToken(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
-            throw new RuntimeException("No marketplace found for marketplace ebay");
+            throw new GenericLiberecoException("No marketplace found for marketplace ebay");
         }
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService

@@ -36,6 +36,7 @@ import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
 import com.libereco.core.domain.ReturnPolicy;
+import com.libereco.core.exceptions.GenericLiberecoException;
 import com.libereco.core.exceptions.UserMarketplaceAuthorizationException;
 import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
@@ -93,7 +94,7 @@ public class EbayListingController {
     private void createEbayListing(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
-            throw new RuntimeException(
+            throw new GenericLiberecoException(
                     "You can't create listing on Ebay marketplace as there is no marketplace found ebay in our system. Please contact system administrator.");
         }
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
@@ -205,7 +206,7 @@ public class EbayListingController {
     private String getMarketplaceToken(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
-            throw new RuntimeException("No marketplace found for marketplace ebay");
+            throw new GenericLiberecoException("No marketplace found for marketplace ebay");
         }
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
@@ -245,7 +246,7 @@ public class EbayListingController {
     private void deleteEbayListing(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
-            throw new RuntimeException("No marketplace found for marketplace ebay");
+            throw new GenericLiberecoException("No marketplace found for marketplace ebay");
         }
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
         MarketplaceAuthorizations ebayAuthorization = marketplaceAuthorizationsService
