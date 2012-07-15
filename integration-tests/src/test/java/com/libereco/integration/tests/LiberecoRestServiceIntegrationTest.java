@@ -1,7 +1,5 @@
 package com.libereco.integration.tests;
 
-import static com.jayway.restassured.RestAssured.given;
-import static com.libereco.integration.tests.JsonUtils.toJson;
 import static com.libereco.integration.tests.TestDataUtils.shouldAutheticateWithEbay;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateEbayListing;
 import static com.libereco.integration.tests.TestDataUtils.shouldCreateLiberecoListing;
@@ -15,8 +13,6 @@ import static com.libereco.integration.tests.TestDataUtils.shouldDeleteMarketpla
 import static com.libereco.integration.tests.TestDataUtils.shouldDeletePaymentInformation;
 import static com.libereco.integration.tests.TestDataUtils.shouldDeleteShippingInformation;
 import static com.libereco.integration.tests.TestDataUtils.shouldDeleteUser;
-import static com.libereco.integration.tests.TestDataUtils.shouldFetchToken;
-import static com.libereco.integration.tests.TestDataUtils.shouldGetSessionId;
 import static com.libereco.integration.tests.TestDataUtils.shouldNotFindMarketplaceWhichDoesNotExist;
 import static com.libereco.integration.tests.TestDataUtils.shouldNotFindPaymentInformationWhichDoesNotExist;
 import static com.libereco.integration.tests.TestDataUtils.shouldNotFindUserWhichDoesNotExist;
@@ -38,7 +34,6 @@ import static com.libereco.integration.tests.TestDataUtils.shouldUpdateMarketpla
 import static com.libereco.integration.tests.TestDataUtils.shouldUpdatePaymentInformation;
 import static com.libereco.integration.tests.TestDataUtils.shouldUpdateShippingInformation;
 import static com.libereco.integration.tests.TestDataUtils.shouldUpdateUser;
-import static com.libereco.integration.tests.TestDataUtils.signinToEbay;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,10 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
 
-import com.google.common.collect.ImmutableMap;
-import com.jayway.restassured.authentication.FormAuthConfig;
 import com.jayway.restassured.path.json.JsonPath;
-import com.jayway.restassured.response.Header;
 
 public class LiberecoRestServiceIntegrationTest {
 
@@ -178,80 +170,4 @@ public class LiberecoRestServiceIntegrationTest {
         shouldDeleteUser(userId);
     }
 
-    @Test
-    public void shouldNotGiveExceptionIfFetchTokenIsCalledMoreThanOnce_Issue_38() throws Exception {
-
-        String userId = shouldCreateUser();
-        String marketplaceId = shouldCreateMarketplace();
-
-        String ebaySigninUrl = shouldGetSessionId();
-
-        // PROGRAMMATICALLY SIGNIN TO EBAY
-
-        signinToEbay(ebaySigninUrl);
-
-        shouldFetchToken();
-
-        FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
-        // FETCH EBAY MARKETPLACE AUTHORIZATION TOKEN
-        given().
-                auth().form("test_user", "password", config).
-                log().all().
-                contentType("application/json").
-                header(new Header("Accept", "application/json")).
-                expect().
-                statusCode(201).
-                log().all().
-                get("/libereco/marketplaces/ebay/fetchToken");
-
-        shouldDeleteMarketplace(marketplaceId);
-        shouldDeleteUser(userId);
-    }
-
-    @Test
-    public void shouldNotThrowNullPointerExceptionWhenLiberecoListingIsCreatedWithoutMarketplaceAuthorization() throws Exception {
-        String userId = shouldCreateUser();
-        String marketplaceId = shouldCreateMarketplace();
-
-        String listingName = "Test Listing " + UUID.randomUUID().toString();
-        shouldCreateLiberecoListing(listingName, userId);
-
-        shouldDeleteMarketplace(marketplaceId);
-        shouldDeleteUser(userId);
-    }
-
-    @Test
-    public void shouldGetErrorResponseWhenEbayingIsCreatedWithoutMarketplaceAuthorization() throws Exception {
-
-        String userId = shouldCreateUser();
-        String marketplaceId = shouldCreateMarketplace();
-
-        String listingName = "Test Listing " + UUID.randomUUID().toString();
-        String json = shouldCreateLiberecoListing(listingName, userId);
-        JsonPath jsonPath = new JsonPath(json);
-        String liberecoListingId = jsonPath.getString("id");
-        String liberecoListingVersionId = jsonPath.getString("version");
-
-        FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
-        String liberecoListingJson = toJson(ImmutableMap.<String, String> builder().
-                put("name", listingName).put("id", liberecoListingId).put("version", liberecoListingVersionId).
-                build());
-
-        String ebayListingJson = toJson(ImmutableMap.<String, String> builder().put("returnPolicy", "NO_RETURN").put("dispatchTimeMax", "3")
-                .put("startPrice", "100").put("paypalEmail", "test@gmail.com")
-
-                .put("lotSize", "1").put("listingDuration", "DAYS_3").put("liberecoListing", liberecoListingJson).build());
-        given().
-                auth().form("test_user", "password", config).
-                contentType("application/json").header(new Header("Accept", "application/json")).
-                body(ebayListingJson).
-                expect().
-                statusCode(401).
-                log().all().
-                post("/libereco/ebaylistings");
-        
-        
-        shouldDeleteMarketplace(marketplaceId);
-        shouldDeleteUser(userId);
-    }
 }

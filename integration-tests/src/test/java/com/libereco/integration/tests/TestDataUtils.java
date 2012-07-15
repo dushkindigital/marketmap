@@ -27,7 +27,11 @@ import com.jayway.restassured.response.Header;
 public abstract class TestDataUtils {
 
     public static String shouldCreateUser() {
-        String userJson = toJson(ImmutableMap.<String, String> builder().put("username", "test_user").put("password", "password")
+        return shouldCreateUser("test_user", "password");
+    }
+
+    public static String shouldCreateUser(String username, String password) {
+        String userJson = toJson(ImmutableMap.<String, String> builder().put("username", username).put("password", password)
                 .put("status", "ACTIVE").put("lastUpdated", new Date().toString()).build());
 
         String json = given().log().all().
@@ -454,6 +458,10 @@ public abstract class TestDataUtils {
     }
 
     public static String shouldCreateLiberecoListing(String listingName, String userId) throws Exception {
+        return shouldCreateLiberecoListing(listingName, userId, "test_user", "password");
+    }
+
+    public static String shouldCreateLiberecoListing(String listingName, String userId, String username, String password) throws Exception {
 
         FormAuthConfig config = new FormAuthConfig("/libereco/resources/j_spring_security_check", "j_username", "j_password");
 
@@ -483,7 +491,7 @@ public abstract class TestDataUtils {
                 build());
 
         String json = given().log().all().
-                auth().form("test_user", "password", config).
+                auth().form(username, password, config).
                 multiPart("picture", new File("src/test/resources/samsung-galaxy.jpg")).
                 multiPart("json", liberecoListingJson).
                 expect().
