@@ -61,20 +61,37 @@
 			<url>http://spring-roo-repository.springsource.org/release</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<dependencies>
-	
-	<dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.7.6</version>
-        </dependency>
-        
-	<dependency>
-		<artifactId>commons-io</artifactId>
-		<groupId>commons-io</groupId>
-		<version>2.1</version>
-	</dependency>
+		<dependency>
+			<groupId>oauth.signpost</groupId>
+			<artifactId>signpost-core</artifactId>
+			<version>1.2.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>oauth.signpost</groupId>
+			<artifactId>signpost-commonshttp4</artifactId>
+			<version>1.2.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.7.6</version>
+		</dependency>
+
+		<dependency>
+			<artifactId>commons-io</artifactId>
+			<groupId>commons-io</groupId>
+			<version>2.1</version>
+		</dependency>
 		<!-- ROO dependencies -->
 		<dependency>
 			<groupId>org.springframework.roo</groupId>
