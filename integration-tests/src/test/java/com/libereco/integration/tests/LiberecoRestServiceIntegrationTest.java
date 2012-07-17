@@ -125,7 +125,6 @@ public class LiberecoRestServiceIntegrationTest {
     public void shouldDoCRUDOperationsOnLiberecoListing() throws Exception {
         String userId = shouldCreateUser();
         String marketplaceId = shouldCreateMarketplace();
-        shouldAutheticateWithEbay();
 
         String listingName = "Test Listing " + UUID.randomUUID().toString();
         String json = shouldCreateLiberecoListing(listingName, userId);

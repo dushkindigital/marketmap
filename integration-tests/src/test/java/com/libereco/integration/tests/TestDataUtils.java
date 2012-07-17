@@ -250,7 +250,7 @@ public abstract class TestDataUtils {
                 and().
                 body(containsString("https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=Freelancer-Freelanc-61fa-4-utwirrh&SessID=")).
                 log().all().
-                get("/libereco/marketplaces/ebay/authorize").asString();
+                post("/libereco/marketplaces/ebay/authorize").asString();
         return ebaySigninUrl;
     }
 
@@ -492,8 +492,8 @@ public abstract class TestDataUtils {
 
         String json = given().log().all().
                 auth().form(username, password, config).
-                multiPart("picture", new File("src/test/resources/samsung-galaxy.jpg")).
-                multiPart("json", liberecoListingJson).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                body(liberecoListingJson).
                 expect().
                 statusCode(201).
                 log().all().
@@ -501,6 +501,14 @@ public abstract class TestDataUtils {
 
         JsonPath jsonPath = new JsonPath(json);
         String liberecoListingId = jsonPath.getString("id");
+
+        given().log().all().
+                auth().form(username, password, config).
+                multiPart("picture", new File("src/test/resources/samsung-galaxy.jpg")).
+                expect().
+                statusCode(200).
+                log().all().
+                post("/libereco/liberecolistings/" + liberecoListingId + "/image");
 
         InputStream inputStream = given().log().all().
                 auth().form("test_user", "password", config).
@@ -583,15 +591,23 @@ public abstract class TestDataUtils {
                 put("liberecoPaymentInformations", updatePaymentInformationJson).
                 put("version", String.valueOf(version)).
                 build());
+
         given().log().all().
                 auth().form("test_user", "password", config).
-                multiPart("picture", new File("src/test/resources/samsung-galaxy-s3.jpg")).
-                multiPart("json", updateLiberecoListingJson).
+                contentType("application/json").header(new Header("Accept", "application/json")).
+                body(updateLiberecoListingJson).
                 expect().
                 statusCode(200).
                 log().all().
                 post("/libereco/liberecolistings/update");
 
+        given().log().all().
+                auth().form("test_user", "password", config).
+                multiPart("picture", new File("src/test/resources/samsung-galaxy-s3.jpg")).
+                expect().
+                statusCode(200).
+                log().all().
+                post("/libereco/liberecolistings/" + liberecoListingId + "/image");
         // READ UPDATED LIBERECO_LISTING
 
         given().log().all().

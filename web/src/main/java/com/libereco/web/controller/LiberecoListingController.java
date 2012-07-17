@@ -1,6 +1,5 @@
 package com.libereco.web.controller;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +49,7 @@ import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
 import com.libereco.core.exceptions.GenericLiberecoException;
+import com.libereco.core.exceptions.LiberecoResourceNotFoundException;
 import com.libereco.core.exceptions.LiberecoServerException;
 import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
@@ -61,7 +62,6 @@ import com.libereco.web.common.MarketplaceName;
 import com.libereco.web.external.ebay.EbayClient;
 import com.libereco.web.security.SecurityUtils;
 
-@RequestMapping("/liberecolistings")
 @Controller
 public class LiberecoListingController {
 
@@ -81,6 +81,9 @@ public class LiberecoListingController {
     MarketplaceService marketplaceService;
     @Autowired
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
+    @Autowired
+    Environment environment;
+    
 
     private Logger logger = Logger.getLogger(LiberecoListingController.class);
 
@@ -89,7 +92,7 @@ public class LiberecoListingController {
         binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(value = "/liberecolistings", method = RequestMethod.POST, produces = "text/html")
     @Secured(value = { "ROLE_USER" })
     public String create(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest,
             @RequestParam MultipartFile picture) {
@@ -98,37 +101,57 @@ public class LiberecoListingController {
             return "liberecolistings/create";
         }
         uiModel.asMap().clear();
-        createLiberecoListing(liberecoListing, httpServletRequest, picture);
+        createLiberecoListing(liberecoListing);
+        updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
         return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
     }
 
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> createFromJson(@RequestParam String json, HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
-        LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
-        createLiberecoListing(liberecoListing, httpServletRequest, picture);
+    public ResponseEntity<String> createLiberecoListingFromJson(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
+        createLiberecoListing(liberecoListing);
         return new ResponseEntity<String>(liberecoListing.toJson(), headers, HttpStatus.CREATED);
     }
 
-    private void createLiberecoListing(LiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/image", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> uploadImageForLiberecoListingFromJson(@PathVariable("liberecoListingId") Long liberecoListingId,
+            HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(liberecoListingId);
+        if (liberecoListing == null) {
+            throw new LiberecoResourceNotFoundException("No liberecolisting found for id " + liberecoListingId);
+        }
+        updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
+        liberecoListingService.updateLiberecoListing(liberecoListing);
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+    private void createLiberecoListing(LiberecoListing liberecoListing) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         liberecoListing.setUserId(user.getId());
-        setPicture(liberecoListing, picture);
         liberecoListing.setListingState(ListingState.NEW);
         liberecoListingService.saveLiberecoListing(liberecoListing);
-        updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
-        liberecoListingService.updateLiberecoListing(liberecoListing);
     }
 
     private void updateLiberecoListingWithPicture(LiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
+        setPicture(liberecoListing, picture);
         if (liberecoListing.getPicture() != null) {
-            String requestUrl = httpServletRequest.getRequestURL().toString();
-            requestUrl = StringUtils.remove(requestUrl, "/update");
-            liberecoListing.setPictureUrl(requestUrl + "/" + liberecoListing.getId() + "/image/"
-                    + picture.getOriginalFilename());
+            boolean isCloudEnvironment = environment.acceptsProfiles("cloud");
+            if(isCloudEnvironment){
+                liberecoListing.setPictureUrl("https://libereco.cloudfoundry.com/liberecolistings/" + liberecoListing.getId() + "/image/"
+                        + picture.getOriginalFilename());
+            }else{
+                liberecoListing.setPictureUrl("http://localhost:8080/libereco/liberecolistings/" + liberecoListing.getId() + "/image/"
+                        + picture.getOriginalFilename());
+            }
+            
         }
     }
 
@@ -142,7 +165,7 @@ public class LiberecoListingController {
         }
     }
 
-    @RequestMapping(value = "/{id}/image/{pictureName}", method = RequestMethod.GET, produces = "text/html")
+    @RequestMapping(value = "/liberecolistings/{id}/image/{pictureName}", method = RequestMethod.GET, produces = "text/html")
     public void getImage(@PathVariable("id") Long id, @PathVariable("pictureName") String pictureName, HttpServletRequest req,
             HttpServletResponse res) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
@@ -164,7 +187,7 @@ public class LiberecoListingController {
         }
     }
 
-    @RequestMapping(params = "form", produces = "text/html")
+    @RequestMapping(value = "/liberecolistings", params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         LiberecoListing liberecoListing = new LiberecoListing();
         populateEditForm(uiModel, liberecoListing);
@@ -179,7 +202,7 @@ public class LiberecoListingController {
         return "liberecolistings/create";
     }
 
-    @RequestMapping(value = "/{id}", produces = "text/html")
+    @RequestMapping(value = "/liberecolistings/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
@@ -196,7 +219,7 @@ public class LiberecoListingController {
         return "liberecolistings/show";
     }
 
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings/{id}", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
@@ -208,7 +231,7 @@ public class LiberecoListingController {
         return new ResponseEntity<String>(liberecoListing.toJson(), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(produces = "text/html")
+    @RequestMapping(value = "/liberecolistings", produces = "text/html")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
             Model uiModel) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
@@ -226,7 +249,7 @@ public class LiberecoListingController {
         return "liberecolistings/list";
     }
 
-    @RequestMapping(headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
         String username = SecurityUtils.getCurrentLoggedInUsername();
@@ -237,7 +260,7 @@ public class LiberecoListingController {
         return new ResponseEntity<String>(LiberecoListing.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(value = "/liberecolistings/update", method = RequestMethod.POST, produces = "text/html")
     public String update(@Valid LiberecoListing liberecoListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest,
             @RequestParam MultipartFile picture) {
         if (bindingResult.hasErrors()) {
@@ -245,36 +268,31 @@ public class LiberecoListingController {
             return "liberecolistings/update";
         }
         uiModel.asMap().clear();
-        updateLiberecoListing(liberecoListing, httpServletRequest, picture);
-        return "redirect:/liberecolistings/" + encodeUrlPathSegment(liberecoListing.getId().toString(), httpServletRequest);
+        LiberecoListing updatedLiberecoListing = updateLiberecoListing(liberecoListing);
+        updateLiberecoListingWithPicture(updatedLiberecoListing, httpServletRequest, picture);
+        liberecoListingService.updateLiberecoListing(updatedLiberecoListing);
+        return "redirect:/liberecolistings/" + encodeUrlPathSegment(updatedLiberecoListing.getId().toString(), httpServletRequest);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFromJson(@RequestParam String json, HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
+    @RequestMapping(value = "/liberecolistings/update", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         LiberecoListing liberecoListing = LiberecoListing.fromJsonToLiberecoListing(json);
-        if (updateLiberecoListing(liberecoListing, httpServletRequest, picture) == null) {
+        if (updateLiberecoListing(liberecoListing) == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-    private LiberecoListing updateLiberecoListing(LiberecoListing updatedLiberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
-        LiberecoListing persistedLiberecoListing =
+    private LiberecoListing updateLiberecoListing(LiberecoListing updatedLiberecoListing) {
+        LiberecoListing liberecoListing =
                 liberecoListingService.findLiberecoListing(updatedLiberecoListing.getId());
-
-        try {
-            persistedLiberecoListing.setPicture(picture.getBytes());
-        } catch (IOException e) {
-            throw new LiberecoServerException("Not able to upload image to Libereco server.", e);
-        }
-        persistedLiberecoListing.setPictureName(picture.getOriginalFilename());
-        updateLiberecoListingWithPicture(persistedLiberecoListing, httpServletRequest, picture);
-        updateAllMarketplaceListings(persistedLiberecoListing);
-        copyProperties(persistedLiberecoListing, updatedLiberecoListing);
-        liberecoListingService.updateLiberecoListing(persistedLiberecoListing);
-        return persistedLiberecoListing;
+        updateAllMarketplaceListings(liberecoListing);
+        copyProperties(liberecoListing, updatedLiberecoListing);
+        liberecoListingService.updateLiberecoListing(liberecoListing);
+        return liberecoListing;
     }
 
     private void copyProperties(LiberecoListing persistedLiberecoListing, LiberecoListing updatedLiberecoListing) {
@@ -310,13 +328,13 @@ public class LiberecoListingController {
         return ebayAuthorization.getToken();
     }
 
-    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @RequestMapping(value = "/liberecolistings/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, liberecoListingService.findLiberecoListing(id));
         return "liberecolistings/update";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    @RequestMapping(value = "/liberecolistings/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
@@ -327,7 +345,7 @@ public class LiberecoListingController {
         return "redirect:/liberecolistings";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
         LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(id);
         HttpHeaders headers = new HttpHeaders();
@@ -374,7 +392,7 @@ public class LiberecoListingController {
         return pathSegment;
     }
 
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
         for (LiberecoListing liberecoListing : LiberecoListing.fromJsonArrayToLiberecoListings(json)) {
             liberecoListingService.saveLiberecoListing(liberecoListing);
@@ -384,7 +402,7 @@ public class LiberecoListingController {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJsonArray(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");

@@ -37,6 +37,7 @@ import com.libereco.core.domain.MarketplaceAuthorizations;
 import com.libereco.core.domain.MarketplaceAuthorizationsCompositeKey;
 import com.libereco.core.domain.ReturnPolicy;
 import com.libereco.core.exceptions.GenericLiberecoException;
+import com.libereco.core.exceptions.LiberecoResourceNotFoundException;
 import com.libereco.core.exceptions.UserMarketplaceAuthorizationException;
 import com.libereco.core.service.EbayListingService;
 import com.libereco.core.service.LiberecoListingService;
@@ -47,7 +48,6 @@ import com.libereco.web.common.MarketplaceName;
 import com.libereco.web.external.ebay.EbayClient;
 import com.libereco.web.security.SecurityUtils;
 
-@RequestMapping("/ebaylistings")
 @Controller
 public class EbayListingController {
 
@@ -69,7 +69,7 @@ public class EbayListingController {
     @Autowired
     LiberecoUserService liberecoUserService;
 
-    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(value = "/ebaylistings", method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EbayListing ebayListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, ebayListing);
@@ -80,10 +80,10 @@ public class EbayListingController {
         return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
 
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createFromJson(@RequestBody String json) {
+    @RequestMapping(value = "/liberecolistings/{libercoListingId}/ebaylistings", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJson(@PathVariable("libercoListingId") Long liberecoListingId, @RequestBody String json) {
         EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
-        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(ebayListing.getLiberecoListing().getId());
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(liberecoListingId);
         ebayListing.setLiberecoListing(liberecoListing);
         createEbayListing(ebayListing);
         HttpHeaders headers = new HttpHeaders();
@@ -94,7 +94,7 @@ public class EbayListingController {
     private void createEbayListing(EbayListing ebayListing) {
         Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.EBAY.getName());
         if (marketplace == null) {
-            throw new GenericLiberecoException(
+            throw new LiberecoResourceNotFoundException(
                     "You can't create listing on Ebay marketplace as there is no marketplace found ebay in our system. Please contact system administrator.");
         }
         LiberecoListing liberecoListing = ebayListing.getLiberecoListing();
@@ -113,7 +113,7 @@ public class EbayListingController {
         liberecoListingService.updateLiberecoListing(liberecoListing);
     }
 
-    @RequestMapping(params = "form", produces = "text/html")
+    @RequestMapping(value = "/ebaylistings", params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         populateEditForm(uiModel, new EbayListing());
         List<String[]> dependencies = new ArrayList<String[]>();
@@ -124,16 +124,16 @@ public class EbayListingController {
         return "ebaylistings/create";
     }
 
-    @RequestMapping(value = "/{id}", produces = "text/html")
-    public String show(@PathVariable("id") Long id, Model uiModel) {
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", produces = "text/html")
+    public String show(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("ebaylisting", ebayListingService.findEbayListing(id));
         uiModel.addAttribute("itemId", id);
         return "ebaylistings/show";
     }
 
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+    public ResponseEntity<String> showJson(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
@@ -143,8 +143,9 @@ public class EbayListingController {
         return new ResponseEntity<String>(ebayListing.toJson(), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings", produces = "text/html")
+    public String list(@PathVariable("liberecoListingId") Long liberecoListingId, @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
             Model uiModel) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
@@ -160,9 +161,9 @@ public class EbayListingController {
         return "ebaylistings/list";
     }
 
-    @RequestMapping(headers = "Accept=application/json")
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings", headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> listJson() {
+    public ResponseEntity<String> listJson(@PathVariable("liberecoListingId") Long liberecoListingId) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         HttpHeaders headers = new HttpHeaders();
@@ -171,7 +172,7 @@ public class EbayListingController {
         return new ResponseEntity<String>(EbayListing.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(value = "/ebaylistings", method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EbayListing ebayListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, ebayListing);
@@ -182,7 +183,7 @@ public class EbayListingController {
         return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/ebaylistings", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -214,13 +215,13 @@ public class EbayListingController {
         return ebayAuthorization.getToken();
     }
 
-    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @RequestMapping(value = "/ebaylistings/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, ebayListingService.findEbayListing(id));
         return "ebaylistings/update";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    @RequestMapping(value = "/ebaylistings/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
@@ -231,7 +232,7 @@ public class EbayListingController {
         return "redirect:/ebaylistings";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    @RequestMapping(value = "/ebaylistings/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
         HttpHeaders headers = new HttpHeaders();
@@ -281,7 +282,7 @@ public class EbayListingController {
         return pathSegment;
     }
 
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/ebaylistings/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
         for (EbayListing ebayListing : EbayListing.fromJsonArrayToEbayListings(json)) {
             ebayListingService.saveEbayListing(ebayListing);
@@ -291,7 +292,7 @@ public class EbayListingController {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/ebaylistings/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJsonArray(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");

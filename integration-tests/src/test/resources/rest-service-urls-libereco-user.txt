@@ -1,6 +1,6 @@
 CREATE USER 
 
-curl -i -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"username":"test_user_007","password":"password","status":"ACTIVE","lastUpdated":"FriJul 06 15:45:27 IST 2012"}' http://localhost:8080/libereco/liberecousers
+curl -i -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"username":"test_user","password":"password","status":"ACTIVE","lastUpdated":"Fri Jul 06 15:45:27 IST 2012"}' http://localhost:8080/libereco/liberecousers
 
 READ USER 
 

@@ -72,13 +72,13 @@ public class MarketPlaceAuthorizationController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET, produces = "text/html")
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.POST, produces = "text/html")
     public String authorize(@PathVariable("marketplace") String name) {
         String redirectUrl = getRedirectUrl(name);
         return "redirect:" + redirectUrl;
     }
 
-    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> authorizeJson(@PathVariable("marketplace") String name) {
         HttpHeaders headers = new HttpHeaders();

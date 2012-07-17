@@ -113,7 +113,9 @@
 						<entry key="com.libereco.core.exceptions.GenericLiberecoException" value="400,_exmsg"></entry>		
 						
 						<!-- 401 Thrown when you are trying to perform operation and you are not authorized with marketplace  -->
-						<entry key="com.libereco.core.exceptions.UserMarketplaceAuthorizationException" value="401,_exmsg"></entry>				
+						<entry key="com.libereco.core.exceptions.UserMarketplaceAuthorizationException" value="401,_exmsg"></entry>	
+						
+						<entry key="com.libereco.core.exceptions.LiberecoResourceNotFoundException" value="404,_exmsg"></entry>			
 					
 						<!-- 500 Something went wrong with LiberecoServer -->
 						<entry key="com.libereco.core.exceptions.LiberecoServerException" value="500,_exmsg"></entry>
