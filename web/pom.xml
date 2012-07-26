@@ -324,6 +324,12 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>1.14</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

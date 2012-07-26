@@ -185,8 +185,8 @@ public class LiberecoDefaultRestErrorResolver implements LiberecoRestErrorResolv
         String message = ex.getMessage();
         String cause = ex.getCause() == null ? "" : ex.getCause().getMessage();
         
-        StringBuilder exceptionMessageBuilder = new StringBuilder("Not able to addListing ");
-        exceptionMessageBuilder.append("\n").append(message).append(" \n Cause : ").append(cause);
+        StringBuilder exceptionMessageBuilder = new StringBuilder();
+        exceptionMessageBuilder.append(message).append(" \n Cause : ").append(cause);
         
         String devMsg = exceptionMessageBuilder.toString();
         return getMessage(devMsg, request, ex);

@@ -36,6 +36,8 @@ import com.libereco.core.service.MarketplaceService;
 import com.libereco.web.auth.SignInDetails;
 import com.libereco.web.auth.ebay.EbayAuthorizer;
 import com.libereco.web.auth.ebay.EbayToken;
+import com.libereco.web.auth.etsy.EtsyAuthorizer;
+import com.libereco.web.auth.etsy.EtsyToken;
 import com.libereco.web.common.MarketplaceName;
 import com.libereco.web.security.SecurityUtils;
 
@@ -50,6 +52,9 @@ public class MarketPlaceAuthorizationController {
 
     @Autowired
     EbayAuthorizer ebayAuthorizer;
+
+    @Autowired
+    EtsyAuthorizer etsyAuthorizer;
 
     @Autowired
     PendingMarketplaceAuthorizationsRepository pendingMarketplaceAuthorizationsRepository;
@@ -72,25 +77,25 @@ public class MarketPlaceAuthorizationController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET, produces = "text/html")
     public String authorize(@PathVariable("marketplace") String name) {
-        String redirectUrl = getRedirectUrl(name);
-        return "redirect:" + redirectUrl;
+        String signinUrl = getSigninUrl(name);
+        return "redirect:" + signinUrl;
     }
 
-    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/marketplaces/{marketplace}/authorize", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> authorizeJson(@PathVariable("marketplace") String name) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        String redirectUrl = getRedirectUrl(name);
-        if (StringUtils.isBlank(redirectUrl)) {
+        String signinUrl = getSigninUrl(name);
+        if (StringUtils.isBlank(signinUrl)) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(redirectUrl, headers, HttpStatus.OK);
+        return new ResponseEntity<String>(signinUrl, headers, HttpStatus.OK);
     }
 
-    private String getRedirectUrl(String name) {
+    private String getSigninUrl(String name) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser liberecoUser = fetchUser(username);
         Marketplace marketplace = fetchMarketplace(name);
@@ -103,37 +108,54 @@ public class MarketPlaceAuthorizationController {
             pendingMarketplaceAuthorizationsRepository.save(new PendingMarketplaceAuthorizations(liberecoUser, marketplace, signInDetails.getToken(),
                     signInDetails.getSecretToken()));
             break;
+        case ETSY:
+            SignInDetails etsySigninDetails = etsyAuthorizer.getSignInDetails();
+            redirectUrl = etsySigninDetails.getSignInUrl();
+            pendingMarketplaceAuthorizationsRepository.save(new PendingMarketplaceAuthorizations(liberecoUser, marketplace, etsySigninDetails
+                    .getToken(), etsySigninDetails.getSecretToken()));
         }
         return redirectUrl;
     }
 
-    @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET, produces = "text/html")
-    public String fetchToken(@PathVariable("marketplace") String name) {
+    @RequestMapping(value = "/marketplaces/ebay/fetchToken", method = RequestMethod.GET, produces = "text/html")
+    public String fetchEbayToken(@PathVariable("marketplace") String name) {
         String username = SecurityUtils.getCurrentLoggedInUsername();
-        persistMarketplaceAuthorizationToken(name, username);
+        persistEbayAuthorizationToken(username);
         return "redirect:/" + username + "/marketplaceauthorizations/" + name;
     }
 
-    @RequestMapping(value = "/marketplaces/{marketplace}/fetchToken", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/marketplaces/ebay/fetchToken", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> fetchTokenJson(@PathVariable("marketplace") String name) {
+    public ResponseEntity<String> fetchEbayTokenJson() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         String username = SecurityUtils.getCurrentLoggedInUsername();
-        String token = persistMarketplaceAuthorizationToken(name, username);
+        String token = persistEbayAuthorizationToken(username);
         if (StringUtils.isBlank(token)) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<String>(token, headers, HttpStatus.CREATED);
     }
 
-    private String persistMarketplaceAuthorizationToken(String name, String username) {
+    @RequestMapping(value = "/marketplaces/etsy/fetchToken/{pin}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> fetchEtsyTokenJson(@PathVariable("pin") String pin) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        String token = persistEtsyAuthorizationToken(username, pin);
+        if (StringUtils.isBlank(token)) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(token, headers, HttpStatus.CREATED);
+    }
+
+    private String persistEtsyAuthorizationToken(String username, String pin) {
         LiberecoUser liberecoUser = fetchUser(username);
-        Marketplace marketplace = fetchMarketplace(name);
+        Marketplace marketplace = fetchMarketplace(MarketplaceName.ETSY.getName());
         MarketplaceAuthorizations persistedMarketplaceAuthorization = marketplaceAuthorizationsService
                 .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace
                         .getId()));
-
         if (persistedMarketplaceAuthorization != null) {
             return persistedMarketplaceAuthorization.getToken();
         }
@@ -142,23 +164,35 @@ public class MarketPlaceAuthorizationController {
         if (pendingMarketplaceAuthorization == null) {
             throw new UserMarketplaceAuthorizationException("Please first authenticate with Marketplace and then ask for token.");
         }
-        MarketplaceName marketplaceName = MarketplaceName.fromString(name);
-        String token = null;
-        switch (marketplaceName) {
-        case EBAY:
-            EbayToken ebayToken = null;
-            String sessionId = pendingMarketplaceAuthorization.getRequestToken();
-            ebayToken = ebayAuthorizer.fetchToken(sessionId);
-            MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorization(liberecoUser, marketplace, ebayToken);
-            marketplaceAuthorizationsService.saveMarketplaceAuthorizations(marketplaceAuthorization);
-            pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorization);
-            token = ebayToken.getToken();
-            break;
-        default:
-            throw new GenericLiberecoException(String.format(
-                    "We currently do not support %s marketplace. You can currently only create listing on Ebay.", marketplace));
+        String requestToken = pendingMarketplaceAuthorization.getRequestToken();
+        EtsyToken etsyToken = etsyAuthorizer.getToken(pin, new SignInDetails(requestToken, pendingMarketplaceAuthorization.getRequestTokenSecret(),
+                null));
+        MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorizationForEtsy(liberecoUser, marketplace, etsyToken);
+        marketplaceAuthorizationsService.saveMarketplaceAuthorizations(marketplaceAuthorization);
+        pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorization);
+        return etsyToken.getAccessToken();
+    }
+
+    private String persistEbayAuthorizationToken(String username) {
+        LiberecoUser liberecoUser = fetchUser(username);
+        Marketplace marketplace = fetchMarketplace(MarketplaceName.EBAY.getName());
+        MarketplaceAuthorizations persistedMarketplaceAuthorization = marketplaceAuthorizationsService
+                .findMarketplaceAuthorizations(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace
+                        .getId()));
+        if (persistedMarketplaceAuthorization != null) {
+            return persistedMarketplaceAuthorization.getToken();
         }
-        return token;
+        PendingMarketplaceAuthorizations pendingMarketplaceAuthorization = pendingMarketplaceAuthorizationsRepository
+                .findOne(new UserMarketplaceKey(liberecoUser.getId(), marketplace.getId()));
+        if (pendingMarketplaceAuthorization == null) {
+            throw new UserMarketplaceAuthorizationException("Please first authenticate with Marketplace and then ask for token.");
+        }
+        String sessionId = pendingMarketplaceAuthorization.getRequestToken();
+        EbayToken ebayToken = ebayAuthorizer.fetchToken(sessionId);
+        MarketplaceAuthorizations marketplaceAuthorization = createNewMarketplaceAuthorizationForEbay(liberecoUser, marketplace, ebayToken);
+        marketplaceAuthorizationsService.saveMarketplaceAuthorizations(marketplaceAuthorization);
+        pendingMarketplaceAuthorizationsRepository.delete(pendingMarketplaceAuthorization);
+        return ebayToken.getToken();
     }
 
     @RequestMapping(value = "/{username}/marketplaceauthorizations/{name}", produces = "text/html")
@@ -206,12 +240,22 @@ public class MarketPlaceAuthorizationController {
         return liberecoUser;
     }
 
-    private MarketplaceAuthorizations createNewMarketplaceAuthorization(LiberecoUser liberecoUser, Marketplace marketplace, EbayToken ebayToken) {
+    private MarketplaceAuthorizations createNewMarketplaceAuthorizationForEbay(LiberecoUser liberecoUser, Marketplace marketplace, EbayToken ebayToken) {
         MarketplaceAuthorizations marketplaceAuthorization = new MarketplaceAuthorizations();
         marketplaceAuthorization.setExpirationTime(ebayToken.getExpirationTime().getTime());
         marketplaceAuthorization.setLiberecoUser(liberecoUser);
         marketplaceAuthorization.setToken(ebayToken.getToken());
         marketplaceAuthorization.setTokenSecret(null);
+        marketplaceAuthorization.setLiberecoUser(liberecoUser);
+        marketplaceAuthorization.setKey(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId()));
+        return marketplaceAuthorization;
+    }
+
+    private MarketplaceAuthorizations createNewMarketplaceAuthorizationForEtsy(LiberecoUser liberecoUser, Marketplace marketplace, EtsyToken etsyToken) {
+        MarketplaceAuthorizations marketplaceAuthorization = new MarketplaceAuthorizations();
+        marketplaceAuthorization.setLiberecoUser(liberecoUser);
+        marketplaceAuthorization.setToken(etsyToken.getAccessToken());
+        marketplaceAuthorization.setTokenSecret(etsyToken.getTokenSecret());
         marketplaceAuthorization.setLiberecoUser(liberecoUser);
         marketplaceAuthorization.setKey(new MarketplaceAuthorizationsCompositeKey(liberecoUser.getId(), marketplace.getId()));
         return marketplaceAuthorization;

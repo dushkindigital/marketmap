@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum MarketplaceName {
 
-    EBAY("ebay"), ESTY("esty"), AMAZON("amazon");
+    EBAY("ebay"), ETSY("etsy"), AMAZON("amazon");
 
     String name;
 
