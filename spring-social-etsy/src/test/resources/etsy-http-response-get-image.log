@@ -1,0 +1,281 @@
+2012-07-27 23:37:36,074 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Get connection: HttpRoute[{}->http://sandbox.openapi.etsy.com], timeout = 0
+2012-07-27 23:37:36,076 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - [HttpRoute[{}->http://sandbox.openapi.etsy.com]] total kept alive: 0, total issued: 0, total allocated: 0 out of 100
+2012-07-27 23:37:36,076 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - No free connections [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:37:36,077 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Available capacity: 5 out of 5 [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:37:36,077 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Creating new connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]]
+2012-07-27 23:37:36,340 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnectionOperator - Connecting to sandbox.openapi.etsy.com:80
+2012-07-27 23:37:36,700 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - CookieSpec selected: best-match
+2012-07-27 23:37:36,712 [main] DEBUG org.apache.http.client.protocol.RequestAuthCache - Auth cache not set in the context
+2012-07-27 23:37:36,712 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Attempt 1 to execute request
+2012-07-27 23:37:36,712 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Sending request: POST /v2/oauth/request_token HTTP/1.1
+2012-07-27 23:37:36,713 [main] DEBUG org.apache.http.wire - >> "POST /v2/oauth/request_token HTTP/1.1[\r][\n]"
+2012-07-27 23:37:36,714 [main] DEBUG org.apache.http.wire - >> "Accept: application/x-www-form-urlencoded, multipart/form-data[\r][\n]"
+2012-07-27 23:37:36,714 [main] DEBUG org.apache.http.wire - >> "Authorization: OAuth oauth_callback="oob", oauth_version="1.0", oauth_nonce="-660362334", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_timestamp="1343412455", oauth_signature="Kr%2BuCBtMfNex78UmodfIKDb1%2B98%3D"[\r][\n]"
+2012-07-27 23:37:36,714 [main] DEBUG org.apache.http.wire - >> "Content-Length: 0[\r][\n]"
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.wire - >> "Host: sandbox.openapi.etsy.com[\r][\n]"
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.wire - >> "Connection: Keep-Alive[\r][\n]"
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.wire - >> "User-Agent: Apache-HttpClient/4.1.2 (java 1.5)[\r][\n]"
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.wire - >> "[\r][\n]"
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> POST /v2/oauth/request_token HTTP/1.1
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> Accept: application/x-www-form-urlencoded, multipart/form-data
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> Authorization: OAuth oauth_callback="oob", oauth_version="1.0", oauth_nonce="-660362334", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_timestamp="1343412455", oauth_signature="Kr%2BuCBtMfNex78UmodfIKDb1%2B98%3D"
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> Content-Length: 0
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> Host: sandbox.openapi.etsy.com
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> Connection: Keep-Alive
+2012-07-27 23:37:36,715 [main] DEBUG org.apache.http.headers - >> User-Agent: Apache-HttpClient/4.1.2 (java 1.5)
+2012-07-27 23:37:37,279 [main] DEBUG org.apache.http.wire - << "HTTP/1.1 200 OK[\r][\n]"
+2012-07-27 23:37:37,284 [main] DEBUG org.apache.http.wire - << "Date: Fri, 27 Jul 2012 18:07:35 GMT[\r][\n]"
+2012-07-27 23:37:37,284 [main] DEBUG org.apache.http.wire - << "Server: Apache[\r][\n]"
+2012-07-27 23:37:37,284 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etala=36386466.797822723.1343412455.1343412455.1343412455.1.0; expires=Mon, 28-Jul-2014 05:45:07 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:37:37,284 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etalb=36386466.1.10.1343412455; expires=Fri, 27-Jul-2012 18:37:35 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:37:37,284 [main] DEBUG org.apache.http.wire - << "X-Etsy-Request-Uuid: _AwSyRMPFDxfPZitnA3Tfwz2FwuR[\r][\n]"
+2012-07-27 23:37:37,285 [main] DEBUG org.apache.http.wire - << "Content-Length: 337[\r][\n]"
+2012-07-27 23:37:37,285 [main] DEBUG org.apache.http.wire - << "X-Cnection: close[\r][\n]"
+2012-07-27 23:37:37,285 [main] DEBUG org.apache.http.wire - << "Content-Type: application/x-www-form-urlencoded[\r][\n]"
+2012-07-27 23:37:37,285 [main] DEBUG org.apache.http.wire - << "[\r][\n]"
+2012-07-27 23:37:37,286 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Receiving response: HTTP/1.1 200 OK
+2012-07-27 23:37:37,286 [main] DEBUG org.apache.http.headers - << HTTP/1.1 200 OK
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << Date: Fri, 27 Jul 2012 18:07:35 GMT
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << Server: Apache
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << Set-Cookie: etala=36386466.797822723.1343412455.1343412455.1343412455.1.0; expires=Mon, 28-Jul-2014 05:45:07 GMT; path=/; domain=.etsy.com
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << Set-Cookie: etalb=36386466.1.10.1343412455; expires=Fri, 27-Jul-2012 18:37:35 GMT; path=/; domain=.etsy.com
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << X-Etsy-Request-Uuid: _AwSyRMPFDxfPZitnA3Tfwz2FwuR
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << Content-Length: 337
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << X-Cnection: close
+2012-07-27 23:37:37,287 [main] DEBUG org.apache.http.headers - << Content-Type: application/x-www-form-urlencoded
+2012-07-27 23:37:37,304 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etala][value: 36386466.797822723.1343412455.1343412455.1343412455.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:07 IST 2014]". 
+2012-07-27 23:37:37,304 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etalb][value: 36386466.1.10.1343412455][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:07:35 IST 2012]". 
+2012-07-27 23:37:37,305 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Connection can be kept alive indefinitely
+2012-07-27 23:37:37,311 [main] DEBUG org.apache.http.wire - << "login_url=https%3A%2F%2Fwww.etsy.com%2Foauth%2Fsignin%3Foauth_consumer_key%3D2rjd29148344fluxnnqgjmw9%26oauth_token%3D1695438ee9719b515a4b2051f19623%26service%3Dv2_sandbox&oauth_token=1695438ee9719b515a4b2051f19623&oauth_token_secret=dd4116f878&oauth_callback_confirmed=true&oauth_consumer_key=2rjd29148344fluxnnqgjmw9&oauth_callback=oob"
+2012-07-27 23:37:37,311 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Released connection is reusable.
+2012-07-27 23:37:37,311 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Releasing connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:37:37,311 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Pooling connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]; keep alive indefinitely
+2012-07-27 23:37:37,312 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Notifying no-one, there are no waiting threads
+1695438ee9719b515a4b2051f19623
+dd4116f878
+http://www.etsy.com/oauth/signin?oauth_token=1695438ee9719b515a4b2051f19623&oauth_consumer_key=2rjd29148344fluxnnqgjmw9
+Enter the PIN code and hit ENTER when you're done:
+011f2c5b
+2012-07-27 23:38:22,346 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Get connection: HttpRoute[{}->http://sandbox.openapi.etsy.com], timeout = 0
+2012-07-27 23:38:22,347 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - [HttpRoute[{}->http://sandbox.openapi.etsy.com]] total kept alive: 1, total issued: 0, total allocated: 1 out of 100
+2012-07-27 23:38:22,347 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Getting free connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:22,347 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Stale connection check
+2012-07-27 23:38:22,349 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - CookieSpec selected: best-match
+2012-07-27 23:38:22,349 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - Cookie [version: 0][name: etala][value: 36386466.797822723.1343412455.1343412455.1343412455.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:07 IST 2014] match [sandbox.openapi.etsy.com:80/v2/oauth/access_token]
+2012-07-27 23:38:22,350 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - Cookie [version: 0][name: etalb][value: 36386466.1.10.1343412455][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:07:35 IST 2012] match [sandbox.openapi.etsy.com:80/v2/oauth/access_token]
+2012-07-27 23:38:22,351 [main] DEBUG org.apache.http.client.protocol.RequestAuthCache - Auth cache not set in the context
+2012-07-27 23:38:22,352 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Attempt 1 to execute request
+2012-07-27 23:38:22,352 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Sending request: POST /v2/oauth/access_token HTTP/1.1
+2012-07-27 23:38:22,352 [main] DEBUG org.apache.http.wire - >> "POST /v2/oauth/access_token HTTP/1.1[\r][\n]"
+2012-07-27 23:38:22,352 [main] DEBUG org.apache.http.wire - >> "Accept: application/x-www-form-urlencoded, multipart/form-data[\r][\n]"
+2012-07-27 23:38:22,353 [main] DEBUG org.apache.http.wire - >> "Authorization: OAuth oauth_version="1.0", oauth_nonce="495734863", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="1695438ee9719b515a4b2051f19623", oauth_verifier="011f2c5b", oauth_timestamp="1343412502", oauth_signature="Sbqug%2Fv%2BeJcPrBQkvBYNM7EsfTI%3D"[\r][\n]"
+2012-07-27 23:38:22,353 [main] DEBUG org.apache.http.wire - >> "Content-Type: application/x-www-form-urlencoded[\r][\n]"
+2012-07-27 23:38:22,353 [main] DEBUG org.apache.http.wire - >> "Content-Length: 0[\r][\n]"
+2012-07-27 23:38:22,354 [main] DEBUG org.apache.http.wire - >> "Host: sandbox.openapi.etsy.com[\r][\n]"
+2012-07-27 23:38:22,354 [main] DEBUG org.apache.http.wire - >> "Connection: Keep-Alive[\r][\n]"
+2012-07-27 23:38:22,354 [main] DEBUG org.apache.http.wire - >> "User-Agent: Apache-HttpClient/4.1.2 (java 1.5)[\r][\n]"
+2012-07-27 23:38:22,354 [main] DEBUG org.apache.http.wire - >> "Cookie: etala=36386466.797822723.1343412455.1343412455.1343412455.1.0; etalb=36386466.1.10.1343412455[\r][\n]"
+2012-07-27 23:38:22,354 [main] DEBUG org.apache.http.wire - >> "Cookie2: $Version=1[\r][\n]"
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.wire - >> "[\r][\n]"
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.headers - >> POST /v2/oauth/access_token HTTP/1.1
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.headers - >> Accept: application/x-www-form-urlencoded, multipart/form-data
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.headers - >> Authorization: OAuth oauth_version="1.0", oauth_nonce="495734863", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="1695438ee9719b515a4b2051f19623", oauth_verifier="011f2c5b", oauth_timestamp="1343412502", oauth_signature="Sbqug%2Fv%2BeJcPrBQkvBYNM7EsfTI%3D"
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.headers - >> Content-Type: application/x-www-form-urlencoded
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.headers - >> Content-Length: 0
+2012-07-27 23:38:22,355 [main] DEBUG org.apache.http.headers - >> Host: sandbox.openapi.etsy.com
+2012-07-27 23:38:22,356 [main] DEBUG org.apache.http.headers - >> Connection: Keep-Alive
+2012-07-27 23:38:22,356 [main] DEBUG org.apache.http.headers - >> User-Agent: Apache-HttpClient/4.1.2 (java 1.5)
+2012-07-27 23:38:22,356 [main] DEBUG org.apache.http.headers - >> Cookie: etala=36386466.797822723.1343412455.1343412455.1343412455.1.0; etalb=36386466.1.10.1343412455
+2012-07-27 23:38:22,356 [main] DEBUG org.apache.http.headers - >> Cookie2: $Version=1
+2012-07-27 23:38:22,774 [main] DEBUG org.apache.http.wire - << "HTTP/1.1 200 OK[\r][\n]"
+2012-07-27 23:38:22,774 [main] DEBUG org.apache.http.wire - << "Date: Fri, 27 Jul 2012 18:08:21 GMT[\r][\n]"
+2012-07-27 23:38:22,774 [main] DEBUG org.apache.http.wire - << "Server: Apache[\r][\n]"
+2012-07-27 23:38:22,774 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etala=36386466.797822723.1343412455.1343412455.1343412501.1.0; expires=Mon, 28-Jul-2014 05:45:53 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etalb=36386466.2.10.1343412501; expires=Fri, 27-Jul-2012 18:38:21 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.wire - << "X-Etsy-Request-Uuid: 6F3vvEsZCnBjas_p45FrKyB_dfpx[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.wire - << "Content-Length: 72[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.wire - << "X-Cnection: close[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.wire - << "Content-Type: application/x-www-form-urlencoded[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.wire - << "[\r][\n]"
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Receiving response: HTTP/1.1 200 OK
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.headers - << HTTP/1.1 200 OK
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.headers - << Date: Fri, 27 Jul 2012 18:08:21 GMT
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.headers - << Server: Apache
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.headers - << Set-Cookie: etala=36386466.797822723.1343412455.1343412455.1343412501.1.0; expires=Mon, 28-Jul-2014 05:45:53 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:22,775 [main] DEBUG org.apache.http.headers - << Set-Cookie: etalb=36386466.2.10.1343412501; expires=Fri, 27-Jul-2012 18:38:21 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:22,776 [main] DEBUG org.apache.http.headers - << X-Etsy-Request-Uuid: 6F3vvEsZCnBjas_p45FrKyB_dfpx
+2012-07-27 23:38:22,776 [main] DEBUG org.apache.http.headers - << Content-Length: 72
+2012-07-27 23:38:22,776 [main] DEBUG org.apache.http.headers - << X-Cnection: close
+2012-07-27 23:38:22,776 [main] DEBUG org.apache.http.headers - << Content-Type: application/x-www-form-urlencoded
+2012-07-27 23:38:22,777 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etala][value: 36386466.797822723.1343412455.1343412455.1343412501.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:53 IST 2014]". 
+2012-07-27 23:38:22,778 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etalb][value: 36386466.2.10.1343412501][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:08:21 IST 2012]". 
+2012-07-27 23:38:22,778 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Connection can be kept alive indefinitely
+2012-07-27 23:38:22,778 [main] DEBUG org.apache.http.wire - << "oauth_token=57cb902a0f9b622a06c330083787d6&oauth_token_secret=a8510d1b66"
+2012-07-27 23:38:22,778 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Released connection is reusable.
+2012-07-27 23:38:22,778 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Releasing connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:22,779 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Pooling connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]; keep alive indefinitely
+2012-07-27 23:38:22,779 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Notifying no-one, there are no waiting threads
+2012-07-27 23:38:22,872 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Get connection: HttpRoute[{}->http://sandbox.openapi.etsy.com], timeout = 0
+2012-07-27 23:38:22,872 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - [HttpRoute[{}->http://sandbox.openapi.etsy.com]] total kept alive: 0, total issued: 0, total allocated: 0 out of 100
+2012-07-27 23:38:22,872 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - No free connections [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:22,872 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Available capacity: 5 out of 5 [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:22,872 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Creating new connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]]
+2012-07-27 23:38:23,138 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnectionOperator - Connecting to sandbox.openapi.etsy.com:80
+2012-07-27 23:38:23,473 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - CookieSpec selected: best-match
+2012-07-27 23:38:23,473 [main] DEBUG org.apache.http.client.protocol.RequestAuthCache - Auth cache not set in the context
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Attempt 1 to execute request
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Sending request: GET /v2/users/shekhargulati.json HTTP/1.1
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "GET /v2/users/shekhargulati.json HTTP/1.1[\r][\n]"
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "Accept: application/json[\r][\n]"
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "Authorization: OAuth oauth_version="1.0", oauth_nonce="-309048952", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="57cb902a0f9b622a06c330083787d6", oauth_timestamp="1343412502", oauth_signature="Aiupaoz%2BnqQgz9JHPSYIZBAJEug%3D"[\r][\n]"
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "Host: sandbox.openapi.etsy.com[\r][\n]"
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "Connection: Keep-Alive[\r][\n]"
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "User-Agent: Apache-HttpClient/4.1.2 (java 1.5)[\r][\n]"
+2012-07-27 23:38:23,474 [main] DEBUG org.apache.http.wire - >> "[\r][\n]"
+2012-07-27 23:38:23,475 [main] DEBUG org.apache.http.headers - >> GET /v2/users/shekhargulati.json HTTP/1.1
+2012-07-27 23:38:23,475 [main] DEBUG org.apache.http.headers - >> Accept: application/json
+2012-07-27 23:38:23,475 [main] DEBUG org.apache.http.headers - >> Authorization: OAuth oauth_version="1.0", oauth_nonce="-309048952", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="57cb902a0f9b622a06c330083787d6", oauth_timestamp="1343412502", oauth_signature="Aiupaoz%2BnqQgz9JHPSYIZBAJEug%3D"
+2012-07-27 23:38:23,475 [main] DEBUG org.apache.http.headers - >> Host: sandbox.openapi.etsy.com
+2012-07-27 23:38:23,475 [main] DEBUG org.apache.http.headers - >> Connection: Keep-Alive
+2012-07-27 23:38:23,475 [main] DEBUG org.apache.http.headers - >> User-Agent: Apache-HttpClient/4.1.2 (java 1.5)
+2012-07-27 23:38:23,958 [main] DEBUG org.apache.http.wire - << "HTTP/1.1 200 OK[\r][\n]"
+2012-07-27 23:38:23,958 [main] DEBUG org.apache.http.wire - << "Date: Fri, 27 Jul 2012 18:08:22 GMT[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "Server: Apache[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etala=36386466.200134924.1343412502.1343412502.1343412502.1.0; expires=Mon, 28-Jul-2014 05:45:54 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etalb=36386466.1.10.1343412502; expires=Fri, 27-Jul-2012 18:38:22 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "X-Etsy-Request-Uuid: OrgHRUpI2YAaXMhPAGVX3vbi8_21[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "Content-Length: 278[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "X-Cnection: close[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "Content-Type: application/json[\r][\n]"
+2012-07-27 23:38:23,959 [main] DEBUG org.apache.http.wire - << "[\r][\n]"
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Receiving response: HTTP/1.1 200 OK
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << HTTP/1.1 200 OK
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << Date: Fri, 27 Jul 2012 18:08:22 GMT
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << Server: Apache
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << Set-Cookie: etala=36386466.200134924.1343412502.1343412502.1343412502.1.0; expires=Mon, 28-Jul-2014 05:45:54 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << Set-Cookie: etalb=36386466.1.10.1343412502; expires=Fri, 27-Jul-2012 18:38:22 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << X-Etsy-Request-Uuid: OrgHRUpI2YAaXMhPAGVX3vbi8_21
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << Content-Length: 278
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << X-Cnection: close
+2012-07-27 23:38:23,960 [main] DEBUG org.apache.http.headers - << Content-Type: application/json
+2012-07-27 23:38:23,961 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etala][value: 36386466.200134924.1343412502.1343412502.1343412502.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:54 IST 2014]". 
+2012-07-27 23:38:23,962 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etalb][value: 36386466.1.10.1343412502][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:08:22 IST 2012]". 
+2012-07-27 23:38:23,962 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Connection can be kept alive indefinitely
+2012-07-27 23:38:23,974 [main] DEBUG org.apache.http.wire - << "{"count":1,"results":[{"user_id":14888629,"login_name":"shekhargulati","primary_email":"shekhargulati84@gmail.com","creation_tsz":1342491683,"referred_by_user_id":null,"feedback_info":{"count":0,"score":null}}],"params":{"user_id":"shekhargulati"},"type":"User","pagination":{}}"
+2012-07-27 23:38:23,998 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Released connection is reusable.
+2012-07-27 23:38:23,998 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Releasing connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:23,998 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Pooling connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]; keep alive indefinitely
+2012-07-27 23:38:23,998 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Notifying no-one, there are no waiting threads
+2012-07-27 23:38:24,001 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Get connection: HttpRoute[{}->http://sandbox.openapi.etsy.com], timeout = 0
+2012-07-27 23:38:24,001 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - [HttpRoute[{}->http://sandbox.openapi.etsy.com]] total kept alive: 1, total issued: 0, total allocated: 1 out of 100
+2012-07-27 23:38:24,001 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Getting free connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:24,001 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Stale connection check
+2012-07-27 23:38:24,002 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - CookieSpec selected: best-match
+2012-07-27 23:38:24,002 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - Cookie [version: 0][name: etala][value: 36386466.200134924.1343412502.1343412502.1343412502.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:54 IST 2014] match [sandbox.openapi.etsy.com:80/v2/users/shekhargulati.json]
+2012-07-27 23:38:24,002 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - Cookie [version: 0][name: etalb][value: 36386466.1.10.1343412502][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:08:22 IST 2012] match [sandbox.openapi.etsy.com:80/v2/users/shekhargulati.json]
+2012-07-27 23:38:24,002 [main] DEBUG org.apache.http.client.protocol.RequestAuthCache - Auth cache not set in the context
+2012-07-27 23:38:24,002 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Attempt 1 to execute request
+2012-07-27 23:38:24,002 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Sending request: GET /v2/users/shekhargulati.json HTTP/1.1
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "GET /v2/users/shekhargulati.json HTTP/1.1[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "Accept: application/json[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "Authorization: OAuth oauth_version="1.0", oauth_nonce="1671819299", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="57cb902a0f9b622a06c330083787d6", oauth_timestamp="1343412503", oauth_signature="DvtbQNxWIzyfFY8rPAGRF56RJMU%3D"[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "Host: sandbox.openapi.etsy.com[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "Connection: Keep-Alive[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "User-Agent: Apache-HttpClient/4.1.2 (java 1.5)[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "Cookie: etala=36386466.200134924.1343412502.1343412502.1343412502.1.0; etalb=36386466.1.10.1343412502[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "Cookie2: $Version=1[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.wire - >> "[\r][\n]"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> GET /v2/users/shekhargulati.json HTTP/1.1
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> Accept: application/json
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> Authorization: OAuth oauth_version="1.0", oauth_nonce="1671819299", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="57cb902a0f9b622a06c330083787d6", oauth_timestamp="1343412503", oauth_signature="DvtbQNxWIzyfFY8rPAGRF56RJMU%3D"
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> Host: sandbox.openapi.etsy.com
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> Connection: Keep-Alive
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> User-Agent: Apache-HttpClient/4.1.2 (java 1.5)
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> Cookie: etala=36386466.200134924.1343412502.1343412502.1343412502.1.0; etalb=36386466.1.10.1343412502
+2012-07-27 23:38:24,003 [main] DEBUG org.apache.http.headers - >> Cookie2: $Version=1
+2012-07-27 23:38:24,478 [main] DEBUG org.apache.http.wire - << "HTTP/1.1 200 OK[\r][\n]"
+2012-07-27 23:38:24,478 [main] DEBUG org.apache.http.wire - << "Date: Fri, 27 Jul 2012 18:08:23 GMT[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "Server: Apache[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etala=36386466.200134924.1343412502.1343412502.1343412503.1.0; expires=Mon, 28-Jul-2014 05:45:55 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etalb=36386466.2.10.1343412503; expires=Fri, 27-Jul-2012 18:38:23 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "X-Etsy-Request-Uuid: P7tyaD3u8mn349jm6knj_k-7lPEy[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "Content-Length: 278[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "X-Cnection: close[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "Content-Type: application/json[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.wire - << "[\r][\n]"
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Receiving response: HTTP/1.1 200 OK
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.headers - << HTTP/1.1 200 OK
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.headers - << Date: Fri, 27 Jul 2012 18:08:23 GMT
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.headers - << Server: Apache
+2012-07-27 23:38:24,479 [main] DEBUG org.apache.http.headers - << Set-Cookie: etala=36386466.200134924.1343412502.1343412502.1343412503.1.0; expires=Mon, 28-Jul-2014 05:45:55 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:24,480 [main] DEBUG org.apache.http.headers - << Set-Cookie: etalb=36386466.2.10.1343412503; expires=Fri, 27-Jul-2012 18:38:23 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:24,480 [main] DEBUG org.apache.http.headers - << X-Etsy-Request-Uuid: P7tyaD3u8mn349jm6knj_k-7lPEy
+2012-07-27 23:38:24,480 [main] DEBUG org.apache.http.headers - << Content-Length: 278
+2012-07-27 23:38:24,480 [main] DEBUG org.apache.http.headers - << X-Cnection: close
+2012-07-27 23:38:24,480 [main] DEBUG org.apache.http.headers - << Content-Type: application/json
+2012-07-27 23:38:24,481 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etala][value: 36386466.200134924.1343412502.1343412502.1343412503.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:55 IST 2014]". 
+2012-07-27 23:38:24,482 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etalb][value: 36386466.2.10.1343412503][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:08:23 IST 2012]". 
+2012-07-27 23:38:24,482 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Connection can be kept alive indefinitely
+2012-07-27 23:38:24,483 [main] DEBUG org.apache.http.wire - << "{"count":1,"results":[{"user_id":14888629,"login_name":"shekhargulati","primary_email":"shekhargulati84@gmail.com","creation_tsz":1342491683,"referred_by_user_id":null,"feedback_info":{"count":0,"score":null}}],"params":{"user_id":"shekhargulati"},"type":"User","pagination":{}}"
+2012-07-27 23:38:24,484 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Released connection is reusable.
+2012-07-27 23:38:24,484 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Releasing connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:24,484 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Pooling connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]; keep alive indefinitely
+2012-07-27 23:38:24,484 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Notifying no-one, there are no waiting threads
+shekhargulati84@gmail.com
+shekhargulati
+2012-07-27 23:38:24,498 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Get connection: HttpRoute[{}->http://sandbox.openapi.etsy.com], timeout = 0
+2012-07-27 23:38:24,499 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - [HttpRoute[{}->http://sandbox.openapi.etsy.com]] total kept alive: 1, total issued: 0, total allocated: 1 out of 100
+2012-07-27 23:38:24,499 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Getting free connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:24,499 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Stale connection check
+2012-07-27 23:38:24,500 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - CookieSpec selected: best-match
+2012-07-27 23:38:24,500 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - Cookie [version: 0][name: etala][value: 36386466.200134924.1343412502.1343412502.1343412503.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:55 IST 2014] match [sandbox.openapi.etsy.com:80/v2/listings/2058/images/244597651]
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.client.protocol.RequestAddCookies - Cookie [version: 0][name: etalb][value: 36386466.2.10.1343412503][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:08:23 IST 2012] match [sandbox.openapi.etsy.com:80/v2/listings/2058/images/244597651]
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.client.protocol.RequestAuthCache - Auth cache not set in the context
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Attempt 1 to execute request
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Sending request: GET /v2/listings/2058/images/244597651 HTTP/1.1
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.wire - >> "GET /v2/listings/2058/images/244597651 HTTP/1.1[\r][\n]"
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.wire - >> "Accept: text/plain, application/json, */*[\r][\n]"
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.wire - >> "Authorization: OAuth oauth_version="1.0", oauth_nonce="452850586", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="57cb902a0f9b622a06c330083787d6", oauth_timestamp="1343412504", oauth_signature="BVWE9vttKzfZxRFCjFmyUrNE%2FKc%3D"[\r][\n]"
+2012-07-27 23:38:24,501 [main] DEBUG org.apache.http.wire - >> "Host: sandbox.openapi.etsy.com[\r][\n]"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.wire - >> "Connection: Keep-Alive[\r][\n]"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.wire - >> "User-Agent: Apache-HttpClient/4.1.2 (java 1.5)[\r][\n]"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.wire - >> "Cookie: etala=36386466.200134924.1343412502.1343412502.1343412503.1.0; etalb=36386466.2.10.1343412503[\r][\n]"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.wire - >> "Cookie2: $Version=1[\r][\n]"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.wire - >> "[\r][\n]"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.headers - >> GET /v2/listings/2058/images/244597651 HTTP/1.1
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.headers - >> Accept: text/plain, application/json, */*
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.headers - >> Authorization: OAuth oauth_version="1.0", oauth_nonce="452850586", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="2rjd29148344fluxnnqgjmw9", oauth_token="57cb902a0f9b622a06c330083787d6", oauth_timestamp="1343412504", oauth_signature="BVWE9vttKzfZxRFCjFmyUrNE%2FKc%3D"
+2012-07-27 23:38:24,502 [main] DEBUG org.apache.http.headers - >> Host: sandbox.openapi.etsy.com
+2012-07-27 23:38:24,503 [main] DEBUG org.apache.http.headers - >> Connection: Keep-Alive
+2012-07-27 23:38:24,503 [main] DEBUG org.apache.http.headers - >> User-Agent: Apache-HttpClient/4.1.2 (java 1.5)
+2012-07-27 23:38:24,503 [main] DEBUG org.apache.http.headers - >> Cookie: etala=36386466.200134924.1343412502.1343412502.1343412503.1.0; etalb=36386466.2.10.1343412503
+2012-07-27 23:38:24,503 [main] DEBUG org.apache.http.headers - >> Cookie2: $Version=1
+2012-07-27 23:38:24,984 [main] DEBUG org.apache.http.wire - << "HTTP/1.1 200 OK[\r][\n]"
+2012-07-27 23:38:24,984 [main] DEBUG org.apache.http.wire - << "Date: Fri, 27 Jul 2012 18:08:23 GMT[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "Server: Apache[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etala=36386466.200134924.1343412502.1343412503.1343412503.1.0; expires=Mon, 28-Jul-2014 05:45:55 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "Set-Cookie: etalb=36386466.3.10.1343412503; expires=Fri, 27-Jul-2012 18:38:23 GMT; path=/; domain=.etsy.com[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "X-Etsy-Request-Uuid: zIh1MVewvhn1X7wGann7yvI5kxTS[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "Content-Length: 745[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "X-Cnection: close[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "Content-Type: application/json[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.wire - << "[\r][\n]"
+2012-07-27 23:38:24,985 [main] DEBUG org.apache.http.impl.conn.DefaultClientConnection - Receiving response: HTTP/1.1 200 OK
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << HTTP/1.1 200 OK
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << Date: Fri, 27 Jul 2012 18:08:23 GMT
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << Server: Apache
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << Set-Cookie: etala=36386466.200134924.1343412502.1343412503.1343412503.1.0; expires=Mon, 28-Jul-2014 05:45:55 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << Set-Cookie: etalb=36386466.3.10.1343412503; expires=Fri, 27-Jul-2012 18:38:23 GMT; path=/; domain=.etsy.com
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << X-Etsy-Request-Uuid: zIh1MVewvhn1X7wGann7yvI5kxTS
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << Content-Length: 745
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << X-Cnection: close
+2012-07-27 23:38:24,986 [main] DEBUG org.apache.http.headers - << Content-Type: application/json
+2012-07-27 23:38:24,987 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etala][value: 36386466.200134924.1343412502.1343412503.1343412503.1.0][domain: .etsy.com][path: /][expiry: Mon Jul 28 11:15:55 IST 2014]". 
+2012-07-27 23:38:24,988 [main] DEBUG org.apache.http.client.protocol.ResponseProcessCookies - Cookie accepted: "[version: 0][name: etalb][value: 36386466.3.10.1343412503][domain: .etsy.com][path: /][expiry: Sat Jul 28 00:08:23 IST 2012]". 
+2012-07-27 23:38:24,988 [main] DEBUG org.apache.http.impl.client.DefaultHttpClient - Connection can be kept alive indefinitely
+2012-07-27 23:38:24,989 [main] DEBUG org.apache.http.wire - << "{"count":1,"results":[{"listing_image_id":244597651,"hex_code":null,"red":255,"green":255,"blue":255,"hue":0,"saturation":0,"brightness":100,"is_black_and_white":true,"creation_tsz":1343412126,"listing_id":2058,"rank":1,"url_75x75":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_75x75.244597651_xyzabc123.jpg","url_170x135":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_170x135.244597651_xyzabc123.jpg","url_570xN":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_570xN.244597651_xyzabc123.jpg","url_fullxfull":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_fullxfull.244597651_xyzabc123.jpg","full_height":500,"full_width":500}],"params":{"listing_image_id":"244597651","listing_id":"2058"},"type":"ListingImage","pagination":{}}"
+2012-07-27 23:38:24,989 [main] DEBUG org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager - Released connection is reusable.
+2012-07-27 23:38:24,989 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Releasing connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]
+2012-07-27 23:38:24,990 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Pooling connection [HttpRoute[{}->http://sandbox.openapi.etsy.com]][null]; keep alive indefinitely
+2012-07-27 23:38:24,990 [main] DEBUG org.apache.http.impl.conn.tsccm.ConnPoolByRoute - Notifying no-one, there are no waiting threads
+{"count":1,"results":[{"listing_image_id":244597651,"hex_code":null,"red":255,"green":255,"blue":255,"hue":0,"saturation":0,"brightness":100,"is_black_and_white":true,"creation_tsz":1343412126,"listing_id":2058,"rank":1,"url_75x75":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_75x75.244597651_xyzabc123.jpg","url_170x135":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_170x135.244597651_xyzabc123.jpg","url_570xN":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_570xN.244597651_xyzabc123.jpg","url_fullxfull":"http:\/\/img3.etsystatic.com\/000\/1\/6100568\/il_fullxfull.244597651_xyzabc123.jpg","full_height":500,"full_width":500}],"params":{"listing_image_id":"244597651","listing_id":"2058"},"type":"ListingImage","pagination":{}}

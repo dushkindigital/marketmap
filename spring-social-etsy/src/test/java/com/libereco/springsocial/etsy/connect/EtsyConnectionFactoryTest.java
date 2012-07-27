@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
@@ -22,15 +24,14 @@ import com.libereco.springsocial.etsy.api.EtsyUser;
 import com.libereco.springsocial.etsy.api.Listing;
 import com.libereco.springsocial.etsy.api.ListingBuilder;
 import com.libereco.springsocial.etsy.api.ListingOperations;
-import com.libereco.springsocial.etsy.api.ShippingOperations;
-import com.libereco.springsocial.etsy.api.ShippingTemplateInfo;
-import com.libereco.springsocial.etsy.api.ShippingTemplateInfoBuilder;
 import com.libereco.springsocial.etsy.api.UserOperations;
 
 public class EtsyConnectionFactoryTest {
 
-    @Test
-    public void shouldFetchRequestToken() throws Exception {
+    private EtsyApi api;
+
+    @Before
+    public void setupConnection() throws Exception {
         String consumerKey = "2rjd29148344fluxnnqgjmw9";
         String consumerSecret = "3xufvccx7r";
         EtsyConnectionFactory connectionFactory = new EtsyConnectionFactory(consumerKey, consumerSecret);
@@ -52,7 +53,7 @@ public class EtsyConnectionFactoryTest {
         OAuthToken accessToken = oAuth1Operations.exchangeForAccessToken(authorizedRequestToken, new OAuth1Parameters(parameters));
 
         Connection<EtsyApi> etsyConnection = connectionFactory.createConnection(accessToken);
-        EtsyApi api = etsyConnection.getApi();
+        api = etsyConnection.getApi();
 
         assertNotNull(etsyConnection);
         assertTrue(etsyConnection.test());
@@ -61,14 +62,18 @@ public class EtsyConnectionFactoryTest {
 
         System.out.println(userProfile.getEmail());
         System.out.println(userProfile.getUsername());
+    }
+
+    @Test
+    public void shouldFetchRequestToken() throws Exception {
 
         UserOperations userOperations = api.userOperations();
         List<EtsyUser> users = userOperations.findAllUsers();
         System.out.println(userOperations.getUserProfile());
 
-//        ShippingOperations shippingOperations = api.shippingOperations();
-//        String category = shippingOperations.getCategory("accessories");
-//        System.out.println("Category : " + category);
+        // ShippingOperations shippingOperations = api.shippingOperations();
+        // String category = shippingOperations.getCategory("accessories");
+        // System.out.println("Category : " + category);
         // ShippingOperations shippingOperations = api.shippingOperations();
         //
         // String paymentTemplates =
@@ -85,10 +90,30 @@ public class EtsyConnectionFactoryTest {
         // createdShippingTemplateInfo);
 
         ListingOperations listingOperations = api.listingOperations();
-        Listing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("description").withPrice(10).withTitle("test listing")
+        Listing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("description").withPrice(10)
+                .withTitle("test listing" + UUID.randomUUID().toString())
                 .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
         String createdListing = listingOperations.createListing(listing);
         System.out.println("Created Listing ** " + createdListing);
+    }
+
+    @Test
+    public void uploadImage() throws Exception {
+        String imageUri = api.listingOperations().uploadListingImage(2058, "/home/shekhar/dev/dushkin/code/marketmap/spring-social-etsy/src/test/resources/samsung-galaxy-note.jpg");
+        System.out.println(imageUri);
+    }
+    
+    @Test
+    public void shouldGetImageForListing() throws Exception{
+        String imageForListing = api.listingOperations().getImageForListing(2058, 244597651);
+        System.out.println(imageForListing);
+    }
+    
+    @Test
+    public void shouldGetAllImagesForListing() throws Exception{
+        api.listingOperations().uploadListingImage(2058, "/home/shekhar/Desktop/documents/openshift-icon.jpg");
+        String allListingForImages = api.listingOperations().findAllListingForImages(2058);
+        System.out.println(allListingForImages);
     }
 
     private void commented() {
