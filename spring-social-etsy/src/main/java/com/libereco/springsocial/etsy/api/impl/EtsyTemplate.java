@@ -24,7 +24,20 @@ public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
     private ShippingOperations shippingOperations;
     private CategoryOperations categoryOperations;
     private CountryOperations countryOperations;
-    
+
+    /**
+     * Create a new instance of EtsyTemplate. This constructor creates a new
+     * EtsyTemplate able to perform unauthenticated operations against
+     * Etsy's API. Some operations, such as search, do not require OAuth
+     * authentication. A EtsyTemplate created with this constructor will
+     * support those operations. Any operations requiring authentication will
+     * throw {@link NotAuthorizedException} .
+     */
+    public EtsyTemplate() {
+        super();
+        initSubApis();
+    }
+
     public EtsyTemplate(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
         super(consumerKey, consumerSecret, accessToken, accessTokenSecret);
         registerEtsyModule(getRestTemplate());
@@ -50,18 +63,17 @@ public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
     public ShippingOperations shippingOperations() {
         return shippingOperations;
     }
-    
-    
+
     @Override
     public CategoryOperations categoryOperations() {
         return categoryOperations;
     }
-    
+
     @Override
     public CountryOperations countryOperations() {
         return countryOperations;
     }
-    
+
     private void registerEtsyModule(RestTemplate restTemplate) {
         List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
         for (HttpMessageConverter<?> converter : converters) {

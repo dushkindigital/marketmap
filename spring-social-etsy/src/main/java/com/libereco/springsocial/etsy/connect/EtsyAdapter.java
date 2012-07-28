@@ -23,7 +23,10 @@ public class EtsyAdapter implements ApiAdapter<EtsyApi> {
 
     @Override
     public void setConnectionValues(EtsyApi etsyApi, ConnectionValues values) {
-
+        EtsyUser etsyUser = etsyApi.userOperations().getUserProfile();
+        values.setProviderUserId(etsyUser.getUserId());
+        values.setDisplayName(etsyUser.getUserId());
+        values.setProfileUrl("http://www.etsy.com/people/" + etsyUser.getLoginName());
     }
 
     @Override
@@ -34,7 +37,7 @@ public class EtsyAdapter implements ApiAdapter<EtsyApi> {
 
     @Override
     public void updateStatus(EtsyApi etsyApi, String message) {
-        
+
     }
 
 }
