@@ -77,7 +77,8 @@ public class EbayListingController {
         }
         uiModel.asMap().clear();
         createEbayListing(ebayListing);
-        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+        return "redirect:/liberecolistings/" + encodeUrlPathSegment(ebayListing.getLiberecoListing().getId().toString(), httpServletRequest)
+                + "/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/liberecolistings/{libercoListingId}/ebaylistings", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -143,6 +144,24 @@ public class EbayListingController {
         return new ResponseEntity<String>(ebayListing.toJson(), headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/ebaylistings", produces = "text/html")
+    public String listAll(@RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
+        String username = SecurityUtils.getCurrentLoggedInUsername();
+        LiberecoUser user = liberecoUserService.findUserByUsername(username);
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("ebaylistings", ebayListingService.findEbayListingEntries(user.getId(), firstResult, sizeNo));
+            float nrOfPages = (float) ebayListingService.countAllEbayListings() / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("ebaylistings", ebayListingService.findAllEbayListings(user.getId()));
+        }
+        return "ebaylistings/list";
+    }
+
     @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings", produces = "text/html")
     public String list(@PathVariable("liberecoListingId") Long liberecoListingId, @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -172,19 +191,22 @@ public class EbayListingController {
         return new ResponseEntity<String>(EbayListing.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/ebaylistings", method = RequestMethod.PUT, produces = "text/html")
-    public String update(@Valid EbayListing ebayListing, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", method = RequestMethod.PUT, produces = "text/html")
+    public String update(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id, @Valid EbayListing ebayListing,
+            BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, ebayListing);
             return "ebaylistings/update";
         }
         uiModel.asMap().clear();
         updateEbayListing(ebayListing);
-        return "redirect:/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
+        return "redirect:/liberecolistings/" + encodeUrlPathSegment(ebayListing.getLiberecoListing().getId().toString(), httpServletRequest)
+                + "/ebaylistings/" + encodeUrlPathSegment(ebayListing.getId().toString(), httpServletRequest);
     }
 
-    @RequestMapping(value = "/ebaylistings", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id,
+            @RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
@@ -215,14 +237,15 @@ public class EbayListingController {
         return ebayAuthorization.getToken();
     }
 
-    @RequestMapping(value = "/ebaylistings/{id}", params = "form", produces = "text/html")
-    public String updateForm(@PathVariable("id") Long id, Model uiModel) {
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", params = "form", produces = "text/html")
+    public String updateForm(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, ebayListingService.findEbayListing(id));
         return "ebaylistings/update";
     }
 
-    @RequestMapping(value = "/ebaylistings/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id,
+            @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
         deleteEbayListing(ebayListing);
@@ -232,8 +255,8 @@ public class EbayListingController {
         return "redirect:/ebaylistings";
     }
 
-    @RequestMapping(value = "/ebaylistings/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+    @RequestMapping(value = "/liberecolistings/{liberecoListingId}/ebaylistings/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id) {
         EbayListing ebayListing = ebayListingService.findEbayListing(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");

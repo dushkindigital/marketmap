@@ -12,6 +12,7 @@
 			login-page="/login" authentication-failure-url="/login?login_error=t" />
 		<logout logout-url="/resources/j_spring_security_logout" />
 		<!-- Configure these elements to secure URIs in your application -->
+		<intercept-url pattern="/connect/**" access="isAuthenticated()"/>
 		<intercept-url pattern="/marketplaces/*/authorize"
 			access="isAuthenticated()" />
 		<intercept-url pattern="/marketplaces/*/fetchToken"

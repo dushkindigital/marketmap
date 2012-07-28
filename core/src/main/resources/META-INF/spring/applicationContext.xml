@@ -52,6 +52,30 @@
 		p:jpaVendorAdapter-ref="jpaVendorAdapter" p:persistenceUnitName="${database.name}"
 		p:persistenceXmlLocation="classpath:/META-INF/persistence.xml" />
 
+	<bean id="appDbInitializer"
+		class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
+		<property name="dataSource" ref="dataSource" />
+		<property name="enabled" value="true" />
+		<property name="databasePopulator">
+			<bean
+				class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+				<property name="continueOnError" value="true" />
+				<property name="ignoreFailedDrops" value="true" />
+				<property name="sqlScriptEncoding" value="UTF-8" />
+				<property name="scripts">
+					<array>
+						<value type="org.springframework.core.io.Resource">
+							classpath:META-INF/spring/drop-tables.sql
+						</value>
+						<value type="org.springframework.core.io.Resource">
+							classpath:META-INF/spring/create-tables.sql
+						</value>
+					</array>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
 	<beans profile="test">
 		<jdbc:embedded-database id="dataSource" />
 		<bean id="jpaVendorAdapter"

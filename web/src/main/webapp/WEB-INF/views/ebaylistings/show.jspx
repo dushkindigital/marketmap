@@ -2,7 +2,7 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:show id="ps_com_libereco_core_domain_EbayListing" object="${ebaylisting}" path="/ebaylistings" z="PsBAGbfAAMw/NKPoz3YPGeOOD5k=">
+    <page:show id="ps_com_libereco_core_domain_EbayListing" object="${ebaylisting}" path="/liberecolistings/1/ebaylistings" z="PsBAGbfAAMw/NKPoz3YPGeOOD5k=">
         <field:display field="returnPolicy" id="s_com_libereco_core_domain_EbayListing_returnPolicy" object="${ebaylisting}" z="v6evjbVYpaKGnEkMYRU1B2FqzA8="/>
         <field:display field="listingDuration" id="s_com_libereco_core_domain_EbayListing_listingDuration" label="Listing Duration" object="${ebaylisting}" z="user-managed"/>
         <field:display field="dispatchTimeMax" id="s_com_libereco_core_domain_EbayListing_dispatchTimeMax" object="${ebaylisting}" z="FDM74pMC0pRht1GC7Kr5KuSGgBY="/>
