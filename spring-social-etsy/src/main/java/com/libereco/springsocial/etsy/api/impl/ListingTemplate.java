@@ -42,4 +42,19 @@ class ListingTemplate extends AbstractEtsyOperations implements ListingOperation
         return restTemplate.getForObject(buildUri("listings/" + listingId + "/images"), String.class);
     }
 
+    @Override
+    public String getListing(int listingId) {
+        return restTemplate.getForObject(buildUri("listings/" + listingId), String.class);
+    }
+
+    @Override
+    public void updateListing(Listing listing) {
+        restTemplate.put(buildUri("listings/" + listing.getListingId()), listing);
+    }
+
+    @Override
+    public void deleteListing(int listingId) {
+        restTemplate.delete(buildUri("listings/" + listingId));
+    }
+
 }

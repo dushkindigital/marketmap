@@ -29,6 +29,8 @@ import com.libereco.springsocial.etsy.api.UserOperations;
 public class EtsyConnectionFactoryTest {
 
     private EtsyApi api;
+    
+    private int listingId = 2058;
 
     @Before
     public void setupConnection() throws Exception {
@@ -99,21 +101,43 @@ public class EtsyConnectionFactoryTest {
 
     @Test
     public void uploadImage() throws Exception {
-        String imageUri = api.listingOperations().uploadListingImage(2058, "/home/shekhar/dev/dushkin/code/marketmap/spring-social-etsy/src/test/resources/samsung-galaxy-note.jpg");
+        String imageUri = api.listingOperations().uploadListingImage(listingId, "/home/shekhar/dev/dushkin/code/marketmap/spring-social-etsy/src/test/resources/samsung-galaxy-note.jpg");
         System.out.println(imageUri);
     }
     
     @Test
     public void shouldGetImageForListing() throws Exception{
-        String imageForListing = api.listingOperations().getImageForListing(2058, 244597651);
+        String imageForListing = api.listingOperations().getImageForListing(listingId, 244597651);
         System.out.println(imageForListing);
     }
     
     @Test
     public void shouldGetAllImagesForListing() throws Exception{
-        api.listingOperations().uploadListingImage(2058, "/home/shekhar/Desktop/documents/openshift-icon.jpg");
+        api.listingOperations().uploadListingImage(listingId, "/home/shekhar/Desktop/documents/openshift-icon.jpg");
         String allListingForImages = api.listingOperations().findAllListingForImages(2058);
         System.out.println(allListingForImages);
+    }
+    
+    @Test
+    public void shouldGetListing() throws Exception{
+        String listingJson = api.listingOperations().getListing(listingId);
+        assertNotNull(listingJson);
+    }
+    
+    @Test
+    public void shouldUpdateListing() throws Exception{
+        Listing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("updateDescription").withPrice(100)
+                .withTitle("test listing" + UUID.randomUUID().toString())
+                .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
+        listing.setListingId(listingId);
+        listing.setUserId(14888629);
+        listing.setState("active");
+        api.listingOperations().updateListing(listing);
+    }
+    
+    @Test
+    public void shouldDeleteListing() throws Exception{
+        api.listingOperations().deleteListing(listingId);
     }
 
     private void commented() {

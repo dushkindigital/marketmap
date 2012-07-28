@@ -7,6 +7,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Listing {
 
+    @JsonProperty("listing_id")
+    private int listingId;
+    
     @JsonProperty
     private int quantity;
 
@@ -33,7 +36,42 @@ public class Listing {
 
     @JsonProperty("when_made")
     private String whenMade;
+    
+    @JsonProperty("user_id")
+    private int userId;
 
+    @JsonProperty("state")
+    private String state;
+    
+    @JsonIgnore
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+    
+    @JsonIgnore
+    public int getUserId() {
+        return userId;
+    }
+    
+    @JsonIgnore
+    public void setState(String state) {
+        this.state = state;
+    }
+    @JsonIgnore
+    public String getState() {
+        return state;
+    }
+    
+    @JsonIgnore    
+    public void setListingId(int listingId) {
+        this.listingId = listingId;
+    }
+    
+    @JsonIgnore
+    public int getListingId() {
+        return listingId;
+    }
+    
     @JsonIgnore
     public int getQuantity() {
         return quantity;

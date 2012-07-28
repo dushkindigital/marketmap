@@ -11,4 +11,8 @@ public interface EtsyApi extends ApiBinding {
     PaymentOperations paymentOperations();
     
     ShippingOperations shippingOperations();
+    
+    CategoryOperations categoryOperations();
+    
+    CountryOperations countryOperations();
 }
