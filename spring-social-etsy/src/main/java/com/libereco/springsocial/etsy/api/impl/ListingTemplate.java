@@ -18,8 +18,8 @@ class ListingTemplate extends AbstractEtsyOperations implements ListingOperation
     }
 
     @Override
-    public String createListing(Listing listing) {
-        return restTemplate.postForEntity(buildUri("listings"), listing, String.class).getBody();
+    public Listing createListing(Listing listing) {
+        return restTemplate.postForEntity(buildUri("listings"), listing, Listing.class).getBody();
     }
 
     @Override

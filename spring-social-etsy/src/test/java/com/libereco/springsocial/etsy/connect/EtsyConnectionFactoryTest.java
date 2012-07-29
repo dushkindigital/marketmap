@@ -64,38 +64,19 @@ public class EtsyConnectionFactoryTest {
 
         System.out.println(userProfile.getEmail());
         System.out.println(userProfile.getUsername());
-    }
-
-    @Test
-    public void shouldFetchRequestToken() throws Exception {
-
+        
         UserOperations userOperations = api.userOperations();
         List<EtsyUser> users = userOperations.findAllUsers();
         System.out.println(userOperations.getUserProfile());
+    }
 
-        // ShippingOperations shippingOperations = api.shippingOperations();
-        // String category = shippingOperations.getCategory("accessories");
-        // System.out.println("Category : " + category);
-        // ShippingOperations shippingOperations = api.shippingOperations();
-        //
-        // String paymentTemplates =
-        // shippingOperations.findAllUserPaymentTemplates("14888629");
-        // System.out.println("Payment Template **** " + paymentTemplates);
-        //
-        // ShippingTemplateInfo shippingTemplateInfo =
-        // ShippingTemplateInfoBuilder.shippingTemplateInfo().withTitle("mytemplate")
-        // .withPrimaryCost(10).withSecondaryCost(5).withOriginCountryId(209).withDestinationCountryId(209).build();
-        // String createdShippingTemplateInfo =
-        // shippingOperations.createShippingTemplate(shippingTemplateInfo);
-        //
-        // System.out.println("Created Shipping template info *** " +
-        // createdShippingTemplateInfo);
-
+    @Test
+    public void shouldCreateListing() throws Exception {
         ListingOperations listingOperations = api.listingOperations();
-        Listing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("description").withPrice(10)
+        Listing newListing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("description").withPrice(10)
                 .withTitle("test listing" + UUID.randomUUID().toString())
                 .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
-        String createdListing = listingOperations.createListing(listing);
+        Listing createdListing = listingOperations.createListing(newListing);
         System.out.println("Created Listing ** " + createdListing);
     }
 
@@ -162,6 +143,25 @@ public class EtsyConnectionFactoryTest {
         // // ListingOperations listingOperations = api.listingOperations();
         // Listing listing = new Listing();
         // listingOperations.createListing(listing);
+        
+        
+        // ShippingOperations shippingOperations = api.shippingOperations();
+        // String category = shippingOperations.getCategory("accessories");
+        // System.out.println("Category : " + category);
+        // ShippingOperations shippingOperations = api.shippingOperations();
+        //
+        // String paymentTemplates =
+        // shippingOperations.findAllUserPaymentTemplates("14888629");
+        // System.out.println("Payment Template **** " + paymentTemplates);
+        //
+        // ShippingTemplateInfo shippingTemplateInfo =
+        // ShippingTemplateInfoBuilder.shippingTemplateInfo().withTitle("mytemplate")
+        // .withPrimaryCost(10).withSecondaryCost(5).withOriginCountryId(209).withDestinationCountryId(209).build();
+        // String createdShippingTemplateInfo =
+        // shippingOperations.createShippingTemplate(shippingTemplateInfo);
+        //
+        // System.out.println("Created Shipping template info *** " +
+        // createdShippingTemplateInfo);
 
     }
 }

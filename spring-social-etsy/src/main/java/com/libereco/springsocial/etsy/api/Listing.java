@@ -1,17 +1,28 @@
 package com.libereco.springsocial.etsy.api;
 
+import java.util.Arrays;
+import java.util.Date;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = ListingDeserializer.class)
 public class Listing {
 
     @JsonProperty("listing_id")
     private int listingId;
-    
-    @JsonProperty
-    private int quantity;
+
+    @JsonProperty("state")
+    private String state;
+
+    @JsonProperty("user_id")
+    private int userId;
+
+    @JsonProperty("category_id")
+    private int categoryId;
 
     @JsonProperty
     private String title;
@@ -19,14 +30,32 @@ public class Listing {
     @JsonProperty
     private String description;
 
+    @JsonProperty("creation_tsz")
+    private Date creationDate;
+
+    @JsonProperty("ending_tsz")
+    private Date endingDate;
+
     @JsonProperty
     private double price;
 
+    @JsonProperty
+    private String[] categoryPath;
+
+    @JsonProperty
+    private String currencyCode;
+
+    @JsonProperty
+    private String[] tags;
+
+    @JsonProperty
+    private int quantity;
+
+    @JsonProperty
+    private String url;
+
     @JsonProperty("shipping_template_id")
     private int shippingTemplateId;
-
-    @JsonProperty("category_id")
-    private int categoryId;
 
     @JsonProperty("who_made")
     private String whoMade;
@@ -36,42 +65,37 @@ public class Listing {
 
     @JsonProperty("when_made")
     private String whenMade;
-    
-    @JsonProperty("user_id")
-    private int userId;
 
-    @JsonProperty("state")
-    private String state;
-    
     @JsonIgnore
     public void setUserId(int userId) {
         this.userId = userId;
     }
-    
+
     @JsonIgnore
     public int getUserId() {
         return userId;
     }
-    
+
     @JsonIgnore
     public void setState(String state) {
         this.state = state;
     }
+
     @JsonIgnore
     public String getState() {
         return state;
     }
-    
-    @JsonIgnore    
+
+    @JsonIgnore
     public void setListingId(int listingId) {
         this.listingId = listingId;
     }
-    
+
     @JsonIgnore
     public int getListingId() {
         return listingId;
     }
-    
+
     @JsonIgnore
     public int getQuantity() {
         return quantity;
@@ -156,10 +180,68 @@ public class Listing {
     public String getWhenMade() {
         return whenMade;
     }
-    
+
     @JsonIgnore
     public void setWhenMade(String whenMade) {
         this.whenMade = whenMade;
     }
+    
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
+    public String getUrl() {
+        return url;
+    }
+    
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getEndingDate() {
+        return endingDate;
+    }
+
+    public void setEndingDate(Date endingDate) {
+        this.endingDate = endingDate;
+    }
+
+    public String[] getCategoryPath() {
+        return categoryPath;
+    }
+
+    public void setCategoryPath(String[] categoryPath) {
+        this.categoryPath = categoryPath;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    @Override
+    public String toString() {
+        return "Listing [listingId=" + listingId + ", state=" + state + ", userId=" + userId + ", categoryId=" + categoryId + ", title=" + title
+                + ", description=" + description + ", creationDate=" + creationDate + ", endingDate=" + endingDate + ", price=" + price
+                + ", categoryPath=" + Arrays.toString(categoryPath) + ", currencyCode=" + currencyCode + ", tags=" + Arrays.toString(tags)
+                + ", quantity=" + quantity + ", url=" + url + ", shippingTemplateId=" + shippingTemplateId + ", whoMade=" + whoMade + ", supply="
+                + supply + ", whenMade=" + whenMade + "]";
+    }
+
+    
 }

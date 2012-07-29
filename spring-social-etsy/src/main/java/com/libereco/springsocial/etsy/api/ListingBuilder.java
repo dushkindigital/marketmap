@@ -7,6 +7,8 @@
 
 package com.libereco.springsocial.etsy.api;
 
+import java.util.Date;
+
 public class ListingBuilder extends ListingBuilderBase<ListingBuilder> {
     public static ListingBuilder listing() {
         return new ListingBuilder();
@@ -30,6 +32,27 @@ class ListingBuilderBase<GeneratorT extends ListingBuilderBase<GeneratorT>> {
 
     protected Listing getInstance() {
         return instance;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withUserId(int aValue) {
+        instance.setUserId(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withState(String aValue) {
+        instance.setState(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withListingId(int aValue) {
+        instance.setListingId(aValue);
+
+        return (GeneratorT) this;
     }
 
     @SuppressWarnings("unchecked")
@@ -91,6 +114,48 @@ class ListingBuilderBase<GeneratorT extends ListingBuilderBase<GeneratorT>> {
     @SuppressWarnings("unchecked")
     public GeneratorT withWhenMade(String aValue) {
         instance.setWhenMade(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withUrl(String aValue) {
+        instance.setUrl(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withCreationDate(Date aValue) {
+        instance.setCreationDate(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withEndingDate(Date aValue) {
+        instance.setEndingDate(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withCategoryPath(String[] aValue) {
+        instance.setCategoryPath(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withCurrencyCode(String aValue) {
+        instance.setCurrencyCode(aValue);
+
+        return (GeneratorT) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GeneratorT withTags(String[] aValue) {
+        instance.setTags(aValue);
 
         return (GeneratorT) this;
     }

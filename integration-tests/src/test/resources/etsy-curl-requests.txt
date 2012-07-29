@@ -1,0 +1,7 @@
+curl --user shekhar:password -i -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"whoMade":"I_DID","supply":true,"whenMade":"YEAR_2010_2012"}' http://localhost:8080/libereco/liberecolistings/1/etsylistings
+
+curl --user shekhar:password  -i -H "Accept: application/json" http://localhost:8080/libereco/liberecolistings/1/etsylistings/1
+
+curl --user shekhar:password  -i -X DELETE -H "Accept: application/json" http://localhost:8080/libereco/liberecolistings/1/etsylistings/1
+
+curl --user shekhar:password -i -H "Accept: application/json" http://localhost:8080/libereco/liberecolistings/1/etsylistings

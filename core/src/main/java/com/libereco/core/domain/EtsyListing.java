@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -54,6 +55,56 @@ public class EtsyListing implements Serializable, Listing {
     @NotNull
     @ManyToOne
     private LiberecoListing liberecoListing;
+
+    private String etsyListingUrl;
+
+    private Date creationDate;
+
+    private Date endingDate;
+    
+    private int shippingTemplateId;
+    
+    private int etsyUserId;
+    
+    public void setEtsyUserId(int etsyUserId) {
+        this.etsyUserId = etsyUserId;
+    }
+    
+    public int getEtsyUserId() {
+        return etsyUserId;
+    }
+    
+    public void setShippingTemplateId(int shippingTemplateId) {
+        this.shippingTemplateId = shippingTemplateId;
+    }
+    
+    public int getShippingTemplateId() {
+        return shippingTemplateId;
+    }
+    
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setEndingDate(Date endingDate) {
+        this.endingDate = endingDate;
+    }
+
+    public Date getEndingDate() {
+        return endingDate;
+    }
+
+    public void setEtsyListingUrl(String etsyListingUrl) {
+        this.etsyListingUrl = etsyListingUrl;
+    }
+
+    public String getEtsyListingUrl() {
+        return etsyListingUrl;
+    }
 
     public Long getId() {
         return this.id;
@@ -128,7 +179,7 @@ public class EtsyListing implements Serializable, Listing {
                 deserialize(json);
     }
 
-    public static String toJsonArray(Collection<EbayListing> collection) {
+    public static String toJsonArray(Collection<EtsyListing> collection) {
         return new JSONSerializer().exclude("*.class").serialize(collection);
     }
 
