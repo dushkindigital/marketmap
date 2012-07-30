@@ -63,7 +63,7 @@
 	</pluginRepositories>
 
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>oauth.signpost</groupId>
 			<artifactId>signpost-core</artifactId>
 			<version>1.2.1.1</version>
@@ -85,7 +85,7 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.7.6</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<artifactId>commons-io</artifactId>
@@ -328,12 +328,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>htmlunit</groupId>
-			<artifactId>htmlunit</artifactId>
-			<version>1.14</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>

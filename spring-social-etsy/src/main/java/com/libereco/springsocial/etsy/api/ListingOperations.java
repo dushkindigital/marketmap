@@ -1,5 +1,7 @@
 package com.libereco.springsocial.etsy.api;
 
+import org.springframework.core.io.Resource;
+
 public interface ListingOperations {
 
     Listing createListing(Listing listing);
@@ -10,7 +12,7 @@ public interface ListingOperations {
     
     void deleteListing(int listingId);
     
-    String uploadListingImage(int listingId, String imagePath);
+    String uploadListingImage(int listingId, Resource resource);
 
     String getImageForListing(int listingId, int listingImageId);
 

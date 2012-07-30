@@ -31,6 +31,8 @@ import com.libereco.core.service.MarketplaceService;
 import com.libereco.springsocial.etsy.api.EtsyApi;
 import com.libereco.springsocial.etsy.api.Listing;
 import com.libereco.springsocial.etsy.api.ListingBuilder;
+import com.libereco.springsocial.etsy.api.ListingOperations;
+import com.libereco.springsocial.etsy.api.impl.EtsyByteArrayResource;
 import com.libereco.web.common.MarketplaceName;
 import com.libereco.web.security.SecurityUtils;
 
@@ -41,7 +43,7 @@ public class EtsyListingController {
     private final LiberecoListingService liberecoListingService;
     private final EtsyListingService etsyListingService;
     private final MarketplaceService marketplaceService;
-    
+
     @Autowired
     LiberecoUserService liberecoUserService;
 
@@ -64,8 +66,9 @@ public class EtsyListingController {
             throw new LiberecoResourceNotFoundException(
                     "You can't create listing on etsy marketplace as there is no marketplace found etsy in our system. Please contact system administrator.");
         }
-        Listing createdEtsyListing = etsyApi.listingOperations().createListing(toListing(etsyListing));
-        populateEtsyListing(etsyListing, createdEtsyListing);
+        ListingOperations listingOperations = etsyApi.listingOperations();
+        Listing createdListing = listingOperations.createListing(toListing(etsyListing));
+        populateEtsyListing(etsyListing, createdListing);
         etsyListingService.saveEtsyListing(etsyListing);
         Set<Marketplace> marketplaces = liberecoListing.getMarketplaces();
         marketplaces = marketplaces == null ? new HashSet<Marketplace>() : marketplaces;
@@ -73,9 +76,21 @@ public class EtsyListingController {
         liberecoListing.setMarketplaces(marketplaces);
         liberecoListing.setListingState(ListingState.LISTED);
         liberecoListingService.updateLiberecoListing(liberecoListing);
+        uploadEtsyListingImage(etsyListing, createdListing);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<String>(etsyListing.toJson(), headers, HttpStatus.CREATED);
+    }
+
+    private void uploadEtsyListingImage(EtsyListing etsyListing, Listing createdListing) {
+        ListingOperations listingOperations = etsyApi.listingOperations();
+        byte[] picture = etsyListing.getLiberecoListing().getPicture();
+        if (picture == null) {
+            return;
+        }
+        String uploadListingImageResponse = listingOperations.uploadListingImage(createdListing.getListingId(), new EtsyByteArrayResource(picture,
+                etsyListing.getLiberecoListing().getPictureName()));
+        System.out.println("UploadListingImage Response ---- " + uploadListingImageResponse);
     }
 
     @RequestMapping(value = "/liberecolistings/{liberecoListingId}/etsylistings/{etsyListingId}", headers = "Accept=application/json")
@@ -107,7 +122,7 @@ public class EtsyListingController {
             @PathVariable("etsyListingId") Long etsyListingId, @RequestBody String json) {
         return null;
     }
-    
+
     @RequestMapping(value = "/liberecolistings/{liberecoListingId}/etsylistings/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("liberecoListingId") Long liberecoListingId, @PathVariable("id") Long id) {
         EtsyListing etsyListing = etsyListingService.findEtsyListing(id);

@@ -128,7 +128,6 @@ public class LiberecoListingController {
             throw new LiberecoResourceNotFoundException("No liberecolisting found for id " + liberecoListingId);
         }
         updateLiberecoListingWithPicture(liberecoListing, httpServletRequest, picture);
-        liberecoListingService.updateLiberecoListing(liberecoListing);
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
@@ -153,6 +152,7 @@ public class LiberecoListingController {
             }
             
         }
+        liberecoListingService.updateLiberecoListing(liberecoListing);
     }
 
     private void setPicture(LiberecoListing liberecoListing, MultipartFile picture) {

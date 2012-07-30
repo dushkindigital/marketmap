@@ -12,7 +12,7 @@
 	<div class="accountConnection">
 		<s:message code="${providerId}.icon" var="iconUrl"/>
 		<h4><img src="<c:url value="${iconUrl}" />" width="36" height="36" />${providerDisplayName}</h4>
-		
+
 		<p>
 		<c:if test="${not empty connections}">
 			You are connected to ${providerDisplayName} as ${connections[0].displayName}.

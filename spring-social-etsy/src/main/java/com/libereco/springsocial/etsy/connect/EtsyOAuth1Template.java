@@ -13,7 +13,7 @@ public class EtsyOAuth1Template extends OAuth1Template {
 
     @Override
     protected void addCustomAuthorizationParameters(MultiValueMap<String, String> parameters) {
-        parameters.add("oauth_consumer_key", getConsumerKey());
+//        parameters.add("oauth_consumer_key", getConsumerKey());
     }
 
 }

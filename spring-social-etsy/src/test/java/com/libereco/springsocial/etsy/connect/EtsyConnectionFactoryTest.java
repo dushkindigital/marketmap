@@ -4,14 +4,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
@@ -25,12 +28,13 @@ import com.libereco.springsocial.etsy.api.Listing;
 import com.libereco.springsocial.etsy.api.ListingBuilder;
 import com.libereco.springsocial.etsy.api.ListingOperations;
 import com.libereco.springsocial.etsy.api.UserOperations;
+import com.libereco.springsocial.etsy.api.impl.EtsyByteArrayResource;
 
 public class EtsyConnectionFactoryTest {
 
     private EtsyApi api;
-    
-    private int listingId = 2058;
+
+    private int listingId = 2070;
 
     @Before
     public void setupConnection() throws Exception {
@@ -40,11 +44,9 @@ public class EtsyConnectionFactoryTest {
         OAuth1Operations oAuth1Operations = connectionFactory.getOAuthOperations();
         OAuthToken requestToken = oAuth1Operations.fetchRequestToken("oob", null);
         assertNotNull(requestToken);
-        System.out.println(requestToken.getValue());
-        System.out.println(requestToken.getSecret());
 
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-        String authorizeUrl = oAuth1Operations.buildAuthorizeUrl(requestToken.getValue(), new OAuth1Parameters());
+        String authorizeUrl = oAuth1Operations.buildAuthorizeUrl(requestToken.getValue(), null);
         System.out.println(authorizeUrl);
 
         System.out.println("Enter the PIN code and hit ENTER when you're done:");
@@ -64,7 +66,7 @@ public class EtsyConnectionFactoryTest {
 
         System.out.println(userProfile.getEmail());
         System.out.println(userProfile.getUsername());
-        
+
         UserOperations userOperations = api.userOperations();
         List<EtsyUser> users = userOperations.findAllUsers();
         System.out.println(userOperations.getUserProfile());
@@ -82,31 +84,40 @@ public class EtsyConnectionFactoryTest {
 
     @Test
     public void uploadImage() throws Exception {
-        String imageUri = api.listingOperations().uploadListingImage(listingId, "/home/shekhar/dev/dushkin/code/marketmap/spring-social-etsy/src/test/resources/samsung-galaxy-note.jpg");
+        String imageUri = api.listingOperations().uploadListingImage(listingId, new
+                FileSystemResource("/home/shekhar/dev/dushkin/code/marketmap/spring-social-etsy/src/test/resources/samsung-galaxy-note.jpg"));
         System.out.println(imageUri);
     }
-    
+
     @Test
-    public void shouldGetImageForListing() throws Exception{
+    public void shouldUploadImageBytesResourse() throws Exception {
+        byte[] bytes = FileUtils.readFileToByteArray(new File("/home/shekhar/Desktop/all-folders/samsung-galaxy-note_1.jpg"));
+        String imageUri = api.listingOperations().uploadListingImage(listingId, new EtsyByteArrayResource(bytes, "samsung-galaxy-note_1.jpg"));
+        System.out.println(imageUri);
+    }
+
+    @Test
+    public void shouldGetImageForListing() throws Exception {
         String imageForListing = api.listingOperations().getImageForListing(listingId, 244597651);
         System.out.println(imageForListing);
     }
-    
+
     @Test
-    public void shouldGetAllImagesForListing() throws Exception{
-        api.listingOperations().uploadListingImage(listingId, "/home/shekhar/Desktop/documents/openshift-icon.jpg");
+    public void shouldGetAllImagesForListing() throws Exception {
+        api.listingOperations().uploadListingImage(listingId, new
+                FileSystemResource("/home/shekhar/Desktop/documents/openshift-icon.jpg"));
         String allListingForImages = api.listingOperations().findAllListingForImages(2058);
         System.out.println(allListingForImages);
     }
-    
+
     @Test
-    public void shouldGetListing() throws Exception{
+    public void shouldGetListing() throws Exception {
         String listingJson = api.listingOperations().getListing(listingId);
         assertNotNull(listingJson);
     }
-    
+
     @Test
-    public void shouldUpdateListing() throws Exception{
+    public void shouldUpdateListing() throws Exception {
         Listing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("updateDescription").withPrice(100)
                 .withTitle("test listing" + UUID.randomUUID().toString())
                 .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
@@ -115,9 +126,9 @@ public class EtsyConnectionFactoryTest {
         listing.setState("active");
         api.listingOperations().updateListing(listing);
     }
-    
+
     @Test
-    public void shouldDeleteListing() throws Exception{
+    public void shouldDeleteListing() throws Exception {
         api.listingOperations().deleteListing(listingId);
     }
 
@@ -143,8 +154,7 @@ public class EtsyConnectionFactoryTest {
         // // ListingOperations listingOperations = api.listingOperations();
         // Listing listing = new Listing();
         // listingOperations.createListing(listing);
-        
-        
+
         // ShippingOperations shippingOperations = api.shippingOperations();
         // String category = shippingOperations.getCategory("accessories");
         // System.out.println("Category : " + category);

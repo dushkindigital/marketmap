@@ -1,6 +1,6 @@
 package com.libereco.springsocial.etsy.api.impl;
 
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -23,12 +23,11 @@ class ListingTemplate extends AbstractEtsyOperations implements ListingOperation
     }
 
     @Override
-    public String uploadListingImage(int listingId, String imagePath) {
+    public String uploadListingImage(int listingId, Resource resource) {
         MultiValueMap<String, Object> parts = new
                 LinkedMultiValueMap<String, Object>();
         parts.add("listing_id", String.valueOf(listingId));
-        parts.add("image", new
-                FileSystemResource(imagePath));
+        parts.add("image", resource);
         return restTemplate.postForObject(buildUri("listings/" + listingId + "/images"), parts, String.class);
     }
 

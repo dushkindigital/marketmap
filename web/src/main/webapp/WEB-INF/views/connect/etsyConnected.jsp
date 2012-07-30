@@ -12,4 +12,3 @@
 	<button type="submit">Disconnect</button>	
 	<input type="hidden" name="_method" value="delete" />
 </form>
-
