@@ -144,7 +144,7 @@ public class LiberecoListingController {
         if (liberecoListing.getPicture() != null) {
             boolean isCloudEnvironment = environment.acceptsProfiles("cloud");
             if(isCloudEnvironment){
-                liberecoListing.setPictureUrl("https://libereco.cloudfoundry.com/liberecolistings/" + liberecoListing.getId() + "/image/"
+                liberecoListing.setPictureUrl("http://libereco.cloudfoundry.com/liberecolistings/" + liberecoListing.getId() + "/image/"
                         + picture.getOriginalFilename());
             }else{
                 liberecoListing.setPictureUrl("http://localhost:8080/libereco/liberecolistings/" + liberecoListing.getId() + "/image/"
