@@ -247,14 +247,14 @@ public class LiberecoListing implements Serializable {
                     
                     @Override
                     public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
-                        return LiberecoPaymentInformation.fromJsonArrayToLiberecoPaymentInformations((String)value);
+                        return LiberecoPaymentInformation.fromJsonArrayToLiberecoPaymentInformations((String)(value.toString()));
                     }
                 }).
                 use("shippingInformations", new ObjectFactory() {
                     
                     @Override
                     public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
-                        return LiberecoShippingInformation.fromJsonArrayToLiberecoShippingInformations((String)value);
+                        return LiberecoShippingInformation.fromJsonArrayToLiberecoShippingInformations((String)(value.toString()));
                     }
                 }).
                 use(ItemLocation.class, new ObjectFactory() {
@@ -264,8 +264,14 @@ public class LiberecoListing implements Serializable {
                         Type type =
                                 new TypeToken<Map<String, String>>() {
                                 }.getType();
-                        Map<String, String> map =
-                                new Gson().fromJson((String) value, type);
+                        Map<String, String> map = null;
+                        if(value instanceof Map){
+                            map = (Map) value;
+                            
+                        }else{
+                            map =
+                                    new Gson().fromJson((String) value, type);
+                        }
                         ItemLocation itemLocation = new ItemLocation(map.get("itemLocation"), map.get("postalCode"));
                         return itemLocation;
                     }
