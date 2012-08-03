@@ -83,7 +83,6 @@ public class LiberecoListingController {
     MarketplaceAuthorizationsService marketplaceAuthorizationsService;
     @Autowired
     Environment environment;
-    
 
     private Logger logger = Logger.getLogger(LiberecoListingController.class);
 
@@ -143,14 +142,14 @@ public class LiberecoListingController {
         setPicture(liberecoListing, picture);
         if (liberecoListing.getPicture() != null) {
             boolean isCloudEnvironment = environment.acceptsProfiles("cloud");
-            if(isCloudEnvironment){
+            if (isCloudEnvironment) {
                 liberecoListing.setPictureUrl("http://libereco.cloudfoundry.com/liberecolistings/" + liberecoListing.getId() + "/image/"
                         + picture.getOriginalFilename());
-            }else{
+            } else {
                 liberecoListing.setPictureUrl("http://localhost:8080/libereco/liberecolistings/" + liberecoListing.getId() + "/image/"
                         + picture.getOriginalFilename());
             }
-            
+
         }
         liberecoListingService.updateLiberecoListing(liberecoListing);
     }
