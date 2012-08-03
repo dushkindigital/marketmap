@@ -23,6 +23,7 @@ import org.springframework.social.connect.web.ConnectController;
 import com.libereco.springsocial.etsy.api.EtsyApi;
 import com.libereco.springsocial.etsy.api.impl.EtsyTemplate;
 import com.libereco.springsocial.etsy.connect.EtsyConnectionFactory;
+import com.libereco.springsocial.etsy.connect.web.LiberecoConnectController;
 
 /**
  * Etsy Spring Social Configuration.
@@ -70,8 +71,8 @@ public class SocialConfig {
     }
 
     @Bean
-    public ConnectController connectController() {
-        ConnectController connectController = new ConnectController(connectionFactoryLocator(), connectionRepository());
+    public LiberecoConnectController connectController() {
+        LiberecoConnectController connectController = new LiberecoConnectController(connectionFactoryLocator(), connectionRepository());
         return connectController;
     }
 
