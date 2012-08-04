@@ -27,7 +27,7 @@ import com.libereco.springsocial.etsy.api.EtsyUser;
 import com.libereco.springsocial.etsy.api.Listing;
 import com.libereco.springsocial.etsy.api.ListingBuilder;
 import com.libereco.springsocial.etsy.api.ListingOperations;
-import com.libereco.springsocial.etsy.api.UserOperations;
+import com.libereco.springsocial.etsy.api.EtsyUserOperations;
 import com.libereco.springsocial.etsy.api.impl.EtsyByteArrayResource;
 
 public class EtsyConnectionFactoryTest {
@@ -45,7 +45,6 @@ public class EtsyConnectionFactoryTest {
         OAuthToken requestToken = oAuth1Operations.fetchRequestToken("oob", null);
         assertNotNull(requestToken);
 
-        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         String authorizeUrl = oAuth1Operations.buildAuthorizeUrl(requestToken.getValue(), null);
         System.out.println(authorizeUrl);
 
@@ -54,6 +53,8 @@ public class EtsyConnectionFactoryTest {
         String pin = br.readLine();
 
         AuthorizedRequestToken authorizedRequestToken = new AuthorizedRequestToken(requestToken, pin);
+
+        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         OAuthToken accessToken = oAuth1Operations.exchangeForAccessToken(authorizedRequestToken, new OAuth1Parameters(parameters));
 
         Connection<EtsyApi> etsyConnection = connectionFactory.createConnection(accessToken);
@@ -67,7 +68,7 @@ public class EtsyConnectionFactoryTest {
         System.out.println(userProfile.getEmail());
         System.out.println(userProfile.getUsername());
 
-        UserOperations userOperations = api.userOperations();
+        EtsyUserOperations userOperations = api.userOperations();
         List<EtsyUser> users = userOperations.findAllUsers();
         System.out.println(userOperations.getUserProfile());
     }

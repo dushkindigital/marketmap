@@ -4,7 +4,7 @@ import org.springframework.social.ApiBinding;
 
 public interface EtsyApi extends ApiBinding {
 
-    UserOperations userOperations();
+    EtsyUserOperations userOperations();
 
     ListingOperations listingOperations();
 

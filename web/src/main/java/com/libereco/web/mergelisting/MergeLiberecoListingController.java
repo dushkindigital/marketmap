@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -20,16 +21,18 @@ import com.libereco.web.security.SecurityUtils;
 @RequestMapping("/listings")
 public class MergeLiberecoListingController {
 
-    private LiberecoUserService liberecoUserService;
-    private MarketplaceAuthorizationsService marketplaceAuthorizationsService;
-    private MarketplaceService marketplaceService;
+    private final LiberecoUserService liberecoUserService;
+    private final MarketplaceAuthorizationsService marketplaceAuthorizationsService;
+    private final MarketplaceService marketplaceService;
+    private final ConnectionRepository connectionRepository;
 
     @Inject
     public MergeLiberecoListingController(LiberecoUserService liberecoUserService, MarketplaceAuthorizationsService marketplaceAuthorizationsService,
-            MarketplaceService marketplaceService) {
+            MarketplaceService marketplaceService, ConnectionRepository connectionRepository) {
         this.liberecoUserService = liberecoUserService;
         this.marketplaceAuthorizationsService = marketplaceAuthorizationsService;
         this.marketplaceService = marketplaceService;
+        this.connectionRepository = connectionRepository;
     }
 
     @RequestMapping(params = "form", produces = "text/html")
@@ -47,7 +50,7 @@ public class MergeLiberecoListingController {
             if ("ebay".equals(marketplaceService.findMarketplace(marketplaceAuthorizations.getKey().getMarketplaceId()).getMarketplaceName())) {
                 liberecoListingForm.setEbayListingForm(new EbayListingForm());
             }
-            if ("etsy".equals(marketplaceService.findMarketplace(marketplaceAuthorizations.getKey().getMarketplaceId()).getMarketplaceName())) {
+            if (!CollectionUtils.isEmpty(connectionRepository.findConnections("etsy"))) {
                 liberecoListingForm.setEtsyListingForm(new EtsyListingForm());
             }
         }

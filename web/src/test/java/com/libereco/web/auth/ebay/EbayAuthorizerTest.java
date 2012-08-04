@@ -59,7 +59,6 @@ public class EbayAuthorizerTest {
     }
 
     @Test
-    @Ignore
     public void testFetchToken() throws Exception {
         SignInDetails signInDetails = ebayAuthorizer.getSignInDetails();
         System.out.println("Please open the url below in a browser and authorize the app...");

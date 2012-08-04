@@ -2,7 +2,7 @@ package com.libereco.springsocial.etsy.api;
 
 import java.util.List;
 
-public interface UserOperations {
+public interface EtsyUserOperations {
 
     public List<EtsyUser> findAllUsers();
 

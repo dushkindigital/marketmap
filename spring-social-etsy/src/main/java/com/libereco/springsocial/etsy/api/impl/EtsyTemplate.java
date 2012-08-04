@@ -14,11 +14,11 @@ import com.libereco.springsocial.etsy.api.EtsyApi;
 import com.libereco.springsocial.etsy.api.ListingOperations;
 import com.libereco.springsocial.etsy.api.PaymentOperations;
 import com.libereco.springsocial.etsy.api.ShippingOperations;
-import com.libereco.springsocial.etsy.api.UserOperations;
+import com.libereco.springsocial.etsy.api.EtsyUserOperations;
 
 public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
 
-    private UserOperations userOperations;
+    private EtsyUserOperations userOperations;
     private ListingOperations listingOperations;
     private PaymentOperations paymentOperations;
     private ShippingOperations shippingOperations;
@@ -45,7 +45,7 @@ public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
     }
 
     @Override
-    public UserOperations userOperations() {
+    public EtsyUserOperations userOperations() {
         return userOperations;
     }
 
@@ -86,7 +86,7 @@ public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
     }
 
     private void initSubApis() {
-        this.userOperations = new UserTemplate(getRestTemplate(), isAuthorized());
+        this.userOperations = new EtsyUserTemplate(getRestTemplate(), isAuthorized());
         this.shippingOperations = new ShippingTemplate(getRestTemplate(), isAuthorized());
         this.listingOperations = new ListingTemplate(getRestTemplate(), isAuthorized());
         this.paymentOperations = new PaymentTemplate(getRestTemplate(), isAuthorized());

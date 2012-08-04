@@ -6,13 +6,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.libereco.springsocial.etsy.api.EtsyUser;
 import com.libereco.springsocial.etsy.api.EtsyUserCollection;
-import com.libereco.springsocial.etsy.api.UserOperations;
+import com.libereco.springsocial.etsy.api.EtsyUserOperations;
 
-class UserTemplate extends AbstractEtsyOperations implements UserOperations {
+class EtsyUserTemplate extends AbstractEtsyOperations implements EtsyUserOperations {
 
     private final RestTemplate restTemplate;
 
-    public UserTemplate(RestTemplate restTemplate, boolean isAuthorizedForUser) {
+    public EtsyUserTemplate(RestTemplate restTemplate, boolean isAuthorizedForUser) {
         super(isAuthorizedForUser);
         this.restTemplate = restTemplate;
     }
