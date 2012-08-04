@@ -18,8 +18,11 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
-import org.springframework.social.connect.web.ConnectController;
 
+import com.ebay.sdk.ApiContext;
+import com.libereco.springsocial.ebay.api.EbayApi;
+import com.libereco.springsocial.ebay.api.impl.EbayTemplate;
+import com.libereco.springsocial.ebay.connect.EbayConnectionFactory;
 import com.libereco.springsocial.etsy.api.EtsyApi;
 import com.libereco.springsocial.etsy.api.impl.EtsyTemplate;
 import com.libereco.springsocial.etsy.connect.EtsyConnectionFactory;
@@ -38,10 +41,15 @@ public class SocialConfig {
     @Inject
     private DataSource dataSource;
 
+    @Inject
+    private ApiContext apiContext;
+
     @Bean
     @Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
     public ConnectionFactoryLocator connectionFactoryLocator() {
         ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
+        registry.addConnectionFactory(new EbayConnectionFactory(environment.getProperty("libereco.ebay.ruName"), environment
+                .getProperty("libereco.ebay.signinUrl"), apiContext));
         registry.addConnectionFactory(new EtsyConnectionFactory(environment.getProperty("libereco.etsy.consumer.key"),
                 environment.getProperty("libereco.etsy.consumer.secret")));
         return registry;
@@ -61,6 +69,13 @@ public class SocialConfig {
             throw new IllegalStateException("Unable to get a ConnectionRepository: no user signed in");
         }
         return usersConnectionRepository().createConnectionRepository(authentication.getName());
+    }
+
+    @Bean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+    public EbayApi ebayApi() {
+        Connection<EbayApi> ebayApi = connectionRepository().findPrimaryConnection(EbayApi.class);
+        return ebayApi != null ? ebayApi.getApi() : new EbayTemplate();
     }
 
     @Bean

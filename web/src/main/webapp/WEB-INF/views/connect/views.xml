@@ -9,12 +9,23 @@
 
 
 	<definition name="connect/etsyConnect" extends="default">
-		<put-attribute name="body" value="/WEB-INF/views/connect/etsyConnect.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/connect/etsyConnect.jsp" />
 	</definition>
 
 	<definition name="connect/etsyConnected" extends="default">
-		<put-attribute name="body" value="/WEB-INF/views/connect/etsyConnected.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/connect/etsyConnected.jsp" />
 	</definition>
 
+	<definition name="connect/ebayConnect" extends="default">
+		<put-attribute name="body"
+			value="/WEB-INF/views/connect/ebayConnect.jsp" />
+	</definition>
+
+	<definition name="connect/ebayConnected" extends="default">
+		<put-attribute name="body"
+			value="/WEB-INF/views/connect/ebayConnected.jsp" />
+	</definition>
 
 </tiles-definitions>

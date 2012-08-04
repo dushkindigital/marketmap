@@ -63,29 +63,12 @@
 	</pluginRepositories>
 
 	<dependencies>
-		<!-- <dependency>
-			<groupId>oauth.signpost</groupId>
-			<artifactId>signpost-core</artifactId>
-			<version>1.2.1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>oauth.signpost</groupId>
-			<artifactId>signpost-commonshttp4</artifactId>
-			<version>1.2.1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpmime</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.7.6</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>oauth.signpost</groupId> <artifactId>signpost-core</artifactId> 
+			<version>1.2.1.1</version> </dependency> <dependency> <groupId>oauth.signpost</groupId> 
+			<artifactId>signpost-commonshttp4</artifactId> <version>1.2.1.1</version> 
+			</dependency> <dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpmime</artifactId> 
+			<version>4.0.1</version> </dependency> <dependency> <groupId>org.codehaus.jackson</groupId> 
+			<artifactId>jackson-mapper-asl</artifactId> <version>1.7.6</version> </dependency> -->
 
 		<dependency>
 			<artifactId>commons-io</artifactId>
@@ -469,11 +452,22 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.0.1.v20110908</version>
+				<version>8.0.0.M2</version>
 				<configuration>
 					<webAppConfig>
-						<contextPath>/libereco</contextPath>
+						<contextPath>/</contextPath>
 					</webAppConfig>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>8080</port>
+						</connector>
+						<connector implementation="org.eclipse.jetty.server.ssl.SslSocketConnector">
+							<port>8443</port>
+							<keystore>jetty-ssl.keystore</keystore>
+							<keyPassword>jetty8</keyPassword>
+							<password>jetty8</password>
+						</connector>
+					</connectors>
 				</configuration>
 			</plugin>
 		</plugins>

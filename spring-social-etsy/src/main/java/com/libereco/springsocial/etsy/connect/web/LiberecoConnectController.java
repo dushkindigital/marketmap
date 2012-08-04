@@ -246,6 +246,20 @@ public class LiberecoConnectController {
         return connectionStatusRedirect(providerId, request);
     }
 
+    @RequestMapping(value = "/{providerId}", method = RequestMethod.GET, params = "ebaytkn")
+    public RedirectView ebayOauth1Callback(@PathVariable String providerId, NativeWebRequest request) {
+        try {
+            OAuth1ConnectionFactory<?> connectionFactory = (OAuth1ConnectionFactory<?>) connectionFactoryLocator.getConnectionFactory(providerId);
+            Connection<?> connection = webSupport.completeConnection(connectionFactory, request);
+            addConnection(connection, connectionFactory, request);
+        } catch (Exception e) {
+            request.setAttribute(PROVIDER_ERROR_ATTRIBUTE, e, RequestAttributes.SCOPE_SESSION);
+//            logger.warn("Exception while handling OAuth1 callback (" + e.getMessage() + "). Redirecting to " + providerId
+//                    + " connection status page.");
+        }
+        return connectionStatusRedirect(providerId, request);
+    }
+    
     /**
      * Process the authorization callback from an OAuth 2 service provider.
      * Called after the user authorizes the connection, generally done by having
