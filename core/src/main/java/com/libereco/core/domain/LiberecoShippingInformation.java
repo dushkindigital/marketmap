@@ -23,10 +23,6 @@ import flexjson.JSONSerializer;
 @Entity
 public class LiberecoShippingInformation implements Serializable {
 
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     @NotNull
@@ -106,7 +102,8 @@ public class LiberecoShippingInformation implements Serializable {
     }
 
     public static Collection<LiberecoShippingInformation> fromJsonArrayToLiberecoShippingInformations(String json) {
-        return new JSONDeserializer<List<LiberecoShippingInformation>>().use(null, ArrayList.class).use("values", LiberecoShippingInformation.class).deserialize(json);
+        return new JSONDeserializer<List<LiberecoShippingInformation>>().use(null, ArrayList.class).use("values", LiberecoShippingInformation.class)
+                .deserialize(json);
     }
 
 }

@@ -22,5 +22,5 @@ public interface MarketplaceAuthorizationsService {
     public abstract MarketplaceAuthorizations updateMarketplaceAuthorizations(MarketplaceAuthorizations marketplaceAuthorizations);
 
     public abstract List<MarketplaceAuthorizations> findAllMarketplaceAuthorizationsForUser(Long id);
-
+    
 }
