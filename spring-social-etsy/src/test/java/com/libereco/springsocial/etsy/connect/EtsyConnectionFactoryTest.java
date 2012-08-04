@@ -24,9 +24,9 @@ import org.springframework.social.oauth1.OAuthToken;
 
 import com.libereco.springsocial.etsy.api.EtsyApi;
 import com.libereco.springsocial.etsy.api.EtsyUser;
-import com.libereco.springsocial.etsy.api.Listing;
+import com.libereco.springsocial.etsy.api.EtsyListing;
 import com.libereco.springsocial.etsy.api.ListingBuilder;
-import com.libereco.springsocial.etsy.api.ListingOperations;
+import com.libereco.springsocial.etsy.api.EtsyListingOperations;
 import com.libereco.springsocial.etsy.api.EtsyUserOperations;
 import com.libereco.springsocial.etsy.api.impl.EtsyByteArrayResource;
 
@@ -75,11 +75,11 @@ public class EtsyConnectionFactoryTest {
 
     @Test
     public void shouldCreateListing() throws Exception {
-        ListingOperations listingOperations = api.listingOperations();
-        Listing newListing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("description").withPrice(10)
+        EtsyListingOperations listingOperations = api.listingOperations();
+        EtsyListing newListing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("description").withPrice(10)
                 .withTitle("test listing" + UUID.randomUUID().toString())
                 .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
-        Listing createdListing = listingOperations.createListing(newListing);
+        EtsyListing createdListing = listingOperations.createListing(newListing);
         System.out.println("Created Listing ** " + createdListing);
     }
 
@@ -107,7 +107,7 @@ public class EtsyConnectionFactoryTest {
     public void shouldGetAllImagesForListing() throws Exception {
         api.listingOperations().uploadListingImage(listingId, new
                 FileSystemResource("/home/shekhar/Desktop/documents/openshift-icon.jpg"));
-        String allListingForImages = api.listingOperations().findAllListingForImages(2058);
+        String allListingForImages = api.listingOperations().findAllImagesForListing(2058);
         System.out.println(allListingForImages);
     }
 
@@ -119,7 +119,7 @@ public class EtsyConnectionFactoryTest {
 
     @Test
     public void shouldUpdateListing() throws Exception {
-        Listing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("updateDescription").withPrice(100)
+        EtsyListing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("updateDescription").withPrice(100)
                 .withTitle("test listing" + UUID.randomUUID().toString())
                 .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
         listing.setListingId(listingId);

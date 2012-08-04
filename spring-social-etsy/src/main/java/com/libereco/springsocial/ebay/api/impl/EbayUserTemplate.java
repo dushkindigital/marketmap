@@ -8,7 +8,7 @@ import com.ebay.soap.eBLBaseComponents.UserType;
 import com.libereco.springsocial.ebay.api.EbayUser;
 import com.libereco.springsocial.ebay.api.EbayUserOperations;
 
-public class EbayUserTemplate implements EbayUserOperations {
+class EbayUserTemplate implements EbayUserOperations {
 
     private final ApiContext apiContext;
 

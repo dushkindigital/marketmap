@@ -11,10 +11,10 @@ import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.node.ArrayNode;
 
-public class ListingDeserializer extends JsonDeserializer<Listing> {
+public class ListingDeserializer extends JsonDeserializer<EtsyListing> {
 
     @Override
-    public Listing deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public EtsyListing deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode tree = jp.readValueAsTree();
         ArrayNode resultsNode = (ArrayNode) tree.get("results");
         Iterator<JsonNode> elements = resultsNode.getElements();
@@ -25,7 +25,7 @@ public class ListingDeserializer extends JsonDeserializer<Listing> {
         ArrayNode shippingInfoArrayNode = (ArrayNode)listingNode.get("ShippingInfo");
         JsonNode shippingInfoNode = shippingInfoArrayNode.getElements().hasNext() ?shippingInfoArrayNode.getElements().next() : null; 
         
-        Listing listing = ListingBuilder.listing().
+        EtsyListing listing = ListingBuilder.listing().
                 withCategoryId(listingNode.get("category_id").getIntValue()).
                 withDescription(listingNode.get("description").getValueAsText()).
                 withListingId(listingNode.get("listing_id").getIntValue()).

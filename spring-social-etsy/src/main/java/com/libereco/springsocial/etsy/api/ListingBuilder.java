@@ -15,22 +15,22 @@ public class ListingBuilder extends ListingBuilderBase<ListingBuilder> {
     }
 
     public ListingBuilder() {
-        super(new Listing());
+        super(new EtsyListing());
     }
 
-    public Listing build() {
+    public EtsyListing build() {
         return getInstance();
     }
 }
 
 class ListingBuilderBase<GeneratorT extends ListingBuilderBase<GeneratorT>> {
-    private Listing instance;
+    private EtsyListing instance;
 
-    protected ListingBuilderBase(Listing aInstance) {
+    protected ListingBuilderBase(EtsyListing aInstance) {
         instance = aInstance;
     }
 
-    protected Listing getInstance() {
+    protected EtsyListing getInstance() {
         return instance;
     }
 

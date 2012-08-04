@@ -6,7 +6,7 @@ public interface EtsyApi extends ApiBinding {
 
     EtsyUserOperations userOperations();
 
-    ListingOperations listingOperations();
+    EtsyListingOperations listingOperations();
 
     PaymentOperations paymentOperations();
     

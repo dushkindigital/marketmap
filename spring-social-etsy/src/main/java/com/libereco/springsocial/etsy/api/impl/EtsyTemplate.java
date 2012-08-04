@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import com.libereco.springsocial.etsy.api.CategoryOperations;
 import com.libereco.springsocial.etsy.api.CountryOperations;
 import com.libereco.springsocial.etsy.api.EtsyApi;
-import com.libereco.springsocial.etsy.api.ListingOperations;
+import com.libereco.springsocial.etsy.api.EtsyListingOperations;
 import com.libereco.springsocial.etsy.api.PaymentOperations;
 import com.libereco.springsocial.etsy.api.ShippingOperations;
 import com.libereco.springsocial.etsy.api.EtsyUserOperations;
@@ -19,7 +19,7 @@ import com.libereco.springsocial.etsy.api.EtsyUserOperations;
 public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
 
     private EtsyUserOperations userOperations;
-    private ListingOperations listingOperations;
+    private EtsyListingOperations listingOperations;
     private PaymentOperations paymentOperations;
     private ShippingOperations shippingOperations;
     private CategoryOperations categoryOperations;
@@ -50,7 +50,7 @@ public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
     }
 
     @Override
-    public ListingOperations listingOperations() {
+    public EtsyListingOperations listingOperations() {
         return listingOperations;
     }
 
@@ -88,7 +88,7 @@ public class EtsyTemplate extends AbstractOAuth1ApiBinding implements EtsyApi {
     private void initSubApis() {
         this.userOperations = new EtsyUserTemplate(getRestTemplate(), isAuthorized());
         this.shippingOperations = new ShippingTemplate(getRestTemplate(), isAuthorized());
-        this.listingOperations = new ListingTemplate(getRestTemplate(), isAuthorized());
+        this.listingOperations = new EtsyListingTemplate(getRestTemplate(), isAuthorized());
         this.paymentOperations = new PaymentTemplate(getRestTemplate(), isAuthorized());
         this.categoryOperations = new CategoryTemplate(getRestTemplate(), isAuthorized());
         this.countryOperations = new CountryTemplate(getRestTemplate(), isAuthorized());

@@ -10,7 +10,7 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = ListingDeserializer.class)
-public class Listing {
+public class EtsyListing {
 
     @JsonProperty("listing_id")
     private int listingId;

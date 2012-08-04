@@ -2,13 +2,13 @@ package com.libereco.springsocial.etsy.api;
 
 import org.springframework.core.io.Resource;
 
-public interface ListingOperations {
+public interface EtsyListingOperations {
 
-    Listing createListing(Listing listing);
+    EtsyListing createListing(EtsyListing listing);
 
     String getListing(int listingId);
    
-    void updateListing(Listing listing);
+    void updateListing(EtsyListing listing);
     
     void deleteListing(int listingId);
     
@@ -16,6 +16,6 @@ public interface ListingOperations {
 
     String getImageForListing(int listingId, int listingImageId);
 
-    String findAllListingForImages(int listingId);
+    String findAllImagesForListing(int listingId);
     
 }

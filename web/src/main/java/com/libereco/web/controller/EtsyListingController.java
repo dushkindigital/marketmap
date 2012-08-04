@@ -29,9 +29,8 @@ import com.libereco.core.service.LiberecoListingService;
 import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MarketplaceService;
 import com.libereco.springsocial.etsy.api.EtsyApi;
-import com.libereco.springsocial.etsy.api.Listing;
+import com.libereco.springsocial.etsy.api.EtsyListingOperations;
 import com.libereco.springsocial.etsy.api.ListingBuilder;
-import com.libereco.springsocial.etsy.api.ListingOperations;
 import com.libereco.springsocial.etsy.api.impl.EtsyByteArrayResource;
 import com.libereco.web.common.MarketplaceName;
 import com.libereco.web.security.SecurityUtils;
@@ -66,8 +65,8 @@ public class EtsyListingController {
             throw new LiberecoResourceNotFoundException(
                     "You can't create listing on etsy marketplace as there is no marketplace found etsy in our system. Please contact system administrator.");
         }
-        ListingOperations listingOperations = etsyApi.listingOperations();
-        Listing createdListing = listingOperations.createListing(toListing(etsyListing));
+        EtsyListingOperations listingOperations = etsyApi.listingOperations();
+        com.libereco.springsocial.etsy.api.EtsyListing createdListing = listingOperations.createListing(toListing(etsyListing));
         populateEtsyListing(etsyListing, createdListing);
         etsyListingService.saveEtsyListing(etsyListing);
         Set<Marketplace> marketplaces = liberecoListing.getMarketplaces();
@@ -82,8 +81,8 @@ public class EtsyListingController {
         return new ResponseEntity<String>(etsyListing.toJson(), headers, HttpStatus.CREATED);
     }
 
-    private void uploadEtsyListingImage(EtsyListing etsyListing, Listing createdListing) {
-        ListingOperations listingOperations = etsyApi.listingOperations();
+    private void uploadEtsyListingImage(EtsyListing etsyListing, com.libereco.springsocial.etsy.api.EtsyListing createdListing) {
+        EtsyListingOperations listingOperations = etsyApi.listingOperations();
         byte[] picture = etsyListing.getLiberecoListing().getPicture();
         if (picture == null) {
             return;
@@ -148,7 +147,7 @@ public class EtsyListingController {
         liberecoListingService.updateLiberecoListing(liberecoListing);
     }
 
-    private void populateEtsyListing(EtsyListing etsyListing, Listing createdEtsyListing) {
+    private void populateEtsyListing(EtsyListing etsyListing, com.libereco.springsocial.etsy.api.EtsyListing createdEtsyListing) {
         etsyListing.setListingId(createdEtsyListing.getListingId());
         etsyListing.setCreationDate(createdEtsyListing.getCreationDate());
         etsyListing.setEndingDate(createdEtsyListing.getEndingDate());
@@ -157,9 +156,9 @@ public class EtsyListingController {
         etsyListing.setShippingTemplateId(createdEtsyListing.getShippingTemplateId());
     }
 
-    private Listing toListing(EtsyListing etsyListing) {
+    private com.libereco.springsocial.etsy.api.EtsyListing toListing(EtsyListing etsyListing) {
         LiberecoListing liberecoListing = etsyListing.getLiberecoListing();
-        Listing listing = ListingBuilder.listing().
+        com.libereco.springsocial.etsy.api.EtsyListing listing = ListingBuilder.listing().
                 withShippingTemplateId(260).
                 withDescription(liberecoListing.getDescription()).
                 withPrice(liberecoListing.getPrice()).

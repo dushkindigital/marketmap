@@ -19,6 +19,7 @@
 		<org.slf4j-version>1.6.1</org.slf4j-version>
 		<ebaysdk.version>687</ebaysdk.version>
 	</properties>
+
 	<dependencies>
 
 		<!-- Ebay SDK -->
@@ -59,7 +60,7 @@
 			<artifactId>helper</artifactId>
 			<version>${ebaysdk.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -200,7 +201,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- <dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> 
@@ -249,6 +249,7 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+
 		</repository>
 		<!-- For testing against latest Spring snapshots -->
 		<repository>
@@ -270,6 +271,11 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<id>mynexus</id>
+			<name>mynexus</name>
+			<url>http://mynexus.cloudfoundry.com/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<build>

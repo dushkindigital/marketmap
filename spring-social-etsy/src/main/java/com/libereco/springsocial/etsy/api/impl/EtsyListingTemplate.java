@@ -5,21 +5,21 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.libereco.springsocial.etsy.api.Listing;
-import com.libereco.springsocial.etsy.api.ListingOperations;
+import com.libereco.springsocial.etsy.api.EtsyListing;
+import com.libereco.springsocial.etsy.api.EtsyListingOperations;
 
-class ListingTemplate extends AbstractEtsyOperations implements ListingOperations {
+class EtsyListingTemplate extends AbstractEtsyOperations implements EtsyListingOperations {
 
     private final RestTemplate restTemplate;
 
-    public ListingTemplate(RestTemplate restTemplate, boolean isAuthorizedForUser) {
+    public EtsyListingTemplate(RestTemplate restTemplate, boolean isAuthorizedForUser) {
         super(isAuthorizedForUser);
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public Listing createListing(Listing listing) {
-        return restTemplate.postForEntity(buildUri("listings"), listing, Listing.class).getBody();
+    public EtsyListing createListing(EtsyListing listing) {
+        return restTemplate.postForEntity(buildUri("listings"), listing, EtsyListing.class).getBody();
     }
 
     @Override
@@ -37,7 +37,7 @@ class ListingTemplate extends AbstractEtsyOperations implements ListingOperation
     }
 
     @Override
-    public String findAllListingForImages(int listingId) {
+    public String findAllImagesForListing(int listingId) {
         return restTemplate.getForObject(buildUri("listings/" + listingId + "/images"), String.class);
     }
 
@@ -47,7 +47,7 @@ class ListingTemplate extends AbstractEtsyOperations implements ListingOperation
     }
 
     @Override
-    public void updateListing(Listing listing) {
+    public void updateListing(EtsyListing listing) {
         restTemplate.put(buildUri("listings/" + listing.getListingId()), listing);
     }
 
