@@ -1,5 +1,6 @@
 package com.libereco.web.mergelisting;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,12 @@ import com.libereco.core.domain.LiberecoShippingInformation;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingState;
 
-public class LiberecoListingForm {
+public class LiberecoListingForm implements Serializable{
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     @NotNull
     private String name;

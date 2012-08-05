@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+	xmlns:form="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<form:create id="fc_com_libereco_web_mergelisting_LiberecoListingForm" label="Libereco Listing"
+		modelAttribute="liberecoListingForm" path="/listings"
+		render="${empty dependencies}" z="user-managed">
+
+
+		<field:input field="userId"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_userId" render="false" label="User Id"
+			validationMessageCode="field_invalid_integer" z="user-managed" />
+
+		<field:input field="name"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_name" required="true" label="Name"
+			z="user-managed" />
+
+		<field:input field="price"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_price" required="true" label="Price"
+			validationMessageCode="field_invalid_number" z="user-managed" />
+
+		<field:input field="quantity"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_quantity" label="Quantity"
+			required="true" z="user-managed" />
+
+		<field:input field="description"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_description" label="Description"
+			z="user-managed" />
+
+		<field:select field="category"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_category" label="Category"
+			items="${liberecocategorys}" path="liberecocategorys" required="true"
+			z="user-managed" />
+
+		<field:select field="listingCondition"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_listingCondition" label="Listing Condition"
+			items="${listingconditions}" path="listingconditions" required="true"
+			z="user-managed" />
+
+		<field:input field="itemLocation.itemLocation"
+			id="c_itemlocation_itemLocation" label="Item Location"
+			required="true" z="user-managed" />
+
+		<field:input field="itemLocation.postalCode"
+			id="c_itemlocation_postalCode" label="Item PostalCode"
+			required="true" z="user-managed" />
+
+		<field:select field="shippingInformations"
+			id="c_com_libereco_core_domain_EbayListing_shippingInformation"
+			itemValue="id" items="${shippinginformations}"
+			path="/liberecolisting/shippinginformations" required="true"
+			z="user-managed" label="Shipping Informations" />
+
+		<field:select field="liberecoPaymentInformations"
+			id="c_com_libereco_core_domain_EbayListing_paymentInformation"
+			itemValue="id" items="${paymentinformations}"
+			path="/liberecolisting/paymentinformations" required="true"
+			z="user-managed" label="Payment Informations" />
+
+		<c:if test="${liberecoListingForm.ebayListingForm != null}">
+			<h2>Ebay Specifics Fields</h2>
+			
+			<field:select field="ebayListingForm.returnPolicy"
+				id="c_com_libereco_core_domain_EbayListing_returnPolicy"
+				items="${returnpolicys}" path="returnpolicys"
+				z="user-managed" />
+			
+			<field:select field="ebayListingForm.listingDuration"
+				id="c_com_libereco_core_domain_EbayListing_listingDuration"
+				label="Listing Duration" items="${listingDurations}"
+				path="listingDurations" z="user-managed" />
+				
+			<field:input field="ebayListingForm.dispatchTimeMax"
+				id="c_com_libereco_core_domain_EbayListing_dispatchTimeMax"
+				validationMessageCode="field_invalid_integer" z="user-managed" />
+
+			<field:input field="ebayListingForm.startPrice"
+				id="c_com_libereco_core_domain_EbayListing_startPrice"
+				validationMessageCode="field_invalid_number" z="user-managed" />
+
+			<field:input field="ebayListingForm.paypalEmail"
+				id="c_com_libereco_core_domain_EbayListing_paypalEmail"
+				z="user-managed" />
+
+			<field:input field="ebayListingForm.lotSize"
+				id="c_com_libereco_core_domain_EbayListing_lotSize"
+				validationMessageCode="field_invalid_integer" z="user-managed" />
+
+		</c:if>
+
+		<c:if test="${liberecoListingForm.etsyListingForm != null}">
+			<h2>Etsy Specifics Fields</h2>
+			<field:select id="etsy_who_made" label="Who Made"
+				field="etsyListingForm.whoMade" z="user-managed" items="${whomade}" path="whomade"/>
+			<field:select id="etsy_when_made" label="When Made"
+				field="etsyListingForm.whenMade" z="user-managed" items="${whenmade}" path="whenmade"/>
+			<field:checkbox id="etsy_supply" label="Supply"
+				field="etsyListingForm.supply" z="user-managed" />
+		</c:if>
+	</form:create>
+
+	<form:dependency dependencies="${dependencies}"
+		id="d_com_libereco_web_mergelisting_LiberecoListingForm"
+		render="${not empty dependencies}" z="user-managed" />
+</div>

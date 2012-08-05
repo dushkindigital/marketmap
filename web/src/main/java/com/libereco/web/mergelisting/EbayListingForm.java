@@ -1,7 +1,6 @@
 package com.libereco.web.mergelisting;
 
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
 
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ReturnPolicy;
@@ -11,10 +10,8 @@ public class EbayListingForm {
     @Enumerated
     private ReturnPolicy returnPolicy;
 
-    @NotNull
     private Integer dispatchTimeMax;
 
-    @NotNull
     private Double startPrice;
 
     private String paypalEmail;
@@ -22,7 +19,6 @@ public class EbayListingForm {
     private Integer lotSize = 1;
 
     @Enumerated
-    @NotNull
     private ListingDuration listingDuration;
 
     public ReturnPolicy getReturnPolicy() {

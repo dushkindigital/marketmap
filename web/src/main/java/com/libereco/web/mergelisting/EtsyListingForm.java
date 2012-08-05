@@ -1,21 +1,17 @@
 package com.libereco.web.mergelisting;
 
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
 
 import com.libereco.core.domain.EtsyWhenMade;
 import com.libereco.core.domain.EtsyWhoMade;
 
 public class EtsyListingForm {
 
-    @NotNull
     @Enumerated
     private EtsyWhoMade whoMade;
 
-    @NotNull
     private boolean supply;
 
-    @NotNull
     @Enumerated
     private EtsyWhenMade whenMade;
 

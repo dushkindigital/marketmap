@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+	xmlns:form="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:form1="http://www.springframework.org/tags/form"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<form:update id="fu_com_libereco_core_domain_LiberecoListing"
+		modelAttribute="liberecoListing" path="/liberecolistings/update"
+		versionField="Version" z="h8f2/g865VtSfPrIksVYGX2P2aU="
+		multipart="true">
+		<field:input field="userId"
+			id="c_com_libereco_core_domain_LiberecoListing_userId"
+			required="true" validationMessageCode="field_invalid_integer"
+			z="kzzq2qq5ox5huPHRMPgsnFCa52M=" />
+		<field:input field="name"
+			id="c_com_libereco_core_domain_LiberecoListing_name" required="true"
+			z="ZKHk4CNcR+cVaTU0uBZKSKwrP6s=" />
+		<field:input field="price"
+			id="c_com_libereco_core_domain_LiberecoListing_price" required="true"
+			validationMessageCode="field_invalid_number"
+			z="mpPqfeCvNXGZdaDqC+GtzWeA2/A=" />
+		<field:input field="quantity"
+			id="c_com_libereco_core_domain_LiberecoListing_quantity"
+			required="true" z="n2h4f9da+nvT7ZNvVMt3TiS0lcI=" />
+		<field:input field="description"
+			id="c_com_libereco_core_domain_LiberecoListing_description"
+			z="jK99zbRxGg/2vJYuX1tT0XO61Wc=" />
+		<field:select field="category"
+			id="c_com_libereco_core_domain_LiberecoListing_category"
+			items="${liberecocategorys}" path="liberecocategorys" required="true"
+			z="BihZMoQzQ6U7YhAZwq3hNTKuzRo=" />
+		<field:select field="listingCondition"
+			id="c_com_libereco_core_domain_LiberecoListing_listingCondition"
+			items="${listingconditions}" path="listingconditions" required="true"
+			z="OvcDMsZJEeCKCsbwUH/NRQklzKo=" />
+		<field:input field="itemLocation.itemLocation"
+			id="c_itemlocation_itemLocation" label="Item Location"
+			required="true" z="user-managed" />
+		<field:input field="itemLocation.postalCode"
+			id="c_itemlocation_postalCode" label="Item PostalCode"
+			required="true" z="user-managed" />
+		<field:select field="shippingInformations"
+			id="c_com_libereco_core_domain_EbayListing_shippingInformation"
+			itemValue="id" items="${shippinginformations}"
+			path="/liberecolisting/shippinginformations" required="true"
+			z="user-managed" label="Shipping Informations" />
+		<field:select field="liberecoPaymentInformations"
+			id="c_com_libereco_core_domain_EbayListing_paymentInformation"
+			itemValue="id" items="${paymentinformations}"
+			path="/liberecolisting/paymentinformations" required="true"
+			z="user-managed" label="Payment Informations" />
+		<field:input field="picture"
+			id="c_com_libereco_core_domain_LiberecoListing_picture"
+			z="user-managed" type="file" />
+	</form:update>
+</div>
