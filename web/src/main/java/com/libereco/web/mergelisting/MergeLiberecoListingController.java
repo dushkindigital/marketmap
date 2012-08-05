@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +33,12 @@ import org.springframework.web.util.WebUtils;
 import com.libereco.core.domain.EtsyWhenMade;
 import com.libereco.core.domain.EtsyWhoMade;
 import com.libereco.core.domain.LiberecoCategory;
+import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingDuration;
 import com.libereco.core.domain.ListingState;
+import com.libereco.core.domain.Marketplace;
 import com.libereco.core.domain.MergedEbayListing;
 import com.libereco.core.domain.MergedEtsyListing;
 import com.libereco.core.domain.MergedLiberecoListing;
@@ -119,6 +123,25 @@ public class MergeLiberecoListingController {
 //        updateLiberecoListingWithPicture(mergedLiberecoListing, httpServletRequest, picture);
         return "redirect:/listings/" + encodeUrlPathSegment(mergedLiberecoListing.getId().toString(), httpServletRequest);
     }
+    
+    
+    @RequestMapping(value = "/listings/{id}", produces = "text/html")
+    public String show(@PathVariable("id") Long id, Model uiModel) {
+        addDateTimeFormatPatterns(uiModel);
+        MergedLiberecoListing liberecoListing = mergedLiberecoListingService.findLiberecoListing(id);
+        uiModel.addAttribute("liberecolisting", liberecoListing);
+        uiModel.addAttribute("itemId", id);
+        if (!CollectionUtils.isEmpty(liberecoListing.getMarketplaces())) {
+            StringBuilder sb = new StringBuilder();
+            for (Marketplace marketplace : liberecoListing.getMarketplaces()) {
+                sb.append(marketplace.getMarketplaceName()).append(" , ");
+            }
+            String marketplaces = StringUtils.removeEnd(sb.toString(), " , ");
+            uiModel.addAttribute("marketplaces", marketplaces);
+        }
+        return "liberecolistings/show";
+    }
+
 
     private MergedLiberecoListing createLiberecoListing(LiberecoListingForm liberecoListing) {
         MergedLiberecoListing mergedLiberecoListing = createLiberecoListingCopy(liberecoListing);
