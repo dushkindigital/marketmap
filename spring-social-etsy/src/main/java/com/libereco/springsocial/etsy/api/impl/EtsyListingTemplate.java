@@ -47,8 +47,8 @@ class EtsyListingTemplate extends AbstractEtsyOperations implements EtsyListingO
     }
 
     @Override
-    public void updateListing(EtsyListing listing) {
-        restTemplate.put(buildUri("listings/" + listing.getListingId()), listing);
+    public EtsyListing updateListing(EtsyListing listing) {
+        return restTemplate.postForEntity(buildUri("listings/" + listing.getListingId() + "?method=PUT"), listing, EtsyListing.class).getBody();
     }
 
     @Override

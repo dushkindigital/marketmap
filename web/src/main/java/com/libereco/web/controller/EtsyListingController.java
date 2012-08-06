@@ -119,7 +119,22 @@ public class EtsyListingController {
     @RequestMapping(value = "/liberecolistings/{liberecoListingId}/etsylistings/{etsyListingId}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@PathVariable("liberecoListingId") Long liberecoListingId,
             @PathVariable("etsyListingId") Long etsyListingId, @RequestBody String json) {
-        return null;
+        EtsyListing etsyListing = EtsyListing.fromJsonToEtsyListing(json);
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(liberecoListingId);
+        etsyListing.setLiberecoListing(liberecoListing);
+        Marketplace marketplace = marketplaceService.findMarketplaceByName(MarketplaceName.ETSY.getName());
+        if (marketplace == null) {
+            throw new LiberecoResourceNotFoundException(
+                    "You can't create listing on etsy marketplace as there is no marketplace found etsy in our system. Please contact system administrator.");
+        }
+        EtsyListingOperations listingOperations = etsyApi.listingOperations();
+        com.libereco.springsocial.etsy.api.EtsyListing updatedListing = toListing(etsyListing);
+        listingOperations.updateListing(updatedListing);
+        populateEtsyListing(etsyListing, updatedListing);
+        etsyListingService.updateEtsyListing(etsyListing);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<String>(etsyListing.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/liberecolistings/{liberecoListingId}/etsylistings/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -168,6 +183,7 @@ public class EtsyListingController {
                 withWhenMade(etsyListing.getWhenMade().getValue()).
                 withWhoMade(etsyListing.getWhoMade().getValue()).
                 withCategoryId(69150467).
+                withListingId(etsyListing.getListingId()).
                 build();
         return listing;
     }

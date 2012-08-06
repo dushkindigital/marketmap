@@ -139,7 +139,7 @@ public class MergeLiberecoListingController {
             String marketplaces = StringUtils.removeEnd(sb.toString(), " , ");
             uiModel.addAttribute("marketplaces", marketplaces);
         }
-        return "liberecolistings/show";
+        return "listings/show";
     }
 
 

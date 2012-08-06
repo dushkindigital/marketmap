@@ -34,7 +34,7 @@ public class EtsyConnectionFactoryTest {
 
     private EtsyApi api;
 
-    private int listingId = 2070;
+    private int listingId = 2088;
 
     @Before
     public void setupConnection() throws Exception {
@@ -119,8 +119,8 @@ public class EtsyConnectionFactoryTest {
 
     @Test
     public void shouldUpdateListing() throws Exception {
-        EtsyListing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("updateDescription").withPrice(100)
-                .withTitle("test listing" + UUID.randomUUID().toString())
+        EtsyListing listing = ListingBuilder.listing().withShippingTemplateId(260).withDescription("updateDescription").withPrice(500)
+                .withTitle("test listingec191bea-b4be-4a20-971f-7a10d4ed4a50")
                 .withSupply(true).withQuantity(1).withWhenMade("2010_2012").withWhoMade("i_did").withCategoryId(69150467).build();
         listing.setListingId(listingId);
         listing.setUserId(14888629);

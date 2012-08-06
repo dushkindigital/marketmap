@@ -211,7 +211,7 @@ public class EbayListingController {
         headers.add("Content-Type", "application/json");
         EbayListing ebayListing = EbayListing.fromJsonToEbayListing(json);
         ebayListing.setEbayItemId(ebayListingService.findEbayListing(ebayListing.getId()).getEbayItemId());
-        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(ebayListing.getLiberecoListing().getId());
+        LiberecoListing liberecoListing = liberecoListingService.findLiberecoListing(liberecoListingId);
         ebayListing.setLiberecoListing(liberecoListing);
         if (updateEbayListing(ebayListing) == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
