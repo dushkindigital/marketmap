@@ -119,11 +119,11 @@ public class EbayClientTest {
     @Test
     public void shouldDelistItemOnEbay() {
         EbayListing ebayListing = newEbayListing(ListingCondition.NEW, getUspsMediaShippingInformation());
-        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
-        String ebayItemUrl = ebayListing.getEbayItemUrl();
-        System.out.println(ebayItemUrl);
-        assertNotNull(ebayItemUrl);
-
+//        ebayListing = ebayClient.addListing(ebayListing, TOKEN);
+//        String ebayItemUrl = ebayListing.getEbayItemUrl();
+//        System.out.println(ebayItemUrl);
+//        assertNotNull(ebayItemUrl);
+        ebayListing.setEbayItemId("110101313287");
         ebayClient.delistItem(ebayListing, TOKEN, DelistingReason.OTHER_REASON);
     }
 

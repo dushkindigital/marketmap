@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -23,14 +22,11 @@ public class MergedEtsyListing {
 
     private int listingId;
 
-    @NotNull
     @Enumerated
     private EtsyWhoMade whoMade;
 
-    @NotNull
     private boolean supply;
 
-    @NotNull
     @Enumerated
     private EtsyWhenMade whenMade;
 

@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,10 +23,8 @@ public class MergedEbayListing{
     @Enumerated
     private ReturnPolicy returnPolicy;
 
-    @NotNull
     private Integer dispatchTimeMax;
 
-    @NotNull
     private Double startPrice;
 
     private String paypalEmail;
@@ -35,7 +32,6 @@ public class MergedEbayListing{
     private Integer lotSize = 0;
 
     @Enumerated
-    @NotNull
     private ListingDuration listingDuration;
 
     private String ebayItemUrl;
