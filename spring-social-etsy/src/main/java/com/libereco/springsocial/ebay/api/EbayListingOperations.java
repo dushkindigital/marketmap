@@ -5,7 +5,7 @@ import com.ebay.soap.eBLBaseComponents.ItemType;
 
 public interface EbayListingOperations {
 
-    ItemType createEbayListing(ItemType listing, String[] pictureUrls);
+    ItemType createListing(ItemType listing, String[] pictureUrls);
 
     ItemType getEbayListing(String listingId);
 

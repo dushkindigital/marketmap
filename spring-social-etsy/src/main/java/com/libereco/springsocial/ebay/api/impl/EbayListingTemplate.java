@@ -30,7 +30,7 @@ class EbayListingTemplate implements EbayListingOperations {
     }
 
     @Override
-    public ItemType createEbayListing(ItemType item, String[] pictureUrls) {
+    public ItemType createListing(ItemType item, String[] pictureUrls) {
         try {
             AddFixedPriceItemCall addFixedPriceItemCall = new AddFixedPriceItemCall(apiContext);
             addFixedPriceItemCall.setAutoSetItemUUID(false);
