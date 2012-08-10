@@ -62,45 +62,45 @@
 			path="/liberecolisting/paymentinformations" required="true"
 			z="user-managed" label="Payment Informations" />
 
-		<c:if test="${liberecoListingForm.ebayListingForm != null}">
+		<c:if test="${liberecoListingForm.mergedEbayListing != null}">
 			<h2>Ebay Specifics Fields</h2>
 			
-			<field:select field="ebayListingForm.returnPolicy"
+			<field:select field="mergedEbayListing.returnPolicy"
 				id="c_com_libereco_core_domain_EbayListing_returnPolicy"
 				items="${returnpolicys}" path="returnpolicys"
 				z="user-managed" />
 			
-			<field:select field="ebayListingForm.listingDuration"
+			<field:select field="mergedEbayListing.listingDuration"
 				id="c_com_libereco_core_domain_EbayListing_listingDuration"
 				label="Listing Duration" items="${listingDurations}"
 				path="listingDurations" z="user-managed" />
 				
-			<field:input field="ebayListingForm.dispatchTimeMax"
+			<field:input field="mergedEbayListing.dispatchTimeMax"
 				id="c_com_libereco_core_domain_EbayListing_dispatchTimeMax"
 				validationMessageCode="field_invalid_integer" z="user-managed" />
 
-			<field:input field="ebayListingForm.startPrice"
+			<field:input field="mergedEbayListing.startPrice"
 				id="c_com_libereco_core_domain_EbayListing_startPrice"
 				validationMessageCode="field_invalid_number" z="user-managed" />
 
-			<field:input field="ebayListingForm.paypalEmail"
+			<field:input field="mergedEbayListing.paypalEmail"
 				id="c_com_libereco_core_domain_EbayListing_paypalEmail"
 				z="user-managed" />
 
-			<field:input field="ebayListingForm.lotSize"
+			<field:input field="mergedEbayListing.lotSize"
 				id="c_com_libereco_core_domain_EbayListing_lotSize"
 				validationMessageCode="field_invalid_integer" z="user-managed" />
 
 		</c:if>
 
-		<c:if test="${liberecoListingForm.etsyListingForm != null}">
+		<c:if test="${liberecoListingForm.mergedEtsyListing != null}">
 			<h2>Etsy Specifics Fields</h2>
 			<field:select id="etsy_who_made" label="Who Made"
-				field="etsyListingForm.whoMade" z="user-managed" items="${whomade}" path="whomade"/>
+				field="mergedEtsyListing.whoMade" z="user-managed" items="${whomade}" path="whomade"/>
 			<field:select id="etsy_when_made" label="When Made"
-				field="etsyListingForm.whenMade" z="user-managed" items="${whenmade}" path="whenmade"/>
+				field="mergedEtsyListing.whenMade" z="user-managed" items="${whenmade}" path="whenmade"/>
 			<field:checkbox id="etsy_supply" label="Supply"
-				field="etsyListingForm.supply" z="user-managed" />
+				field="mergedEtsyListing.supply" z="user-managed" />
 		</c:if>
 	</form:create>
 
