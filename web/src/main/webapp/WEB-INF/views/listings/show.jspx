@@ -9,7 +9,7 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 	<page:show id="ps_com_libereco_core_domain_LiberecoListing"
-		object="${liberecolisting}" path="/liberecolistings" z="user-managed">
+		object="${liberecolisting}" path="/listings" z="user-managed">
 		<field:display field="userId"
 			id="s_com_libereco_core_domain_LiberecoListing_userId"
 			object="${liberecolisting}" z="user-managed" />
