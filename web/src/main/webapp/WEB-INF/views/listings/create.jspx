@@ -7,40 +7,43 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 
-	<form:create id="fc_com_libereco_web_mergelisting_LiberecoListingForm" label="Libereco Listing"
-		modelAttribute="liberecoListingForm" path="/listings"
-		render="${empty dependencies}" z="user-managed">
+	<form:create id="fc_com_libereco_web_mergelisting_LiberecoListingForm"
+		label="Libereco Listing" modelAttribute="liberecoListingForm"
+		path="/listings" render="${empty dependencies}" z="user-managed"
+		multipart="true">
 
 
 		<field:input field="userId"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_userId" render="false" label="User Id"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_userId"
+			render="false" label="User Id"
 			validationMessageCode="field_invalid_integer" z="user-managed" />
 
 		<field:input field="name"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_name" required="true" label="Name"
-			z="user-managed" />
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_name"
+			required="true" label="Name" z="user-managed" />
 
 		<field:input field="price"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_price" required="true" label="Price"
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_price"
+			required="true" label="Price"
 			validationMessageCode="field_invalid_number" z="user-managed" />
 
 		<field:input field="quantity"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_quantity" label="Quantity"
-			required="true" z="user-managed" />
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_quantity"
+			label="Quantity" required="true" z="user-managed" />
 
 		<field:input field="description"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_description" label="Description"
-			z="user-managed" />
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_description"
+			label="Description" z="user-managed" />
 
 		<field:select field="category"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_category" label="Category"
-			items="${liberecocategorys}" path="liberecocategorys" required="true"
-			z="user-managed" />
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_category"
+			label="Category" items="${liberecocategorys}"
+			path="liberecocategorys" required="true" z="user-managed" />
 
 		<field:select field="listingCondition"
-			id="c_com_libereco_web_mergelisting_LiberecoListingForm_listingCondition" label="Listing Condition"
-			items="${listingconditions}" path="listingconditions" required="true"
-			z="user-managed" />
+			id="c_com_libereco_web_mergelisting_LiberecoListingForm_listingCondition"
+			label="Listing Condition" items="${listingconditions}"
+			path="listingconditions" required="true" z="user-managed" />
 
 		<field:input field="itemLocation.itemLocation"
 			id="c_itemlocation_itemLocation" label="Item Location"
@@ -62,19 +65,22 @@
 			path="/liberecolisting/paymentinformations" required="true"
 			z="user-managed" label="Payment Informations" />
 
+		<field:input field="picture"
+			id="c_com_libereco_core_domain_LiberecoListing_picture"
+			z="user-managed" type="file" />
+
 		<c:if test="${liberecoListingForm.mergedEbayListing != null}">
 			<h2>Ebay Specifics Fields</h2>
-			
+
 			<field:select field="mergedEbayListing.returnPolicy"
 				id="c_com_libereco_core_domain_EbayListing_returnPolicy"
-				items="${returnpolicys}" path="returnpolicys"
-				z="user-managed" />
-			
+				items="${returnpolicys}" path="returnpolicys" z="user-managed" />
+
 			<field:select field="mergedEbayListing.listingDuration"
 				id="c_com_libereco_core_domain_EbayListing_listingDuration"
 				label="Listing Duration" items="${listingDurations}"
 				path="listingDurations" z="user-managed" />
-				
+
 			<field:input field="mergedEbayListing.dispatchTimeMax"
 				id="c_com_libereco_core_domain_EbayListing_dispatchTimeMax"
 				validationMessageCode="field_invalid_integer" z="user-managed" />
@@ -96,9 +102,11 @@
 		<c:if test="${liberecoListingForm.mergedEtsyListing != null}">
 			<h2>Etsy Specifics Fields</h2>
 			<field:select id="etsy_who_made" label="Who Made"
-				field="mergedEtsyListing.whoMade" z="user-managed" items="${whomade}" path="whomade"/>
+				field="mergedEtsyListing.whoMade" z="user-managed"
+				items="${whomade}" path="whomade" />
 			<field:select id="etsy_when_made" label="When Made"
-				field="mergedEtsyListing.whenMade" z="user-managed" items="${whenmade}" path="whenmade"/>
+				field="mergedEtsyListing.whenMade" z="user-managed"
+				items="${whenmade}" path="whenmade" />
 			<field:checkbox id="etsy_supply" label="Supply"
 				field="mergedEtsyListing.supply" z="user-managed" />
 		</c:if>

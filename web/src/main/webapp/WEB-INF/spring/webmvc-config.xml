@@ -135,8 +135,9 @@
 
 	<!-- Enable this for integration of file upload functionality -->
 	<bean
-		class="com.libereco.web.fileupload.LiberecoCommonsMultipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
 		id="multipartResolver" />
+		
 	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver"
 		id="tilesViewResolver">
 		<property name="viewClass"

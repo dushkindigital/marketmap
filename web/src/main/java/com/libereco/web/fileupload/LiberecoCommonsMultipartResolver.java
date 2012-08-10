@@ -17,20 +17,20 @@ public class LiberecoCommonsMultipartResolver extends CommonsMultipartResolver {
 
     @Override
     protected MultipartParsingResult parseRequest(HttpServletRequest request) throws MultipartException {
+        System.out.println("Request Parameter Map : " + request.getParameterMap());
         String encoding = determineEncoding(request);
         FileUpload fileUpload = prepareFileUpload(encoding);
         try {
-                List<FileItem> fileItems = ((ServletFileUpload) fileUpload).parseRequest(request);
-                for (FileItem fileItem : fileItems) {
-                    fileItem.setFieldName("picture");
-                }
-                return parseFileItems(fileItems, encoding);
-        }
-        catch (FileUploadBase.SizeLimitExceededException ex) {
-                throw new MaxUploadSizeExceededException(fileUpload.getSizeMax(), ex);
-        }
-        catch (FileUploadException ex) {
-                throw new MultipartException("Could not parse multipart servlet request", ex);
+            List<FileItem> fileItems = ((ServletFileUpload) fileUpload).parseRequest(request);
+            for (FileItem fileItem : fileItems) {
+                System.out.println("fileitem " + fileItem);
+                fileItem.setFieldName("picture");
+            }
+            return parseFileItems(fileItems, encoding);
+        } catch (FileUploadBase.SizeLimitExceededException ex) {
+            throw new MaxUploadSizeExceededException(fileUpload.getSizeMax(), ex);
+        } catch (FileUploadException ex) {
+            throw new MultipartException("Could not parse multipart servlet request", ex);
         }
     }
 }

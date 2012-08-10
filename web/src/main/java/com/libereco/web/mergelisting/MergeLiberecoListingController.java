@@ -6,9 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
@@ -42,6 +47,8 @@ import com.libereco.core.domain.MergedEbayListing;
 import com.libereco.core.domain.MergedEtsyListing;
 import com.libereco.core.domain.MergedLiberecoListing;
 import com.libereco.core.domain.ReturnPolicy;
+import com.libereco.core.exceptions.GenericLiberecoException;
+import com.libereco.core.exceptions.LiberecoServerException;
 import com.libereco.core.service.LiberecoPaymentInformationService;
 import com.libereco.core.service.LiberecoShippingInformationService;
 import com.libereco.core.service.LiberecoUserService;
@@ -117,16 +124,39 @@ public class MergeLiberecoListingController {
 
     @RequestMapping(value = "/listings", method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid MergedLiberecoListing liberecoListingForm, BindingResult bindingResult, Model uiModel,
-            HttpServletRequest httpServletRequest) {
+            HttpServletRequest httpServletRequest, @RequestParam MultipartFile picture) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, liberecoListingForm);
             return "listings/create";
         }
         uiModel.asMap().clear();
+        updateLiberecoListingWithPicture(liberecoListingForm, httpServletRequest, picture);
         MergedLiberecoListing mergedLiberecoListing = persistMergedLiberecoListing(liberecoListingForm);
         // updateLiberecoListingWithPicture(mergedLiberecoListing,
         // httpServletRequest, picture);
         return "redirect:/listings/" + encodeUrlPathSegment(mergedLiberecoListing.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(value = "/listings/{id}/image/{pictureName}", method = RequestMethod.GET, produces = "text/html")
+    public void getImage(@PathVariable("id") Long id, @PathVariable("pictureName") String pictureName, HttpServletRequest req,
+            HttpServletResponse res) {
+        MergedLiberecoListing liberecoListing = mergedLiberecoListingService.findLiberecoListing(id);
+        if (liberecoListing == null) {
+            throw new GenericLiberecoException("No libereco listing found for id " + id);
+        }
+
+        res.setHeader("Cache-Control", "no-store");
+        res.setHeader("Pragma", "no-cache");
+        res.setDateHeader("Expires", 0);
+        res.setContentType("image/jpg");
+        try {
+            ServletOutputStream ostream = res.getOutputStream();
+            IOUtils.write(liberecoListing.getPicture(), ostream);
+            ostream.flush();
+            ostream.close();
+        } catch (Exception e) {
+            throw new LiberecoServerException("Not able to read image from the server.", e);
+        }
     }
 
     @RequestMapping(value = "/listings/{id}", produces = "text/html")
@@ -270,6 +300,32 @@ public class MergeLiberecoListingController {
         } catch (UnsupportedEncodingException uee) {
         }
         return pathSegment;
+    }
+
+    private void updateLiberecoListingWithPicture(MergedLiberecoListing liberecoListing, HttpServletRequest httpServletRequest, MultipartFile picture) {
+        setPicture(liberecoListing, picture);
+        if (liberecoListing.getPicture() != null) {
+            boolean isCloudEnvironment = environment.acceptsProfiles("cloud");
+            if (isCloudEnvironment) {
+                liberecoListing.setPictureUrl("http://libereco.cloudfoundry.com/listings/" + liberecoListing.getId() + "/image/"
+                        + picture.getOriginalFilename());
+            } else {
+                liberecoListing.setPictureUrl("http://localhost:8443/listings/" + liberecoListing.getId() + "/image/"
+                        + picture.getOriginalFilename());
+            }
+
+        }
+        mergedLiberecoListingService.updateLiberecoListing(liberecoListing);
+    }
+
+    private void setPicture(MergedLiberecoListing liberecoListing, MultipartFile picture) {
+        try {
+            logger.info("Image updloaded name : " + picture.getOriginalFilename() + " , and its size " + picture.getSize());
+            liberecoListing.setPicture(picture.getBytes());
+            liberecoListing.setPictureName(picture.getOriginalFilename());
+        } catch (Exception e) {
+            throw new LiberecoServerException("Not able to upload the picture at this moment.", e);
+        }
     }
 
 }
