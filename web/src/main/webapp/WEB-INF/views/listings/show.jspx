@@ -52,9 +52,12 @@
 			<c:out value="${paymentInformation.paymentMethod}"></c:out><br></br><br></br>
 		</c:forEach>
 		
-		<label>Marketplaces : </label>
-		<c:out value="${marketplaces}"></c:out>
-
+		<label>Ebay Item Url</label>
+        <a href="${liberecolisting.mergedEbayListing.ebayItemUrl}" target="_blank">${liberecolisting.mergedEbayListing.ebayItemUrl}</a>
+        	<br></br><br></br>
+        <label>Etsy Item Url</label>
+        <a href="${liberecolisting.mergedEtsyListing.etsyListingUrl}" target="_blank">${liberecolisting.mergedEtsyListing.etsyListingUrl}</a>
+		
 		<c:if test="${not empty liberecolisting.pictureName}">
 			<IMG alt="${liberecolisting.pictureName}"
 				src="/liberecolistings/${liberecolisting.id}/image/${liberecolisting.pictureName}" />

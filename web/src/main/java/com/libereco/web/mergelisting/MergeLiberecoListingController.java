@@ -30,10 +30,10 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.libereco.core.domain.EtsyWhenMade;
 import com.libereco.core.domain.EtsyWhoMade;
 import com.libereco.core.domain.LiberecoCategory;
-import com.libereco.core.domain.LiberecoListing;
 import com.libereco.core.domain.LiberecoUser;
 import com.libereco.core.domain.ListingCondition;
 import com.libereco.core.domain.ListingDuration;
@@ -50,6 +50,8 @@ import com.libereco.core.service.LiberecoUserService;
 import com.libereco.core.service.MergedLiberecoListingService;
 import com.libereco.springsocial.ebay.api.EbayApi;
 import com.libereco.springsocial.etsy.api.EtsyApi;
+import com.libereco.springsocial.etsy.api.EtsyListing;
+import com.libereco.springsocial.etsy.api.ListingBuilder;
 import com.libereco.web.security.SecurityUtils;
 
 @Controller
@@ -69,6 +71,10 @@ public class MergeLiberecoListingController {
     Environment environment;
     @Inject
     MergedLiberecoListingService mergedLiberecoListingService;
+    @Inject
+    EtsyApi etsyApi;
+    @Inject
+    EbayApi ebayApi;
 
     @Inject
     public MergeLiberecoListingController(ConnectionRepository connectionRepository) {
@@ -80,7 +86,7 @@ public class MergeLiberecoListingController {
         binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
     }
 
-    @RequestMapping(value="/listings", params = "form", produces = "text/html")
+    @RequestMapping(value = "/listings", params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         String loggedInUser = SecurityUtils.getCurrentLoggedInUsername();
         List<Connection<EbayApi>> ebayConnections = connectionRepository.findConnections(EbayApi.class);
@@ -119,12 +125,12 @@ public class MergeLiberecoListingController {
             return "listings/create";
         }
         uiModel.asMap().clear();
-        MergedLiberecoListing mergedLiberecoListing = createLiberecoListing(liberecoListingForm);
-//        updateLiberecoListingWithPicture(mergedLiberecoListing, httpServletRequest, picture);
+        MergedLiberecoListing mergedLiberecoListing = persistMergedLiberecoListing(liberecoListingForm);
+        // updateLiberecoListingWithPicture(mergedLiberecoListing,
+        // httpServletRequest, picture);
         return "redirect:/listings/" + encodeUrlPathSegment(mergedLiberecoListing.getId().toString(), httpServletRequest);
     }
-    
-    
+
     @RequestMapping(value = "/listings/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
@@ -142,18 +148,58 @@ public class MergeLiberecoListingController {
         return "listings/show";
     }
 
-
-    private MergedLiberecoListing createLiberecoListing(LiberecoListingForm liberecoListing) {
-        MergedLiberecoListing mergedLiberecoListing = createLiberecoListingCopy(liberecoListing);
+    private MergedLiberecoListing persistMergedLiberecoListing(LiberecoListingForm liberecoListing) {
+        MergedLiberecoListing mergedLiberecoListing = toMergedLiberecoListing(liberecoListing);
         String username = SecurityUtils.getCurrentLoggedInUsername();
         LiberecoUser user = liberecoUserService.findUserByUsername(username);
         mergedLiberecoListing.setUserId(user.getId());
         mergedLiberecoListing.setListingState(ListingState.NEW);
+
+        ItemType listing = toEbayItemType(mergedLiberecoListing);
+        String[] pictureUrls = {};
+        logger.info("Creating Ebay Listing.....");
+        ItemType createdEbayListing = ebayApi.listingOperations().createEbayListing(listing, pictureUrls);
+        logger.info("Created Ebay Listing with id : " + createdEbayListing.getItemID());
+
+        logger.info("Creating Etsy Listing ....");
+        EtsyListing createdEtsyListing = etsyApi.listingOperations().createListing(toEtsyListing(mergedLiberecoListing));
+        logger.info("Created Etsy Listing with id : " + createdEtsyListing.getListingId());
+        
+        mergedLiberecoListing.getMergedEbayListing().setEbayItemId(createdEbayListing.getItemID());
+        String ebayItemUrl = environment.getProperty("libereco.ebay.item.url");
+        ebayItemUrl += createdEbayListing.getItemID();
+        mergedLiberecoListing.getMergedEbayListing().setEbayItemUrl(ebayItemUrl);
+        
+        mergedLiberecoListing.getMergedEtsyListing().setListingId(createdEtsyListing.getListingId());
+        mergedLiberecoListing.getMergedEtsyListing().setEtsyListingUrl(createdEtsyListing.getUrl());
+        
         mergedLiberecoListingService.saveLiberecoListing(mergedLiberecoListing);
         return mergedLiberecoListing;
     }
 
-    private MergedLiberecoListing createLiberecoListingCopy(LiberecoListingForm liberecoListing) {
+    
+    private com.libereco.springsocial.etsy.api.EtsyListing toEtsyListing(MergedLiberecoListing liberecoListing) {
+        MergedEtsyListing etsyListing = liberecoListing.getMergedEtsyListing();
+        com.libereco.springsocial.etsy.api.EtsyListing listing = ListingBuilder.listing().
+                withShippingTemplateId(260).
+                withDescription(liberecoListing.getDescription()).
+                withPrice(liberecoListing.getPrice()).
+                withTitle(liberecoListing.getName()).
+                withSupply(etsyListing.isSupply()).
+                withQuantity(liberecoListing.getQuantity()).
+                withWhenMade(etsyListing.getWhenMade().getValue()).
+                withWhoMade(etsyListing.getWhoMade().getValue()).
+                withCategoryId(69150467).
+                withListingId(etsyListing.getListingId()).
+                build();
+        return listing;
+    }
+
+    private ItemType toEbayItemType(MergedLiberecoListing mergedLiberecoListing) {
+        return EbayListingConverter.toItemType(mergedLiberecoListing);
+    }
+
+    private MergedLiberecoListing toMergedLiberecoListing(LiberecoListingForm liberecoListing) {
         MergedLiberecoListing mergedLiberecoListing = new MergedLiberecoListing();
         mergedLiberecoListing.setCategory(liberecoListing.getCategory());
         mergedLiberecoListing.setDescription(liberecoListing.getDescription());
